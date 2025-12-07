@@ -1,5 +1,5 @@
 import { Array, Effect, Scope } from "effect";
-import type { Readable } from "../Readable.js";
+import type { Readable } from "@core/Readable";
 import {
   applyClassName,
   applyEventHandler,
@@ -9,14 +9,14 @@ import {
   isElement,
   isReadable,
   subscribeToReadable,
-} from "./helpers.js";
+} from "./helpers";
 import type {
   Child,
   ElementFactory,
   EventHandler,
   HTMLAttributes,
   StyleValue,
-} from "./types.js";
+} from "./types";
 
 const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
   element: HTMLElementTagNameMap[K],

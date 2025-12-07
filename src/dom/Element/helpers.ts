@@ -1,6 +1,6 @@
 import { Array, Effect, Scope, Stream } from "effect";
-import type { Readable } from "../Readable.js";
-import type { Child, Element, EventHandler, StyleValue } from "./types.js";
+import type { Readable } from "@core/Readable";
+import type { Child, Element, EventHandler, StyleValue } from "./types";
 
 export const isReadable = (value: unknown): value is Readable<unknown> =>
   value !== null &&

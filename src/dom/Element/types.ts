@@ -1,5 +1,5 @@
 import type { Effect, Scope } from "effect";
-import type { Readable } from "../Readable.js";
+import type { Readable } from "@core/Readable";
 
 /**
  * A DOM element wrapped in an Effect with scope management.

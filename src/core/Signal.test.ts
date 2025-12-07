@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { Effect } from "effect"
-import { Signal } from "./Signal.js"
+import { Signal } from "./Signal"
 
 describe("Signal", () => {
   it("should create a signal with initial value", async () => {

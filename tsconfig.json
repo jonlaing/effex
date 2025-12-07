@@ -13,6 +13,13 @@
     "moduleDetection": "force",
     "noEmit": true,
 
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["src/core/*"],
+      "@dom/*": ["src/dom/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

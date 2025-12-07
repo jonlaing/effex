@@ -1,18 +1,36 @@
 // Core reactivity
-export type { Readable } from "./Readable.js"
-export { make as makeReadable, map as mapReadable, fromStream } from "./Readable.js"
-
-export type { Signal as SignalType, SignalOptions } from "./Signal.js"
-export { Signal, SignalRegistry } from "./Signal.js"
-
-export type { DerivedOptions, AsyncState, AsyncStrategy, AsyncDerivedOptions, AsyncDerived } from "./Derived.js"
-export { Derived } from "./Derived.js"
-
-export { Reaction } from "./Reaction.js"
-
-// DOM elements
-export type { Element, Child, EventHandler, BaseAttributes, EventAttributes } from "./Element"
 export {
+  // Readable
+  type Readable,
+  makeReadable,
+  mapReadable,
+  fromStream,
+  // Signal
+  type SignalType,
+  type SignalOptions,
+  Signal,
+  SignalRegistry,
+  // Derived
+  type DerivedOptions,
+  type AsyncState,
+  type AsyncStrategy,
+  type AsyncDerivedOptions,
+  type AsyncDerived,
+  Derived,
+  // Reaction
+  Reaction,
+} from "./core";
+
+// DOM
+export {
+  // Element
+  type Element,
+  type Child,
+  type EventHandler,
+  type BaseAttributes,
+  type EventAttributes,
+  type HTMLAttributes,
+  type ElementFactory,
   div,
   span,
   p,
@@ -47,22 +65,22 @@ export {
   tr,
   th,
   td,
-} from "./Element"
-
-// Control flow
-export { when, match, each, ErrorBoundary, Suspense, SuspenseWithBoundary } from "./Control.js"
-export type { MatchCase } from "./Control.js"
-
-// Components
-export type { Component } from "./Component.js"
-export { component } from "./Component.js"
-
-// Refs
-export type { Ref as RefType } from "./Ref.js"
-export { Ref } from "./Ref.js"
-
-// Mounting
-export { mount } from "./Mount.js"
-
-// Template helpers
-export { t } from "./Template.js"
+  // Control flow
+  when,
+  match,
+  each,
+  ErrorBoundary,
+  Suspense,
+  SuspenseWithBoundary,
+  type MatchCase,
+  // Components
+  type Component,
+  component,
+  // Refs
+  type RefType,
+  Ref,
+  // Mounting
+  mount,
+  // Template helpers
+  t,
+} from "./dom";

@@ -1,6 +1,6 @@
 import { Effect, Scope, Stream } from "effect";
-import type { Readable } from "./Readable.js";
-import { map as mapReadable } from "./Readable.js";
+import type { Readable } from "@core/Readable";
+import { map as mapReadable } from "@core/Readable";
 import type { Element } from "./Element";
 
 /**
@@ -146,7 +146,9 @@ export const when = <E1 = never, E2 = never>(
     let currentElement: HTMLElement | null = null;
     let currentValue: boolean | null = null;
 
-    const render = (value: boolean): Effect.Effect<void, E1 | E2, Scope.Scope> =>
+    const render = (
+      value: boolean,
+    ): Effect.Effect<void, E1 | E2, Scope.Scope> =>
       Effect.gen(function* () {
         if (value === currentValue) return;
 

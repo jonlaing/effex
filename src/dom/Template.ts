@@ -1,6 +1,6 @@
 import { Effect, Stream } from "effect"
-import type { Readable } from "./Readable.js"
-import { map as mapReadable } from "./Readable.js"
+import type { Readable } from "@core/Readable"
+import { map as mapReadable } from "@core/Readable"
 
 const isReadable = (value: unknown): value is Readable<unknown> =>
   value !== null &&

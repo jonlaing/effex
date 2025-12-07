@@ -18,5 +18,10 @@ export default defineConfig({
       },
     },
   },
-  resolve: { alias: { src: resolve("src/") } },
+  resolve: {
+    alias: {
+      "@core": resolve(__dirname, "src/core"),
+      "@dom": resolve(__dirname, "src/dom"),
+    },
+  },
 });

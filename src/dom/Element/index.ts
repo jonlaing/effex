@@ -6,7 +6,7 @@ export type {
   EventAttributes,
   EventHandler,
   HTMLAttributes,
-} from "./types.js";
+} from "./types";
 
 export {
   a,
@@ -43,4 +43,4 @@ export {
   thead,
   tr,
   ul,
-} from "./Element.js";
+} from "./Element";
