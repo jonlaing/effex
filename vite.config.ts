@@ -7,6 +7,7 @@ export default defineConfig({
       entry: resolve(__dirname, "src/index.ts"),
       name: "EffectUI",
       fileName: "effect-ui",
+      formats: ["es", "umd"],
     },
     emptyOutDir: false,
     rollupOptions: {

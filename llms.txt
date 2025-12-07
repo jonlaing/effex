@@ -1,0 +1,194 @@
+# Effect-UI
+
+A reactive UI framework built on Effect.ts primitives. Uses signals for state, derived values for computations, and represents DOM elements as Effects with automatic scope management.
+
+## Installation
+
+```bash
+npm install effect-ui effect
+```
+
+## Core Concepts
+
+### Signals - Reactive State
+```ts
+const count = yield* Signal.make(0)
+yield* count.get              // read: 0
+yield* count.set(5)           // write
+yield* count.update(n => n+1) // update
+count.map(n => n * 2)         // derive a Readable
+```
+
+### Derived - Computed Values
+```ts
+// Synchronous
+const doubled = yield* Derived.sync([count], ([n]) => n * 2)
+
+// Asynchronous (with loading/error states)
+const user = yield* Derived.async([userId], ([id]) => fetchUser(id))
+```
+
+### Elements - DOM as Effects
+```ts
+// Elements are Effect<HTMLElement, E, Scope>
+div({ className: "container" }, [
+  h1(["Hello"]),
+  p([count]),  // Reactive - updates when count changes
+  button({ onClick: () => count.update(n => n + 1) }, ["+"]),
+])
+```
+
+### Components
+```ts
+const Counter = component("Counter", () =>
+  Effect.gen(function* () {
+    const count = yield* Signal.make(0)
+    return yield* div([
+      button({ onClick: () => count.update(n => n - 1) }, ["-"]),
+      span([count]),
+      button({ onClick: () => count.update(n => n + 1) }, ["+"]),
+    ])
+  })
+)
+```
+
+### Control Flow
+```ts
+// Conditional rendering
+when(isLoggedIn,
+  () => Dashboard({}),
+  () => LoginForm({})
+)
+
+// Pattern matching
+match(status, [
+  { pattern: "loading", render: () => Spinner({}) },
+  { pattern: "error", render: () => ErrorMessage({}) },
+  { pattern: "success", render: () => Content({}) },
+])
+
+// Lists with keyed updates
+each(todos, todo => todo.id, (todoReadable) =>
+  TodoItem({ todo: todoReadable })
+)
+```
+
+### Error Handling
+```ts
+// Elements can have error channels: Element<E>
+const riskyComponent: Element<FetchError> = Effect.gen(function* () {
+  const data = yield* fetchData()  // may fail
+  return yield* div([data.message])
+})
+
+// Handle errors before mounting
+const safeComponent = ErrorBoundary(
+  () => riskyComponent,
+  (error) => div(["Error: ", String(error)])
+)
+
+// mount() requires Element<never> - all errors must be handled
+yield* mount(safeComponent, document.getElementById("root")!)
+```
+
+### Mounting
+```ts
+const program = Effect.gen(function* () {
+  yield* mount(App({}), document.getElementById("root")!)
+  yield* Effect.never  // Keep alive
+})
+
+Effect.runPromise(
+  program.pipe(
+    Effect.scoped,
+    Effect.provide(SignalRegistry.Live)
+  )
+)
+```
+
+## Key Types
+
+- `Signal<A>` - Readable + writable reactive state
+- `Readable<A>` - Read-only reactive value with `.get`, `.changes`, `.values`, `.map()`
+- `Derived<A>` - Computed reactive value
+- `Element<E = never>` - Effect<HTMLElement, E, Scope>
+- `Child<E = never>` - Valid children: string, number, Element, Readable, or arrays
+- `Component<Name, Props, E>` - Named component function
+
+## Element Factories
+
+All HTML elements are available: `div`, `span`, `p`, `h1`-`h6`, `button`, `input`, `form`, `label`, `ul`, `ol`, `li`, `a`, `img`, `nav`, `header`, `footer`, `main`, `section`, `article`, `aside`, `textarea`, `select`, `option`, `table`, `thead`, `tbody`, `tr`, `th`, `td`
+
+## Attributes
+
+```ts
+div({
+  className: "static-class",                    // or Readable<string>
+  style: { color: "red", fontSize: "16px" },   // or Readable<Record>
+  id: "my-id",
+  onClick: (e) => Effect.log("clicked"),       // Event handlers can return Effects
+  disabled: isDisabled,                         // boolean or Readable<boolean>
+}, [children])
+```
+
+## Project Structure
+
+```
+src/
+  core/           # Reactive primitives (Signal, Derived, Readable, Reaction)
+  dom/            # DOM rendering (Element, Control, Component, Mount, Ref)
+  index.ts        # Public exports
+```
+
+## Patterns
+
+### Fetching Data
+```ts
+const UserProfile = component("UserProfile", (props: { userId: string }) =>
+  Effect.gen(function* () {
+    const user = yield* Derived.async(
+      [Signal.of(props.userId)],
+      ([id]) => fetchUser(id)
+    )
+
+    return yield* div([
+      when(user.map(s => s.isLoading),
+        () => span(["Loading..."]),
+        () => span([user.map(s => s.value.pipe(Option.map(u => u.name), Option.getOrElse(() => "")))])
+      )
+    ])
+  })
+)
+```
+
+### Form Handling
+```ts
+const LoginForm = component("LoginForm", () =>
+  Effect.gen(function* () {
+    const email = yield* Signal.make("")
+    const password = yield* Signal.make("")
+
+    const handleSubmit = (e: SubmitEvent) =>
+      Effect.gen(function* () {
+        e.preventDefault()
+        const emailVal = yield* email.get
+        const passVal = yield* password.get
+        yield* login(emailVal, passVal)
+      })
+
+    return yield* form({ onSubmit: handleSubmit }, [
+      input({
+        type: "email",
+        value: email,
+        onInput: (e) => email.set((e.target as HTMLInputElement).value),
+      }),
+      input({
+        type: "password",
+        value: password,
+        onInput: (e) => password.set((e.target as HTMLInputElement).value),
+      }),
+      button({ type: "submit" }, ["Login"]),
+    ])
+  })
+)
+```

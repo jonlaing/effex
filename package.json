@@ -1,9 +1,39 @@
 {
-  "name": "effect-ui",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@jonlaing/effect-ui",
+  "version": "0.0.1",
+  "description": "A reactive UI framework built on Effect.ts primitives",
   "type": "module",
   "packageManager": "pnpm@10.14.0",
+  "license": "MIT",
+  "author": "Jon Laing",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonlaing/effect-ui.git"
+  },
+  "keywords": [
+    "effect",
+    "effect-ts",
+    "ui",
+    "reactive",
+    "signals",
+    "frontend",
+    "framework"
+  ],
+  "main": "./dist/effect-ui.umd.cjs",
+  "module": "./dist/effect-ui.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/effect-ui.js",
+      "require": "./dist/effect-ui.umd.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "llms.txt"
+  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "rm -rf dist && tsc -p tsconfig.build.json && vite build",
