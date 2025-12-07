@@ -50,7 +50,7 @@ export {
 } from "./Element.js"
 
 // Control flow
-export { when, match, each } from "./Control.js"
+export { when, match, each, ErrorBoundary, Suspense, SuspenseWithBoundary } from "./Control.js"
 export type { MatchCase } from "./Control.js"
 
 // Components

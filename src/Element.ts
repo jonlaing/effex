@@ -13,7 +13,7 @@ export type Child =
 
 export type EventHandler<E extends Event> = (
   event: E,
-) => Effect.Effect<void> | void;
+) => Effect.Effect<void, never> | void;
 
 type StyleValue = string | number | Readable<string> | Readable<number>;
 

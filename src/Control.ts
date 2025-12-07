@@ -3,6 +3,79 @@ import type { Readable } from "./Readable.js"
 import { map as mapReadable } from "./Readable.js"
 import type { Element } from "./Element.js"
 
+export const ErrorBoundary = <E>(
+  tryRender: () => Effect.Effect<HTMLElement, E, Scope.Scope>,
+  catchRender: (error: E) => Element
+): Element =>
+  Effect.gen(function* () {
+    const result = yield* tryRender().pipe(Effect.either)
+
+    if (result._tag === "Left") {
+      return yield* catchRender(result.left)
+    }
+
+    return result.right
+  })
+
+export const Suspense = (
+  asyncRender: () => Effect.Effect<HTMLElement, never, Scope.Scope>,
+  fallbackRender: () => Element
+): Element =>
+  Effect.gen(function* () {
+    const scope = yield* Effect.scope
+    const container = document.createElement("div")
+    container.style.display = "contents"
+
+    // Render fallback immediately
+    const fallback = yield* fallbackRender()
+    container.appendChild(fallback)
+
+    // Start async render in background, then swap when ready
+    yield* asyncRender().pipe(
+      Effect.tap((element) =>
+        Effect.sync(() => {
+          container.replaceChild(element, fallback)
+        })
+      ),
+      Effect.forkIn(scope)
+    )
+
+    return container as HTMLElement
+  })
+
+export const SuspenseWithBoundary = <E>(
+  asyncRender: () => Effect.Effect<HTMLElement, E, Scope.Scope>,
+  fallbackRender: () => Element,
+  catchRender: (error: E) => Element
+): Element =>
+  Effect.gen(function* () {
+    const scope = yield* Effect.scope
+    const container = document.createElement("div")
+    container.style.display = "contents"
+
+    // Render fallback immediately
+    const fallback = yield* fallbackRender()
+    container.appendChild(fallback)
+
+    // Start async render in background
+    yield* asyncRender().pipe(
+      Effect.either,
+      Effect.tap((result) =>
+        Effect.gen(function* () {
+          if (result._tag === "Left") {
+            const errorElement = yield* catchRender(result.left)
+            container.replaceChild(errorElement, fallback)
+          } else {
+            container.replaceChild(result.right, fallback)
+          }
+        })
+      ),
+      Effect.forkIn(scope)
+    )
+
+    return container as HTMLElement
+  })
+
 export const when = (
   condition: Readable<boolean>,
   onTrue: () => Element,
