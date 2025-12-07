@@ -3,16 +3,24 @@ import type { Readable } from "../Readable.js";
 
 /**
  * A DOM element wrapped in an Effect with scope management.
+ * @template E - The error type (defaults to never for infallible elements)
  *
  * @example
  * ```ts
- * const myButton: Element = button({ class: "primary" }, ["Click me"])
+ * const myButton: Element = button({ className: "primary" }, ["Click me"])
+ *
+ * // Component that can fail
+ * const UserProfile: Element<UserNotFoundError> = Effect.gen(function* () {
+ *   const user = yield* fetchUser(userId)
+ *   return yield* div([user.name])
+ * })
  * ```
  */
-export type Element = Effect.Effect<HTMLElement, never, Scope.Scope>;
+export type Element<E = never> = Effect.Effect<HTMLElement, E, Scope.Scope>;
 
 /**
  * Valid child types for an element: strings, numbers, elements, reactive values, or arrays thereof.
+ * @template E - The error type for child elements
  *
  * @example
  * ```ts
@@ -30,13 +38,13 @@ export type Element = Effect.Effect<HTMLElement, never, Scope.Scope>;
  * ])
  * ```
  */
-export type Child =
+export type Child<E = never> =
   | string
   | number
-  | Element
+  | Element<E>
   | Readable<string>
   | Readable<number>
-  | readonly Child[];
+  | readonly Child<E>[];
 
 /**
  * Handler for DOM events that can optionally return an Effect.
@@ -68,11 +76,11 @@ export type StyleValue = string | number | Readable<string> | Readable<number>;
  * @example
  * ```ts
  * // Static class
- * div({ class: "container" }, [...])
+ * div({ className: "container" }, [...])
  *
  * // Reactive class
  * const isActive = yield* Signal.make(false)
- * div({ class: isActive.map(a => a ? "active" : "inactive") }, [...])
+ * div({ className: isActive.map(a => a ? "active" : "inactive") }, [...])
  *
  * // Static styles
  * div({ style: { color: "red", "font-size": "16px" } }, [...])
@@ -84,7 +92,7 @@ export type StyleValue = string | number | Readable<string> | Readable<number>;
  */
 export interface BaseAttributes {
   /** CSS class name(s) */
-  readonly class?: string | Readable<string>;
+  readonly className?: string | Readable<string>;
   /** Inline styles as a record of property-value pairs */
   readonly style?:
     | Record<string, StyleValue>
@@ -128,19 +136,22 @@ export type HTMLAttributes<K extends keyof HTMLElementTagNameMap> =
 /**
  * Factory function for creating a specific HTML element type.
  * Supports multiple call signatures for convenience.
+ * The error type is inferred from children.
  * @template K - The HTML element tag name
  */
 export type ElementFactory<K extends keyof HTMLElementTagNameMap> = {
+  <E = never>(
+    attrs: HTMLAttributes<K>,
+    children: readonly Child<E>[],
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
   (
     attrs: HTMLAttributes<K>,
-    children: readonly Child[],
   ): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
-  (
-    attrs: HTMLAttributes<K>,
-  ): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
-  (
-    children: readonly Child[],
-  ): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
-  (child: Child): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
+  <E = never>(
+    children: readonly Child<E>[],
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+  <E = never>(
+    child: Child<E>,
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
   (): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
 };

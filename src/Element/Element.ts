@@ -26,7 +26,7 @@ const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
     for (const [key, value] of Object.entries(attrs)) {
       if (value === undefined) continue;
 
-      if (key === "class") {
+      if (key === "className") {
         yield* applyClassName(element, value as string | Readable<string>);
       } else if (key === "style") {
         yield* applyStyle(
@@ -45,10 +45,10 @@ const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
     }
   });
 
-const appendChildren = (
+const appendChildren = <E>(
   parent: HTMLElement,
-  children: readonly Child[],
-): Effect.Effect<void, never, Scope.Scope> =>
+  children: readonly Child<E>[],
+): Effect.Effect<void, E, Scope.Scope> =>
   Effect.gen(function* () {
     const flattened = flattenChildren(children);
 
@@ -71,11 +71,11 @@ const appendChildren = (
     }
   });
 
-const createElement = <K extends keyof HTMLElementTagNameMap>(
+const createElement = <K extends keyof HTMLElementTagNameMap, E>(
   tagName: K,
   attrs: HTMLAttributes<K>,
-  children: readonly Child[],
-): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope> =>
+  children: readonly Child<E>[],
+): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope> =>
   Effect.gen(function* () {
     const element = document.createElement(tagName);
     yield* applyAttributes(element, attrs);
@@ -94,18 +94,18 @@ const makeElementFactory = <K extends keyof HTMLElementTagNameMap>(
     if (args.length === 1) {
       const arg = args[0];
       if (Array.isArray(arg)) {
-        return createElement(tagName, {} as HTMLAttributes<K>, arg as Child[]);
+        return createElement(tagName, {} as HTMLAttributes<K>, arg as Child<unknown>[]);
       }
       if (typeof arg === "string" || typeof arg === "number") {
         return createElement(tagName, {} as HTMLAttributes<K>, [arg]);
       }
       if (isElement(arg) || isReadable(arg)) {
-        return createElement(tagName, {} as HTMLAttributes<K>, [arg as Child]);
+        return createElement(tagName, {} as HTMLAttributes<K>, [arg as Child<unknown>]);
       }
       return createElement(tagName, arg as HTMLAttributes<K>, []);
     }
 
-    const [attrs, children] = args as [HTMLAttributes<K>, readonly Child[]];
+    const [attrs, children] = args as [HTMLAttributes<K>, readonly Child<unknown>[]];
     return createElement(
       tagName,
       attrs,

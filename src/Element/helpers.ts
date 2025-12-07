@@ -9,10 +9,10 @@ export const isReadable = (value: unknown): value is Readable<unknown> =>
   "changes" in value &&
   "values" in value;
 
-export const isElement = (value: unknown): value is Element =>
+export const isElement = (value: unknown): value is Element<unknown> =>
   Effect.isEffect(value);
 
-export const flattenChildren = (children: readonly Child[]): Child[] =>
+export const flattenChildren = <E>(children: readonly Child<E>[]): Child<E>[] =>
   Array.flatMap(children, (child) =>
     globalThis.Array.isArray(child) ? flattenChildren(child) : [child],
   );

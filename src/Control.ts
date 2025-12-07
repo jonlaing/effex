@@ -1,7 +1,7 @@
-import { Effect, Scope, Stream } from "effect"
-import type { Readable } from "./Readable.js"
-import { map as mapReadable } from "./Readable.js"
-import type { Element } from "./Element"
+import { Effect, Scope, Stream } from "effect";
+import type { Readable } from "./Readable.js";
+import { map as mapReadable } from "./Readable.js";
+import type { Element } from "./Element";
 
 /**
  * Catches errors from a render function and displays a fallback element.
@@ -16,19 +16,19 @@ import type { Element } from "./Element"
  * )
  * ```
  */
-export const ErrorBoundary = <E>(
+export const ErrorBoundary = <E, E2 = never>(
   tryRender: () => Effect.Effect<HTMLElement, E, Scope.Scope>,
-  catchRender: (error: E) => Element
-): Element =>
+  catchRender: (error: E) => Element<E2>,
+): Element<E2> =>
   Effect.gen(function* () {
-    const result = yield* tryRender().pipe(Effect.either)
+    const result = yield* tryRender().pipe(Effect.either);
 
     if (result._tag === "Left") {
-      return yield* catchRender(result.left)
+      return yield* catchRender(result.left);
     }
 
-    return result.right
-  })
+    return result.right;
+  });
 
 /**
  * Renders a fallback while waiting for an async render to complete.
@@ -43,31 +43,31 @@ export const ErrorBoundary = <E>(
  * )
  * ```
  */
-export const Suspense = (
+export const Suspense = <E = never>(
   asyncRender: () => Effect.Effect<HTMLElement, never, Scope.Scope>,
-  fallbackRender: () => Element
-): Element =>
+  fallbackRender: () => Element<E>,
+): Element<E> =>
   Effect.gen(function* () {
-    const scope = yield* Effect.scope
-    const container = document.createElement("div")
-    container.style.display = "contents"
+    const scope = yield* Effect.scope;
+    const container = document.createElement("div");
+    container.style.display = "contents";
 
     // Render fallback immediately
-    const fallback = yield* fallbackRender()
-    container.appendChild(fallback)
+    const fallback = yield* fallbackRender();
+    container.appendChild(fallback);
 
     // Start async render in background, then swap when ready
     yield* asyncRender().pipe(
       Effect.tap((element) =>
         Effect.sync(() => {
-          container.replaceChild(element, fallback)
-        })
+          container.replaceChild(element, fallback);
+        }),
       ),
-      Effect.forkIn(scope)
-    )
+      Effect.forkIn(scope),
+    );
 
-    return container as HTMLElement
-  })
+    return container as HTMLElement;
+  });
 
 /**
  * Combines Suspense with ErrorBoundary for async renders that may fail.
@@ -84,19 +84,19 @@ export const Suspense = (
  * )
  * ```
  */
-export const SuspenseWithBoundary = <E>(
+export const SuspenseWithBoundary = <E, E2 = never, E3 = never>(
   asyncRender: () => Effect.Effect<HTMLElement, E, Scope.Scope>,
-  fallbackRender: () => Element,
-  catchRender: (error: E) => Element
-): Element =>
+  fallbackRender: () => Element<E2>,
+  catchRender: (error: E) => Element<E3>,
+): Element<E2 | E3> =>
   Effect.gen(function* () {
-    const scope = yield* Effect.scope
-    const container = document.createElement("div")
-    container.style.display = "contents"
+    const scope = yield* Effect.scope;
+    const container = document.createElement("div");
+    container.style.display = "contents";
 
     // Render fallback immediately
-    const fallback = yield* fallbackRender()
-    container.appendChild(fallback)
+    const fallback = yield* fallbackRender();
+    container.appendChild(fallback);
 
     // Start async render in background
     yield* asyncRender().pipe(
@@ -104,18 +104,18 @@ export const SuspenseWithBoundary = <E>(
       Effect.tap((result) =>
         Effect.gen(function* () {
           if (result._tag === "Left") {
-            const errorElement = yield* catchRender(result.left)
-            container.replaceChild(errorElement, fallback)
+            const errorElement = yield* catchRender(result.left);
+            container.replaceChild(errorElement, fallback);
           } else {
-            container.replaceChild(result.right, fallback)
+            container.replaceChild(result.right, fallback);
           }
-        })
+        }),
       ),
-      Effect.forkIn(scope)
-    )
+      Effect.forkIn(scope),
+    );
 
-    return container as HTMLElement
-  })
+    return container as HTMLElement;
+  });
 
 /**
  * Conditionally render one of two elements based on a reactive boolean.
@@ -133,56 +133,56 @@ export const SuspenseWithBoundary = <E>(
  * )
  * ```
  */
-export const when = (
+export const when = <E1 = never, E2 = never>(
   condition: Readable<boolean>,
-  onTrue: () => Element,
-  onFalse: () => Element
-): Element =>
+  onTrue: () => Element<E1>,
+  onFalse: () => Element<E2>,
+): Element<E1 | E2> =>
   Effect.gen(function* () {
-    const scope = yield* Effect.scope
-    const container = document.createElement("div")
-    container.style.display = "contents"
+    const scope = yield* Effect.scope;
+    const container = document.createElement("div");
+    container.style.display = "contents";
 
-    let currentElement: HTMLElement | null = null
-    let currentValue: boolean | null = null
+    let currentElement: HTMLElement | null = null;
+    let currentValue: boolean | null = null;
 
-    const render = (value: boolean): Effect.Effect<void, never, Scope.Scope> =>
+    const render = (value: boolean): Effect.Effect<void, E1 | E2, Scope.Scope> =>
       Effect.gen(function* () {
-        if (value === currentValue) return
+        if (value === currentValue) return;
 
-        currentValue = value
-        const element = value ? onTrue() : onFalse()
-        const newElement = yield* element
+        currentValue = value;
+        const element = value ? onTrue() : onFalse();
+        const newElement = yield* element;
 
         if (currentElement) {
-          container.replaceChild(newElement, currentElement)
+          container.replaceChild(newElement, currentElement);
         } else {
-          container.appendChild(newElement)
+          container.appendChild(newElement);
         }
-        currentElement = newElement
-      })
+        currentElement = newElement;
+      });
 
     // Render initial value synchronously
-    const initialValue = yield* condition.get
-    yield* render(initialValue)
+    const initialValue = yield* condition.get;
+    yield* render(initialValue);
 
     // Then subscribe to future changes
     yield* condition.changes.pipe(
       Stream.runForEach((value) => Effect.scoped(render(value))),
-      Effect.forkIn(scope)
-    )
+      Effect.forkIn(scope),
+    );
 
-    return container as HTMLElement
-  })
+    return container as HTMLElement;
+  });
 
 /**
  * A case for pattern matching with {@link match}.
  */
-export interface MatchCase<A> {
+export interface MatchCase<A, E = never> {
   /** The value to match against */
-  readonly pattern: A
+  readonly pattern: A;
   /** Element to render when matched */
-  readonly render: () => Element
+  readonly render: () => Element<E>;
 }
 
 /**
@@ -203,51 +203,51 @@ export interface MatchCase<A> {
  * ])
  * ```
  */
-export const match = <A>(
+export const match = <A, E = never, E2 = never>(
   value: Readable<A>,
-  cases: readonly MatchCase<A>[],
-  fallback?: () => Element
-): Element =>
+  cases: readonly MatchCase<A, E>[],
+  fallback?: () => Element<E2>,
+): Element<E | E2> =>
   Effect.gen(function* () {
-    const scope = yield* Effect.scope
-    const container = document.createElement("div")
-    container.style.display = "contents"
+    const scope = yield* Effect.scope;
+    const container = document.createElement("div");
+    container.style.display = "contents";
 
-    let currentElement: HTMLElement | null = null
-    let currentPattern: A | null = null
+    let currentElement: HTMLElement | null = null;
+    let currentPattern: A | null = null;
 
-    const render = (val: A): Effect.Effect<void, never, Scope.Scope> =>
+    const render = (val: A): Effect.Effect<void, E | E2, Scope.Scope> =>
       Effect.gen(function* () {
-        if (val === currentPattern) return
+        if (val === currentPattern) return;
 
-        currentPattern = val
-        const matchedCase = cases.find((c) => c.pattern === val)
-        const element = matchedCase ? matchedCase.render() : fallback?.()
+        currentPattern = val;
+        const matchedCase = cases.find((c) => c.pattern === val);
+        const element = matchedCase ? matchedCase.render() : fallback?.();
 
-        if (!element) return
+        if (!element) return;
 
-        const newElement = yield* element
+        const newElement = yield* element;
 
         if (currentElement) {
-          container.replaceChild(newElement, currentElement)
+          container.replaceChild(newElement, currentElement);
         } else {
-          container.appendChild(newElement)
+          container.appendChild(newElement);
         }
-        currentElement = newElement
-      })
+        currentElement = newElement;
+      });
 
     // Render initial value synchronously
-    const initialValue = yield* value.get
-    yield* render(initialValue)
+    const initialValue = yield* value.get;
+    yield* render(initialValue);
 
     // Then subscribe to future changes
     yield* value.changes.pipe(
       Stream.runForEach((val) => Effect.scoped(render(val))),
-      Effect.forkIn(scope)
-    )
+      Effect.forkIn(scope),
+    );
 
-    return container as HTMLElement
-  })
+    return container as HTMLElement;
+  });
 
 /**
  * Render a list of items with efficient updates using keys.
@@ -267,119 +267,123 @@ export const match = <A>(
  * )
  * ```
  */
-export const each = <A>(
+export const each = <A, E = never>(
   items: Readable<readonly A[]>,
   keyFn: (item: A) => string,
-  render: (item: Readable<A>) => Element
-): Element =>
+  render: (item: Readable<A>) => Element<E>,
+): Element<E> =>
   Effect.gen(function* () {
-    const scope = yield* Effect.scope
-    const container = document.createElement("div")
-    container.style.display = "contents"
+    const scope = yield* Effect.scope;
+    const container = document.createElement("div");
+    container.style.display = "contents";
 
     const itemMap = new Map<
       string,
       {
-        element: HTMLElement
+        element: HTMLElement;
         readable: {
-          get: Effect.Effect<A>
-          changes: Stream.Stream<A>
-          values: Stream.Stream<A>
-          map: <B>(f: (a: A) => B) => Readable<B>
-          _update: (value: A) => void
-        }
+          get: Effect.Effect<A>;
+          changes: Stream.Stream<A>;
+          values: Stream.Stream<A>;
+          map: <B>(f: (a: A) => B) => Readable<B>;
+          _update: (value: A) => void;
+        };
       }
-    >()
+    >();
 
-    const updateList = (newItems: readonly A[]): Effect.Effect<void, never, Scope.Scope> =>
+    const updateList = (
+      newItems: readonly A[],
+    ): Effect.Effect<void, E, Scope.Scope> =>
       Effect.gen(function* () {
-        const newKeys = new Set(newItems.map(keyFn))
+        const newKeys = new Set(newItems.map(keyFn));
 
         for (const [key, entry] of itemMap) {
           if (!newKeys.has(key)) {
-            container.removeChild(entry.element)
-            itemMap.delete(key)
+            container.removeChild(entry.element);
+            itemMap.delete(key);
           }
         }
 
         for (let i = 0; i < newItems.length; i++) {
-          const item = newItems[i]
-          const key = keyFn(item)
-          const existing = itemMap.get(key)
+          const item = newItems[i];
+          const key = keyFn(item);
+          const existing = itemMap.get(key);
 
           if (existing) {
-            existing.readable._update(item)
+            existing.readable._update(item);
 
-            const expectedPosition = i
-            const currentPosition = Array.from(container.children).indexOf(existing.element)
+            const expectedPosition = i;
+            const currentPosition = Array.from(container.children).indexOf(
+              existing.element,
+            );
 
             if (currentPosition !== expectedPosition) {
               if (expectedPosition >= container.children.length) {
-                container.appendChild(existing.element)
+                container.appendChild(existing.element);
               } else {
-                container.insertBefore(existing.element, container.children[expectedPosition])
+                container.insertBefore(
+                  existing.element,
+                  container.children[expectedPosition],
+                );
               }
             }
           } else {
-            let currentValue = item
-            const subscribers = new Set<(value: A) => void>()
+            let currentValue = item;
+            const subscribers = new Set<(value: A) => void>();
 
             const itemReadable: {
-              get: Effect.Effect<A>
-              changes: Stream.Stream<A>
-              values: Stream.Stream<A>
-              map: <B>(f: (a: A) => B) => Readable<B>
-              _update: (value: A) => void
+              get: Effect.Effect<A>;
+              changes: Stream.Stream<A>;
+              values: Stream.Stream<A>;
+              map: <B>(f: (a: A) => B) => Readable<B>;
+              _update: (value: A) => void;
             } = {
               get: Effect.sync(() => currentValue),
               get changes(): Stream.Stream<A> {
                 return Stream.async<A>((emit) => {
-                  const handler = (value: A) => emit.single(value)
-                  subscribers.add(handler)
+                  const handler = (value: A) => emit.single(value);
+                  subscribers.add(handler);
                   return Effect.sync(() => {
-                    subscribers.delete(handler)
-                  })
-                })
+                    subscribers.delete(handler);
+                  });
+                });
               },
               get values(): Stream.Stream<A> {
-                return Stream.concat(
-                  Stream.make(currentValue),
-                  this.changes
-                )
+                return Stream.concat(Stream.make(currentValue), this.changes);
               },
-              map: function<B>(f: (a: A) => B): Readable<B> {
-                return mapReadable(this as Readable<A>, f)
+              map: function <B>(f: (a: A) => B): Readable<B> {
+                return mapReadable(this as Readable<A>, f);
               },
               _update: (value: A) => {
-                currentValue = value
+                currentValue = value;
                 for (const handler of subscribers) {
-                  handler(value)
+                  handler(value);
                 }
               },
-            }
+            };
 
-            const element = yield* render(itemReadable)
+            const element = yield* render(itemReadable);
 
             if (i >= container.children.length) {
-              container.appendChild(element)
+              container.appendChild(element);
             } else {
-              container.insertBefore(element, container.children[i])
+              container.insertBefore(element, container.children[i]);
             }
 
-            itemMap.set(key, { element, readable: itemReadable })
+            itemMap.set(key, { element, readable: itemReadable });
           }
         }
-      })
+      });
 
     // Render initial items synchronously
-    const initialItems = yield* items.get
-    yield* updateList(initialItems)
+    const initialItems = yield* items.get;
+    yield* updateList(initialItems);
 
     // Then subscribe to future changes
     yield* items.changes.pipe(
       Stream.runForEach((newItems) => Effect.scoped(updateList(newItems))),
-      Effect.forkIn(scope)
-    )
+      Effect.forkIn(scope),
+    );
 
-    return container as HTMLElement
-  })
+    return container as HTMLElement;
+  });

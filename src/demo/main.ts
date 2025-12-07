@@ -1,4 +1,4 @@
-import { Console, Effect } from "effect";
+import { Effect } from "effect";
 import {
   Signal,
   SignalRegistry,
@@ -29,16 +29,13 @@ const Counter = component("Counter", () =>
     const count = yield* Signal.make(0);
     const doubled = yield* Derived.sync([count], ([n]) => n * 2);
 
-    return yield* div({ class: "card" }, [
+    return yield* div({ className: "card" }, [
       p(count.map((c) => `Count: ${c}`)),
       p(doubled.map((d) => `Doubled: ${d}`)),
-      div({ class: "button-group" }, [
+      div({ className: "button-group" }, [
         button(
           {
-            onClick: () =>
-              count
-                .update((n) => n - 1)
-                .pipe(Effect.tap(() => Console.log("hello"))),
+            onClick: () => count.update((n) => n - 1),
           },
           ["-"],
         ),
@@ -84,9 +81,9 @@ const TodoApp = component("TodoApp", () =>
     const removeTodo = (id: number) =>
       todos.update((items) => items.filter((t) => t.id !== id));
 
-    return yield* div({ class: "todo-app" }, [
+    return yield* div({ className: "todo-app" }, [
       h1("Todo List"),
-      div({ class: "todo-input" }, [
+      div({ className: "todo-input" }, [
         input({
           type: "text",
           placeholder: "What needs to be done?",
@@ -100,7 +97,7 @@ const TodoApp = component("TodoApp", () =>
         }),
         button({ onClick: () => addTodo() }, ["Add"]),
       ]),
-      ul({ class: "todo-list" }, [
+      ul({ className: "todo-list" }, [
         each(
           todos,
           (todo) => String(todo.id),
@@ -109,7 +106,7 @@ const TodoApp = component("TodoApp", () =>
               const todo = yield* todoReadable.get;
               return yield* li(
                 {
-                  class: todoReadable.map((t) =>
+                  className: todoReadable.map((t) =>
                     t.completed ? "todo-item completed" : "todo-item",
                   ),
                 },
@@ -117,14 +114,14 @@ const TodoApp = component("TodoApp", () =>
                   span(
                     {
                       onClick: () => toggleTodo(todo.id),
-                      class: "todo-text",
+                      className: "todo-text",
                     },
                     [todoReadable.map((t) => t.text)],
                   ),
                   button(
                     {
                       onClick: () => removeTodo(todo.id),
-                      class: "delete-btn",
+                      className: "delete-btn",
                     },
                     ["×"],
                   ),
@@ -133,14 +130,14 @@ const TodoApp = component("TodoApp", () =>
             }),
         ),
       ]),
-      div({ class: "todo-stats" }, [
+      div({ className: "todo-stats" }, [
         span(stats.map((s) => `Total: ${s.total}`)),
         span(stats.map((s) => ` | Completed: ${s.completed}`)),
         span(stats.map((s) => ` | Remaining: ${s.remaining}`)),
       ]),
       when(
         stats.map((s) => s.remaining === 0 && s.total > 0),
-        () => p({ class: "success-message" }, ["All done! 🎉"]),
+        () => p({ className: "success-message" }, ["All done! 🎉"]),
         () => span(),
       ),
     ]);
@@ -149,7 +146,7 @@ const TodoApp = component("TodoApp", () =>
 
 const App = component("App", () =>
   Effect.gen(function* () {
-    return yield* div({ class: "app" }, [
+    return yield* div({ className: "app" }, [
       h1("Effect UI Demo"),
       p("A reactive UI framework built on Effect.ts primitives."),
       Counter({}),
