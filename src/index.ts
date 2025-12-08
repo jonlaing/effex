@@ -31,6 +31,7 @@ export {
   type EventAttributes,
   type HTMLAttributes,
   type ElementFactory,
+  $,
   div,
   span,
   p,

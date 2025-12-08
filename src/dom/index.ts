@@ -9,6 +9,7 @@ export type {
   ElementFactory,
 } from "./Element";
 export {
+  $,
   div,
   span,
   p,

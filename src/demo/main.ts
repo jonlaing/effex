@@ -1,17 +1,10 @@
 import { Effect } from "effect";
 import {
+  $,
   Signal,
   SignalRegistry,
   Derived,
   component,
-  div,
-  h1,
-  p,
-  button,
-  span,
-  input,
-  ul,
-  li,
   mount,
   when,
   each,
@@ -29,17 +22,17 @@ const Counter = component("Counter", () =>
     const count = yield* Signal.make(0);
     const doubled = yield* Derived.sync([count], ([n]) => n * 2);
 
-    return yield* div({ className: "card" }, [
-      p(count.map((c) => `Count: ${c}`)),
-      p(doubled.map((d) => `Doubled: ${d}`)),
-      div({ className: "button-group" }, [
-        button(
+    return yield* $.div({ className: "card" }, [
+      $.p(count.map((c) => `Count: ${c}`)),
+      $.p(doubled.map((d) => `Doubled: ${d}`)),
+      $.div({ className: "button-group" }, [
+        $.button(
           {
             onClick: () => count.update((n) => n - 1),
           },
           "-",
         ),
-        button({ onClick: () => count.update((n) => n + 1) }, "+"),
+        $.button({ onClick: () => count.update((n) => n + 1) }, "+"),
       ]),
     ]);
   }),
@@ -81,10 +74,10 @@ const TodoApp = component("TodoApp", () =>
     const removeTodo = (id: number) =>
       todos.update((items) => items.filter((t) => t.id !== id));
 
-    return yield* div({ className: "todo-app" }, [
-      h1("Todo List"),
-      div({ className: "todo-input" }, [
-        input({
+    return yield* $.div({ className: "todo-app" }, [
+      $.h1("Todo List"),
+      $.div({ className: "todo-input" }, [
+        $.input({
           type: "text",
           placeholder: "What needs to be done?",
           value: newTodoText,
@@ -95,50 +88,50 @@ const TodoApp = component("TodoApp", () =>
             }
           },
         }),
-        button({ onClick: () => addTodo() }, ["Add"]),
+        $.button({ onClick: () => addTodo() }, "Add"),
       ]),
-      ul({ className: "todo-list" }, [
+      $.ul({ className: "todo-list" }, [
         each(
           todos,
           (todo) => String(todo.id),
           (todoReadable) =>
             Effect.gen(function* () {
               const todo = yield* todoReadable.get;
-              return yield* li(
+              return yield* $.li(
                 {
                   className: todoReadable.map((t) =>
                     t.completed ? "todo-item completed" : "todo-item",
                   ),
                 },
                 [
-                  span(
+                  $.span(
                     {
                       onClick: () => toggleTodo(todo.id),
                       className: "todo-text",
                     },
-                    [todoReadable.map((t) => t.text)],
+                    todoReadable.map((t) => t.text),
                   ),
-                  button(
+                  $.button(
                     {
                       onClick: () => removeTodo(todo.id),
                       className: "delete-btn",
                     },
-                    ["×"],
+                    "×",
                   ),
                 ],
               );
             }),
         ),
       ]),
-      div({ className: "todo-stats" }, [
-        span(stats.map((s) => `Total: ${s.total}`)),
-        span(stats.map((s) => ` | Completed: ${s.completed}`)),
-        span(stats.map((s) => ` | Remaining: ${s.remaining}`)),
+      $.div({ className: "todo-stats" }, [
+        $.span(stats.map((s) => `Total: ${s.total}`)),
+        $.span(stats.map((s) => ` | Completed: ${s.completed}`)),
+        $.span(stats.map((s) => ` | Remaining: ${s.remaining}`)),
       ]),
       when(
         stats.map((s) => s.remaining === 0 && s.total > 0),
-        () => p({ className: "success-message" }, ["All done! 🎉"]),
-        () => span(),
+        () => $.p({ className: "success-message" }, "All done! 🎉"),
+        () => $.span(),
       ),
     ]);
   }),
@@ -146,9 +139,9 @@ const TodoApp = component("TodoApp", () =>
 
 const App = component("App", () =>
   Effect.gen(function* () {
-    return yield* div({ className: "app" }, [
-      h1("Effect UI Demo"),
-      p("A reactive UI framework built on Effect.ts primitives."),
+    return yield* $.div({ className: "app" }, [
+      $.h1("Effect UI Demo"),
+      $.p("A reactive UI framework built on Effect.ts primitives."),
       Counter({}),
       TodoApp({}),
     ]);

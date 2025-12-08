@@ -1,3 +1,7 @@
+**@jonlaing/effect-ui**
+
+***
+
 # Effect UI
 
 A reactive UI framework built on [Effect](https://effect.website/). Effect UI provides a declarative way to build web interfaces with fine-grained reactivity, automatic cleanup, and full type safety.
@@ -206,7 +210,7 @@ The function-based API is already quite clean for UI structure, and deeply neste
 
 ## API Documentation
 
-See the [docs](./docs) folder for full API documentation.
+See the [docs](_media/docs) folder for full API documentation.
 
 ## License
 

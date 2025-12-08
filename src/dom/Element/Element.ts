@@ -148,3 +148,57 @@ export const tbody = makeElementFactory("tbody");
 export const tr = makeElementFactory("tr");
 export const th = makeElementFactory("th");
 export const td = makeElementFactory("td");
+
+/**
+ * Namespace containing all HTML element factories.
+ * Provides a convenient way to access elements without individual imports.
+ *
+ * @example
+ * ```ts
+ * import { $ } from "@jonlaing/effect-ui"
+ *
+ * const MyComponent = Effect.gen(function* () {
+ *   return yield* $.div({ className: "card" }, [
+ *     $.h1("Title"),
+ *     $.p("Content"),
+ *     $.button({ onClick: handleClick }, "Submit"),
+ *   ])
+ * })
+ * ```
+ */
+export const $ = {
+  div,
+  span,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  button,
+  input,
+  form,
+  label,
+  ul,
+  ol,
+  li,
+  a,
+  img,
+  nav,
+  header,
+  footer,
+  main,
+  section,
+  article,
+  aside,
+  textarea,
+  select,
+  option,
+  table,
+  thead,
+  tbody,
+  tr,
+  th,
+  td,
+};

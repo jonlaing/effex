@@ -5,7 +5,7 @@ A reactive UI framework built on Effect.ts primitives. Uses signals for state, d
 ## Installation
 
 ```bash
-npm install effect-ui effect
+npm install @jonlaing/effect-ui effect
 ```
 
 ## Core Concepts
@@ -29,12 +29,17 @@ const user = yield* Derived.async([userId], ([id]) => fetchUser(id))
 ```
 
 ### Elements - DOM as Effects
+
+Use the `$` namespace for all HTML elements:
+
 ```ts
+import { $ } from "@jonlaing/effect-ui"
+
 // Elements are Effect<HTMLElement, E, Scope>
-div({ className: "container" }, [
-  h1(["Hello"]),
-  p([count]),  // Reactive - updates when count changes
-  button({ onClick: () => count.update(n => n + 1) }, ["+"]),
+$.div({ className: "container" }, [
+  $.h1("Hello"),
+  $.p(count),  // Reactive - updates when count changes
+  $.button({ onClick: () => count.update(n => n + 1) }, "+"),
 ])
 ```
 
@@ -43,10 +48,10 @@ div({ className: "container" }, [
 const Counter = component("Counter", () =>
   Effect.gen(function* () {
     const count = yield* Signal.make(0)
-    return yield* div([
-      button({ onClick: () => count.update(n => n - 1) }, ["-"]),
-      span([count]),
-      button({ onClick: () => count.update(n => n + 1) }, ["+"]),
+    return yield* $.div([
+      $.button({ onClick: () => count.update(n => n - 1) }, "-"),
+      $.span(count),
+      $.button({ onClick: () => count.update(n => n + 1) }, "+"),
     ])
   })
 )
@@ -78,13 +83,13 @@ each(todos, todo => todo.id, (todoReadable) =>
 // Elements can have error channels: Element<E>
 const riskyComponent: Element<FetchError> = Effect.gen(function* () {
   const data = yield* fetchData()  // may fail
-  return yield* div([data.message])
+  return yield* $.div(data.message)
 })
 
 // Handle errors before mounting
 const safeComponent = ErrorBoundary(
   () => riskyComponent,
-  (error) => div(["Error: ", String(error)])
+  (error) => $.div(["Error: ", String(error)])
 )
 
 // mount() requires Element<never> - all errors must be handled
@@ -117,12 +122,23 @@ Effect.runPromise(
 
 ## Element Factories
 
-All HTML elements are available: `div`, `span`, `p`, `h1`-`h6`, `button`, `input`, `form`, `label`, `ul`, `ol`, `li`, `a`, `img`, `nav`, `header`, `footer`, `main`, `section`, `article`, `aside`, `textarea`, `select`, `option`, `table`, `thead`, `tbody`, `tr`, `th`, `td`
+The `$` namespace contains all HTML elements:
+
+```ts
+import { $ } from "@jonlaing/effect-ui"
+
+$.div, $.span, $.p, $.h1-$.h6, $.button, $.input, $.form, $.label,
+$.ul, $.ol, $.li, $.a, $.img, $.nav, $.header, $.footer, $.main,
+$.section, $.article, $.aside, $.textarea, $.select, $.option,
+$.table, $.thead, $.tbody, $.tr, $.th, $.td
+```
+
+Individual imports also available: `import { div, span } from "@jonlaing/effect-ui"`
 
 ## Attributes
 
 ```ts
-div({
+$.div({
   className: "static-class",                    // or Readable<string>
   style: { color: "red", fontSize: "16px" },   // or Readable<Record>
   id: "my-id",
@@ -151,10 +167,10 @@ const UserProfile = component("UserProfile", (props: { userId: string }) =>
       ([id]) => fetchUser(id)
     )
 
-    return yield* div([
+    return yield* $.div([
       when(user.map(s => s.isLoading),
-        () => span(["Loading..."]),
-        () => span([user.map(s => s.value.pipe(Option.map(u => u.name), Option.getOrElse(() => "")))])
+        () => $.span("Loading..."),
+        () => $.span(user.map(s => s.value.pipe(Option.map(u => u.name), Option.getOrElse(() => ""))))
       )
     ])
   })
@@ -176,18 +192,18 @@ const LoginForm = component("LoginForm", () =>
         yield* login(emailVal, passVal)
       })
 
-    return yield* form({ onSubmit: handleSubmit }, [
-      input({
+    return yield* $.form({ onSubmit: handleSubmit }, [
+      $.input({
         type: "email",
         value: email,
         onInput: (e) => email.set((e.target as HTMLInputElement).value),
       }),
-      input({
+      $.input({
         type: "password",
         value: password,
         onInput: (e) => password.set((e.target as HTMLInputElement).value),
       }),
-      button({ type: "submit" }, ["Login"]),
+      $.button({ type: "submit" }, "Login"),
     ])
   })
 )

@@ -9,6 +9,7 @@ export type {
 } from "./types";
 
 export {
+  $,
   a,
   article,
   aside,

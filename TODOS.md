@@ -2,20 +2,15 @@
 
 ## High Priority
 
-- [ ] **JSX Support** - Add JSX/TSX support for component authoring
-  - Configure JSX transform
-  - Ensure `className` and other props work correctly
-  - Add JSX type definitions
-
-- [ ] **Unit Tests for Everything** - Comprehensive test coverage
-  - [ ] Signal.ts (exists)
-  - [ ] Derived/ (exists)
-  - [ ] Readable.ts
-  - [ ] Reaction.ts
-  - [ ] Element/ (element creation, attribute handling, event handlers)
-  - [ ] Control.ts (when, match, each, ErrorBoundary, Suspense, SuspenseWithBoundary)
-  - [ ] Component.ts
-  - [ ] Mount.ts
+- [x] **Unit Tests for Everything** - Comprehensive test coverage
+  - [x] Signal.ts
+  - [x] Derived/
+  - [x] Readable.ts
+  - [x] Reaction.ts
+  - [x] Element/
+  - [x] Control.ts (when, match, each, ErrorBoundary, Suspense)
+  - [x] Component.ts
+  - [x] Mount.ts
   - [ ] Ref.ts
   - [ ] Template.ts
 
@@ -47,6 +42,28 @@
 - [ ] **Documentation site** - Full documentation with examples (TypeDoc is set up)
 
 ## Design Decisions
+
+### JSX (Decided Against)
+
+**Decision:** No JSX support. Use function-based DSL only.
+
+**Reasons:**
+1. **Error type preservation**: `Element<E>` carries error types through the component tree. TypeScript's `JSX.Element` is not generic, so JSX would erase error information to `Element<unknown>`.
+
+2. **No build complexity**: Function calls work with any TypeScript setup. JSX would require custom jsx-runtime configuration, tsconfig changes, and bundler setup.
+
+3. **Consistent syntax**: With JSX, we'd need mixed syntax anyway - `<div>` for intrinsics but `{Component({})}` for components that can fail. Function calls are uniform.
+
+4. **Explicit Effects**: Elements are Effects that must be yielded. The function syntax makes this clear; JSX would hide it.
+
+The function-based DSL is clean and idiomatic:
+```ts
+div({ className: "card" }, [
+  h1(title),
+  p(description),
+  Button({ onClick: handleClick }, "Submit"),
+])
+```
 
 ### Router
 

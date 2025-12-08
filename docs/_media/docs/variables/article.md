@@ -1,0 +1,11 @@
+[**@jonlaing/effect-ui**](../README.md)
+
+***
+
+[@jonlaing/effect-ui](../globals.md) / article
+
+# Variable: article
+
+> `const` **article**: [`ElementFactory`](../type-aliases/ElementFactory.md)\<`"article"`\>
+
+Defined in: [src/dom/Element/Element.ts:140](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/Element.ts#L140)

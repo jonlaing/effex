@@ -221,6 +221,30 @@ Configured in `tsconfig.json` and `vite.config.ts`.
 4. **Synchronous initial render**: First render is sync, updates are streamed.
 5. **Minimal API surface**: Small set of primitives that compose well.
 
+## Why No JSX?
+
+We intentionally use function calls (`div()`, `span()`, etc.) instead of JSX syntax. This was evaluated and rejected for several reasons:
+
+1. **Error type erasure**: TypeScript's `JSX.Element` is a single concrete type, not generic. Our `Element<E>` carries error information through the type system. JSX would force us to either:
+   - Lose error types (`Element<unknown>`)
+   - Use awkward workarounds (function calls for components, JSX only for intrinsics)
+
+2. **Build complexity**: JSX requires configuring a custom jsx-runtime, tsconfig `jsx` and `jsxImportSource` options, and ensuring bundlers handle the transform correctly.
+
+3. **Mixed syntax**: Even with JSX, components that can fail would need to be called as `{Component({})}` to preserve error types, resulting in inconsistent syntax.
+
+4. **Explicit is better**: Elements are Effects that must be yielded. The function call syntax makes this explicit, while JSX would hide the Effect nature of element creation.
+
+The function-based DSL is clean enough for UI work:
+
+```ts
+div({ className: "card" }, [
+  h1(title),
+  p(description),
+  Button({ onClick: handleClick }, "Submit"),
+])
+```
+
 ## Future Modules
 
 Planned additions (see TODOS.md for design decisions):
