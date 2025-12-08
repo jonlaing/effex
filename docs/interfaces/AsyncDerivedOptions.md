@@ -1,12 +1,12 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / AsyncDerivedOptions
+[@jonlaing/effect-ui](../globals.md) / AsyncDerivedOptions
 
 # Interface: AsyncDerivedOptions\<A\>
 
-Defined in: src/Derived.ts:109
+Defined in: [src/core/Derived/types.ts:39](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Derived/types.ts#L39)
 
 Options for creating an asynchronous Derived value.
 
@@ -24,7 +24,7 @@ The type of the derived value
 
 > `readonly` `optional` **debounceMs**: `number`
 
-Defined in: src/Derived.ts:113
+Defined in: [src/core/Derived/types.ts:43](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Derived/types.ts#L43)
 
 Debounce delay in milliseconds (only used with "debounce" strategy)
 
@@ -34,7 +34,7 @@ Debounce delay in milliseconds (only used with "debounce" strategy)
 
 > `readonly` `optional` **equals**: (`a`, `b`) => `boolean`
 
-Defined in: src/Derived.ts:115
+Defined in: [src/core/Derived/types.ts:45](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Derived/types.ts#L45)
 
 Custom equality function to determine if the value has changed
 
@@ -58,6 +58,6 @@ Custom equality function to determine if the value has changed
 
 > `readonly` `optional` **strategy**: [`AsyncStrategy`](../type-aliases/AsyncStrategy.md)
 
-Defined in: src/Derived.ts:111
+Defined in: [src/core/Derived/types.ts:41](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Derived/types.ts#L41)
 
 Strategy for handling concurrent computations (default: "abort")

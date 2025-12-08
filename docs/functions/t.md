@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / t
+[@jonlaing/effect-ui](../globals.md) / t
 
 # Function: t()
 
 > **t**(`strings`, ...`values`): [`Readable`](../interfaces/Readable.md)\<`string`\>
 
-Defined in: src/Template.ts:28
+Defined in: [src/dom/Template.ts:28](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Template.ts#L28)
 
 Tagged template literal for creating reactive strings.
 Interpolated Readable values will automatically update the string when they change.

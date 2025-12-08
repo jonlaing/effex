@@ -1,11 +1,11 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / footer
+[@jonlaing/effect-ui](../globals.md) / footer
 
 # Variable: footer
 
-> `const` **footer**: `ElementFactory`\<`"footer"`\>
+> `const` **footer**: [`ElementFactory`](../type-aliases/ElementFactory.md)\<`"footer"`\>
 
-Defined in: src/Element/Element.ts:137
+Defined in: [src/dom/Element/Element.ts:137](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/Element.ts#L137)

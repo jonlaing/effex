@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / each
+[@jonlaing/effect-ui](../globals.md) / each
 
 # Function: each()
 
-> **each**\<`A`\>(`items`, `keyFn`, `render`): [`Element`](../type-aliases/Element.md)
+> **each**\<`A`, `E`\>(`items`, `keyFn`, `render`): [`Element`](../type-aliases/Element.md)\<`E`\>
 
-Defined in: src/Control.ts:270
+Defined in: [src/dom/Control.ts:272](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Control.ts#L272)
 
 Render a list of items with efficient updates using keys.
 
@@ -17,6 +17,10 @@ Render a list of items with efficient updates using keys.
 ### A
 
 `A`
+
+### E
+
+`E` = `never`
 
 ## Parameters
 
@@ -34,13 +38,13 @@ Function to extract a unique key from each item
 
 ### render
 
-(`item`) => [`Element`](../type-aliases/Element.md)
+(`item`) => [`Element`](../type-aliases/Element.md)\<`E`\>
 
 Function to render each item (receives a Readable for the item)
 
 ## Returns
 
-[`Element`](../type-aliases/Element.md)
+[`Element`](../type-aliases/Element.md)\<`E`\>
 
 ## Example
 

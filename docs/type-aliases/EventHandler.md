@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / EventHandler
+[@jonlaing/effect-ui](../globals.md) / EventHandler
 
 # Type Alias: EventHandler()\<E\>
 
 > **EventHandler**\<`E`\> = (`event`) => `Effect.Effect`\<`void`, `never`\> \| `void`
 
-Defined in: src/Element/types.ts:58
+Defined in: [src/dom/Element/types.ts:66](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/types.ts#L66)
 
 Handler for DOM events that can optionally return an Effect.
 

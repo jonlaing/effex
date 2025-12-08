@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / RefType
+[@jonlaing/effect-ui](../globals.md) / RefType
 
 # Type Alias: RefType
 
 > **RefType** = `object`
 
-Defined in: src/Ref.ts:7
+Defined in: [src/dom/Ref.ts:7](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Ref.ts#L7)
 
 Ref module namespace for creating element references.
 
@@ -18,7 +18,7 @@ Ref module namespace for creating element references.
 
 > **make**: \<`A`\>() => `Effect`\<`Ref`\<`A`\>, `never`, `Scope`\>
 
-Defined in: src/Ref.ts:52
+Defined in: [src/dom/Ref.ts:52](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Ref.ts#L52)
 
 Create a Ref to hold a reference to a DOM element.
 

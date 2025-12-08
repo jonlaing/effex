@@ -1,11 +1,11 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / ol
+[@jonlaing/effect-ui](../globals.md) / ol
 
 # Variable: ol
 
-> `const` **ol**: `ElementFactory`\<`"ol"`\>
+> `const` **ol**: [`ElementFactory`](../type-aliases/ElementFactory.md)\<`"ol"`\>
 
-Defined in: src/Element/Element.ts:131
+Defined in: [src/dom/Element/Element.ts:131](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/Element.ts#L131)

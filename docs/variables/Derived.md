@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / Derived
+[@jonlaing/effect-ui](../globals.md) / Derived
 
 # Variable: Derived
 
 > `const` **Derived**: `object`
 
-Defined in: src/Derived.ts:247
+Defined in: [src/core/Derived/Derived.ts:155](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Derived/Derived.ts#L155)
 
 Derived module namespace for creating computed reactive values.
 
@@ -58,6 +58,19 @@ Optional configuration including concurrency strategy
 
 `Effect`\<[`AsyncDerived`](../interfaces/AsyncDerived.md)\<`A`, `E`\>, `never`, `Scope`\>
 
+#### Example
+
+```ts
+const userId = yield* Signal.make(1)
+const userData = yield* Derived.async([userId], ([id]) =>
+  Effect.gen(function* () {
+    const response = yield* fetchUser(id)
+    return response.data
+  })
+)
+// userData.get returns AsyncState with isLoading, value, and error
+```
+
 ### sync()
 
 > **sync**: \<`T`, `B`\>(`deps`, `compute`, `options?`) => `Effect`\<[`Readable`](../interfaces/Readable.md)\<`B`\>, `never`, `Scope`\>
@@ -97,3 +110,11 @@ Optional configuration
 #### Returns
 
 `Effect`\<[`Readable`](../interfaces/Readable.md)\<`B`\>, `never`, `Scope`\>
+
+#### Example
+
+```ts
+const count = yield* Signal.make(5)
+const doubled = yield* Derived.sync([count], ([n]) => n * 2)
+// doubled.get returns 10
+```

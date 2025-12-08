@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / mapReadable
+[@jonlaing/effect-ui](../globals.md) / mapReadable
 
 # Function: mapReadable()
 
 > **mapReadable**\<`A`, `B`\>(`self`, `f`): [`Readable`](../interfaces/Readable.md)\<`B`\>
 
-Defined in: src/Readable.ts:48
+Defined in: [src/core/Readable.ts:46](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Readable.ts#L46)
 
 Transform a Readable's value using a mapping function.
 

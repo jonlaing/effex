@@ -1,12 +1,12 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / SignalRegistry
+[@jonlaing/effect-ui](../globals.md) / SignalRegistry
 
 # Class: SignalRegistry
 
-Defined in: src/Signal.ts:78
+Defined in: [src/core/Signal.ts:78](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Signal.ts#L78)
 
 Context service for creating and managing Signals within a scope.
 
@@ -294,7 +294,7 @@ Defined in: node\_modules/.pnpm/effect@3.19.9/node\_modules/effect/dist/dts/Cont
 
 > `static` **Live**: `Layer`\<`SignalRegistry`, `never`, `never`\>
 
-Defined in: src/Signal.ts:90
+Defined in: [src/core/Signal.ts:90](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Signal.ts#L90)
 
 ***
 

@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / makeReadable
+[@jonlaing/effect-ui](../globals.md) / makeReadable
 
 # Function: makeReadable()
 
 > **makeReadable**\<`A`\>(`get`, `getChanges`): [`Readable`](../interfaces/Readable.md)\<`A`\>
 
-Defined in: src/Readable.ts:23
+Defined in: [src/core/Readable.ts:23](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Readable.ts#L23)
 
 Create a Readable from a getter effect and a changes stream factory.
 

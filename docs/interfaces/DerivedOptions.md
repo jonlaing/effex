@@ -1,12 +1,12 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / DerivedOptions
+[@jonlaing/effect-ui](../globals.md) / DerivedOptions
 
 # Interface: DerivedOptions\<A\>
 
-Defined in: src/Derived.ts:9
+Defined in: [src/core/Derived/types.ts:8](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Derived/types.ts#L8)
 
 Options for creating a synchronous Derived value.
 
@@ -24,7 +24,7 @@ The type of the derived value
 
 > `readonly` `optional` **equals**: (`a`, `b`) => `boolean`
 
-Defined in: src/Derived.ts:11
+Defined in: [src/core/Derived/types.ts:10](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/core/Derived/types.ts#L10)
 
 Custom equality function to determine if the value has changed
 

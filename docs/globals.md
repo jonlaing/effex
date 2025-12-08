@@ -1,8 +1,8 @@
-[**effect-ui**](README.md)
+[**@jonlaing/effect-ui**](README.md)
 
 ***
 
-# effect-ui
+# @jonlaing/effect-ui
 
 ## Classes
 
@@ -28,12 +28,15 @@
 - [AsyncStrategy](type-aliases/AsyncStrategy.md)
 - [Child](type-aliases/Child.md)
 - [Element](type-aliases/Element.md)
+- [ElementFactory](type-aliases/ElementFactory.md)
 - [EventHandler](type-aliases/EventHandler.md)
+- [HTMLAttributes](type-aliases/HTMLAttributes.md)
 - [RefType](type-aliases/RefType.md)
 - [SignalType](type-aliases/SignalType.md)
 
 ## Variables
 
+- [$](variables/$.md)
 - [a](variables/a.md)
 - [article](variables/article.md)
 - [aside](variables/aside.md)

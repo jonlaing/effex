@@ -1,14 +1,14 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / ErrorBoundary
+[@jonlaing/effect-ui](../globals.md) / ErrorBoundary
 
 # Function: ErrorBoundary()
 
-> **ErrorBoundary**\<`E`\>(`tryRender`, `catchRender`): [`Element`](../type-aliases/Element.md)
+> **ErrorBoundary**\<`E`, `E2`\>(`tryRender`, `catchRender`): [`Element`](../type-aliases/Element.md)\<`E2`\>
 
-Defined in: src/Control.ts:19
+Defined in: [src/dom/Control.ts:19](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Control.ts#L19)
 
 Catches errors from a render function and displays a fallback element.
 
@@ -17,6 +17,10 @@ Catches errors from a render function and displays a fallback element.
 ### E
 
 `E`
+
+### E2
+
+`E2` = `never`
 
 ## Parameters
 
@@ -28,13 +32,13 @@ Function that may fail with an error
 
 ### catchRender
 
-(`error`) => [`Element`](../type-aliases/Element.md)
+(`error`) => [`Element`](../type-aliases/Element.md)\<`E2`\>
 
 Function to render the error fallback
 
 ## Returns
 
-[`Element`](../type-aliases/Element.md)
+[`Element`](../type-aliases/Element.md)\<`E2`\>
 
 ## Example
 

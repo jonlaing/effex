@@ -1,11 +1,11 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / button
+[@jonlaing/effect-ui](../globals.md) / button
 
 # Variable: button
 
-> `const` **button**: `ElementFactory`\<`"button"`\>
+> `const` **button**: [`ElementFactory`](../type-aliases/ElementFactory.md)\<`"button"`\>
 
-Defined in: src/Element/Element.ts:126
+Defined in: [src/dom/Element/Element.ts:126](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/Element.ts#L126)

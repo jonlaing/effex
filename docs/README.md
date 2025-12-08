@@ -1,4 +1,4 @@
-**effect-ui**
+**@jonlaing/effect-ui**
 
 ***
 
@@ -9,24 +9,26 @@ A reactive UI framework built on [Effect](https://effect.website/). Effect UI pr
 ## Installation
 
 ```bash
-pnpm add effect-ui effect
+pnpm add @jonlaing/effect-ui effect
 ```
 
 ## Basic Usage
 
 ```ts
 import { Effect } from "effect"
-import { Signal, div, button, mount } from "effect-ui"
+import { $, Signal, SignalRegistry, mount } from "@jonlaing/effect-ui"
 
-const Counter = Effect.gen(function* () {
-  const count = yield* Signal.make(0)
+const Counter = component("Counter", (_props: Record<string, any>) =>
+    Effect.gen(function* () {
+      const count = yield* Signal.make(0)
 
-  return div([
-    button({ onClick: () => count.update((n) => n - 1) }, ["-"]),
-    count,
-    button({ onClick: () => count.update((n) => n + 1) }, ["+"]),
-  ])
-})
+      return yield* $.div([
+        $.button({ onClick: () => count.update((n) => n - 1) }, "-"),
+        $.span(count),
+        $.button({ onClick: () => count.update((n) => n + 1) }, "+"),
+      ])
+    })
+)
 
 Effect.runPromise(
   Effect.scoped(
@@ -35,8 +37,14 @@ Effect.runPromise(
       yield* mount(app, document.getElementById("root")!)
       yield* Effect.never
     })
-  )
+  ).pipe(Effect.provide(SignalRegistry.Live))
 )
+```
+
+The `$` namespace contains all HTML element factories (`$.div`, `$.span`, `$.button`, etc.). You can also import elements individually if you prefer:
+
+```ts
+import { div, span, button } from "@jonlaing/effect-ui"
 ```
 
 ## Core Concepts
@@ -70,15 +78,84 @@ const fullName = yield* Derived.sync(
 )
 ```
 
-### Elements
+### Custom Equality
 
-Create DOM elements with reactive attributes and children:
+By default, Signal and Derived use strict equality (`===`) to determine if a value has changed. You can provide a custom `equals` function to control when updates propagate:
 
 ```ts
-div({ class: "container", style: { color: "red" } }, [
-  h1(["Hello, ", name]),
-  p([count, " items"]),
+interface User {
+  id: number
+  name: string
+  lastSeen: Date
+}
+
+// Only trigger updates when the user ID changes, ignoring lastSeen timestamps
+const currentUser = yield* Signal.make<User>(
+  { id: 1, name: "Alice", lastSeen: new Date() },
+  { equals: (a, b) => a.id === b.id }
+)
+
+// For derived values too
+const userDisplay = yield* Derived.sync(
+  [currentUser],
+  ([user]) => ({ id: user.id, displayName: user.name.toUpperCase() }),
+  { equals: (a, b) => a.id === b.id && a.displayName === b.displayName }
+)
+```
+
+**How this differs from React:**
+
+React's `useMemo` and `useEffect` use a dependency array with shallow comparison, and there's no built-in way to customize equality. You'd need external libraries or manual `useRef` tracking. In Effect UI, equality is a first-class option on every reactive primitive, giving you fine-grained control over when the UI re-renders.
+
+This is particularly useful for:
+- **Objects with irrelevant fields** (timestamps, metadata)
+- **Expensive computations** that shouldn't re-run on semantically equal inputs
+- **Normalized data** where you want to compare by ID rather than reference
+
+### Template Strings
+
+The `t` tagged template literal creates reactive strings that update when any interpolated Signal changes:
+
+```ts
+import { t } from "@jonlaing/effect-ui"
+
+const name = yield* Signal.make("World")
+const count = yield* Signal.make(0)
+
+// Creates a Readable<string> that updates automatically
+const message = t`Hello, ${name}! Count: ${count}`
+
+// Use directly as element children
+yield* $.div(message)
+yield* $.p(t`You have ${count} items`)
+```
+
+This is cleaner than array concatenation for text with multiple reactive values:
+
+```ts
+// With t`` template
+$.p(t`${count} items remaining (${completed} done)`)
+
+// vs array concatenation
+$.p([count, " items remaining (", completed, " done)"])
+```
+
+### Elements
+
+Create DOM elements with reactive attributes and children. Elements are Effects that must be yielded:
+
+```ts
+yield* $.div({ className: "container", style: { color: "red" } }, [
+  $.h1(["Hello, ", name]),
+  $.p(t`${count} items`),
 ])
+```
+
+Single children don't need to be wrapped in arrays:
+
+```ts
+yield* $.h1("Hello World")
+yield* $.button({ onClick: handleClick }, "Click me")
 ```
 
 ### Control Flow
@@ -88,20 +165,52 @@ Conditionally render elements:
 ```ts
 when(
   isLoggedIn,
-  () => div(["Welcome back!"]),
-  () => div(["Please log in"])
+  () => $.div("Welcome back!"),
+  () => $.div("Please log in")
 )
 
 each(
   todos,
   (todo) => todo.id,
-  (todo) => li([todo.map((t) => t.text)])
+  (todo) => $.li(todo.map((t) => t.text))
 )
 ```
 
+## Why No JSX?
+
+Effect UI uses function calls instead of JSX. This is a deliberate design choice:
+
+```ts
+// Effect UI
+$.div({ className: "container" }, [
+  $.h1("Hello"),
+  $.p(["Count: ", count]),
+  Counter({}),
+])
+
+// vs JSX
+<div className="container">
+  <h1>Hello</h1>
+  <p>Count: {count}</p>
+  <Counter />
+</div>
+```
+
+**Why we chose this approach:**
+
+1. **Error type preservation**: Elements have type `Element<E>` where `E` is the error channel. JSX would erase this to `JSX.Element`, losing type-safe error propagation through component trees.
+
+2. **No build configuration**: Works out of the box with any TypeScript setup. No jsx runtime, tsconfig tweaks, or bundler plugins needed.
+
+3. **Explicit Effects**: Every element is an Effect that must be yielded. JSX would obscure this, making it unclear what's happening under the hood.
+
+4. **Consistent syntax**: Components and elements use the same call syntax. No mental switching between `<Component />` and `{Component({})}`.
+
+The function-based API is already quite clean for UI structure, and deeply nested markup is often a sign to extract components anyway.
+
 ## API Documentation
 
-See the [docs](./docs) folder for full API documentation.
+See the [docs](_media/docs) folder for full API documentation.
 
 ## License
 

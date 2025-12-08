@@ -1,12 +1,12 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / BaseAttributes
+[@jonlaing/effect-ui](../globals.md) / BaseAttributes
 
 # Interface: BaseAttributes
 
-Defined in: src/Element/types.ts:85
+Defined in: [src/dom/Element/types.ts:93](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/types.ts#L93)
 
 Base attributes available on all elements.
 
@@ -14,11 +14,11 @@ Base attributes available on all elements.
 
 ```ts
 // Static class
-div({ class: "container" }, [...])
+div({ className: "container" }, [...])
 
 // Reactive class
 const isActive = yield* Signal.make(false)
-div({ class: isActive.map(a => a ? "active" : "inactive") }, [...])
+div({ className: isActive.map(a => a ? "active" : "inactive") }, [...])
 
 // Static styles
 div({ style: { color: "red", "font-size": "16px" } }, [...])
@@ -30,11 +30,11 @@ div({ style: { width: width.map(w => `${w}px`) } }, [...])
 
 ## Properties
 
-### class?
+### className?
 
-> `readonly` `optional` **class**: `string` \| [`Readable`](Readable.md)\<`string`\>
+> `readonly` `optional` **className**: `string` \| [`Readable`](Readable.md)\<`string`\>
 
-Defined in: src/Element/types.ts:87
+Defined in: [src/dom/Element/types.ts:95](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/types.ts#L95)
 
 CSS class name(s)
 
@@ -44,7 +44,7 @@ CSS class name(s)
 
 > `readonly` `optional` **id**: `string`
 
-Defined in: src/Element/types.ts:93
+Defined in: [src/dom/Element/types.ts:101](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/types.ts#L101)
 
 Element ID
 
@@ -54,6 +54,6 @@ Element ID
 
 > `readonly` `optional` **style**: `Record`\<`string`, `StyleValue`\> \| [`Readable`](Readable.md)\<`Record`\<`string`, `string`\>\>
 
-Defined in: src/Element/types.ts:89
+Defined in: [src/dom/Element/types.ts:97](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/types.ts#L97)
 
 Inline styles as a record of property-value pairs

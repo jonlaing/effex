@@ -1,11 +1,11 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / select
+[@jonlaing/effect-ui](../globals.md) / select
 
 # Variable: select
 
-> `const` **select**: `ElementFactory`\<`"select"`\>
+> `const` **select**: [`ElementFactory`](../type-aliases/ElementFactory.md)\<`"select"`\>
 
-Defined in: src/Element/Element.ts:143
+Defined in: [src/dom/Element/Element.ts:143](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Element/Element.ts#L143)

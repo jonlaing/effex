@@ -1,12 +1,12 @@
-[**effect-ui**](../README.md)
+[**@jonlaing/effect-ui**](../README.md)
 
 ***
 
-[effect-ui](../globals.md) / Component
+[@jonlaing/effect-ui](../globals.md) / Component
 
-# Interface: Component()\<Name, Props\>
+# Interface: Component()\<Name, Props, E\>
 
-Defined in: src/Component.ts:8
+Defined in: [src/dom/Component.ts:9](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Component.ts#L9)
 
 A named component function that renders props to an Element.
 
@@ -24,9 +24,15 @@ The component's tag name for identification
 
 The props type accepted by the component
 
-> **Component**(`props`): [`Element`](../type-aliases/Element.md)
+### E
 
-Defined in: src/Component.ts:11
+`E` = `never`
+
+The error type that can be produced by the component
+
+> **Component**(`props`): [`Element`](../type-aliases/Element.md)\<`E`\>
+
+Defined in: [src/dom/Component.ts:12](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Component.ts#L12)
 
 A named component function that renders props to an Element.
 
@@ -38,7 +44,7 @@ A named component function that renders props to an Element.
 
 ## Returns
 
-[`Element`](../type-aliases/Element.md)
+[`Element`](../type-aliases/Element.md)\<`E`\>
 
 ## Properties
 
@@ -46,6 +52,6 @@ A named component function that renders props to an Element.
 
 > `readonly` **\_tag**: `Name`
 
-Defined in: src/Component.ts:10
+Defined in: [src/dom/Component.ts:11](https://github.com/jonlaing/effect-ui/blob/6787207a59cbb4387cd33d98f63150448eeca508/src/dom/Component.ts#L11)
 
 The component's identifying tag name
