@@ -1,4 +1,4 @@
-import { Effect } from "effect";
+import { Context, Effect, Layer, Schema } from "effect";
 import {
   $,
   Signal,
@@ -8,6 +8,13 @@ import {
   mount,
   when,
   each,
+  match,
+  Route,
+  Router,
+  Link,
+  makeRouterLayer,
+  t,
+  type RouterInfer,
 } from "../index.js";
 import "./style.css";
 
@@ -22,10 +29,10 @@ const Counter = component("Counter", () =>
     const count = yield* Signal.make(0);
     const doubled = yield* Derived.sync([count], ([n]) => n * 2);
 
-    return yield* $.div({ className: "card" }, [
+    return yield* $.div({ class: "card" }, [
       $.p(count.map((c) => `Count: ${c}`)),
       $.p(doubled.map((d) => `Doubled: ${d}`)),
-      $.div({ className: "button-group" }, [
+      $.div({ class: "button-group" }, [
         $.button(
           {
             onClick: () => count.update((n) => n - 1),
@@ -74,9 +81,9 @@ const TodoApp = component("TodoApp", () =>
     const removeTodo = (id: number) =>
       todos.update((items) => items.filter((t) => t.id !== id));
 
-    return yield* $.div({ className: "todo-app" }, [
+    return yield* $.div({ class: "todo-app" }, [
       $.h1("Todo List"),
-      $.div({ className: "todo-input" }, [
+      $.div({ class: "todo-input" }, [
         $.input({
           type: "text",
           placeholder: "What needs to be done?",
@@ -90,7 +97,7 @@ const TodoApp = component("TodoApp", () =>
         }),
         $.button({ onClick: () => addTodo() }, "Add"),
       ]),
-      $.ul({ className: "todo-list" }, [
+      $.ul({ class: "todo-list" }, [
         each(
           todos,
           (todo) => String(todo.id),
@@ -99,7 +106,7 @@ const TodoApp = component("TodoApp", () =>
               const todo = yield* todoReadable.get;
               return yield* $.li(
                 {
-                  className: todoReadable.map((t) =>
+                  class: todoReadable.map((t) =>
                     t.completed ? "todo-item completed" : "todo-item",
                   ),
                 },
@@ -107,14 +114,14 @@ const TodoApp = component("TodoApp", () =>
                   $.span(
                     {
                       onClick: () => toggleTodo(todo.id),
-                      className: "todo-text",
+                      class: "todo-text",
                     },
                     todoReadable.map((t) => t.text),
                   ),
                   $.button(
                     {
                       onClick: () => removeTodo(todo.id),
-                      className: "delete-btn",
+                      class: "delete-btn",
                     },
                     "×",
                   ),
@@ -123,27 +130,138 @@ const TodoApp = component("TodoApp", () =>
             }),
         ),
       ]),
-      $.div({ className: "todo-stats" }, [
+      $.div({ class: "todo-stats" }, [
         $.span(stats.map((s) => `Total: ${s.total}`)),
         $.span(stats.map((s) => ` | Completed: ${s.completed}`)),
         $.span(stats.map((s) => ` | Remaining: ${s.remaining}`)),
       ]),
       when(
         stats.map((s) => s.remaining === 0 && s.total > 0),
-        () => $.p({ className: "success-message" }, "All done! 🎉"),
+        () => $.p({ class: "success-message" }, "All done! 🎉"),
         () => $.span(),
       ),
     ]);
   }),
 );
 
+// Define routes
+const HomeRoute = Route.make("/");
+const CounterRoute = Route.make("/counter");
+const TodoRoute = Route.make("/todos");
+const UserRoute = Route.make("/users/:id", {
+  params: Schema.Struct({ id: Schema.String }),
+});
+
+// Routes record for type inference
+const routes = {
+  home: HomeRoute,
+  counter: CounterRoute,
+  todos: TodoRoute,
+  user: UserRoute,
+};
+
+// Infer the typed router type from routes, then create a typed context
+type AppRouter = RouterInfer<typeof routes>;
+class AppRouterContext extends Context.Tag("AppRouterContext")<
+  AppRouterContext,
+  AppRouter
+>() {}
+
+// Home page component - simple components can return elements directly
+const HomePage = component("HomePage", () =>
+  $.div({ class: "page" }, [
+    $.h2("Welcome to Effect UI"),
+    $.p("A reactive UI framework built on Effect.ts primitives."),
+    $.ul([
+      $.li("Fine-grained reactivity with Signals and Derived values"),
+      $.li("Automatic resource cleanup via Effect scopes"),
+      $.li("Full type safety with TypeScript"),
+      $.li("Router with typed params via Effect Schema"),
+    ]),
+  ]),
+);
+
+// User profile page component - props work the same way
+const UserPage = component("UserPage", (props: { userId: string }) =>
+  $.div({ class: "page" }, [
+    $.h2(t`User Profile: ${props.userId}`),
+    $.p(t`Viewing details for user #${props.userId}`),
+    $.div({ class: "card" }, [
+      $.p(t`User ID: ${props.userId}`),
+      $.p("This demonstrates typed route params via Effect Schema."),
+    ]),
+  ]),
+);
+
+// Not found page
+const NotFoundPage = component("NotFoundPage", () =>
+  $.div({ class: "page not-found" }, [
+    $.h2("404 - Not Found"),
+    $.p("The page you're looking for doesn't exist."),
+  ]),
+);
+
+// App component - gets the fully typed router from AppRouterContext
 const App = component("App", () =>
   Effect.gen(function* () {
-    return yield* $.div({ className: "app" }, [
+    // Get the typed router from context - has full typing for currentRoute and params
+    const router = yield* AppRouterContext;
+
+    return yield* $.div({ class: "app" }, [
       $.h1("Effect UI Demo"),
-      $.p("A reactive UI framework built on Effect.ts primitives."),
-      Counter({}),
-      TodoApp({}),
+
+      // Navigation using Link component (uses RouterContext internally for push/replace)
+      $.nav({ class: "nav" }, [
+        Link({ href: "/", class: "nav-link" }, "Home"),
+        Link({ href: "/counter", class: "nav-link" }, "Counter"),
+        Link({ href: "/todos", class: "nav-link" }, "Todos"),
+        Link({ href: "/users/123", class: "nav-link" }, "User 123"),
+        Link({ href: "/users/456", class: "nav-link" }, "User 456"),
+      ]),
+
+      // Current route indicator
+      $.div(
+        { class: "route-info" },
+        router.pathname.map((p) => `Current path: ${p}`),
+      ),
+
+      // Route content using match - router.currentRoute is typed as "home" | "counter" | "todos" | "user" | null
+      $.div({ class: "content" }, [
+        match(
+          router.currentRoute,
+          [
+            {
+              pattern: "home" as const,
+              render: () => HomePage(),
+            },
+            {
+              pattern: "counter" as const,
+              render: () =>
+                $.div({ class: "page" }, [$.h2("Counter"), Counter()]),
+            },
+            {
+              pattern: "todos" as const,
+              render: () =>
+                $.div({ class: "page" }, [$.h2("Todo App"), TodoApp()]),
+            },
+            {
+              pattern: "user" as const,
+              render: () =>
+                Effect.gen(function* () {
+                  // router.routes.user.params is typed as Readable<{ id: string } | null>
+                  const params = yield* router.routes.user.params.get;
+                  if (params && typeof params === "object" && "id" in params) {
+                    return yield* UserPage({
+                      userId: (params as { id: string }).id,
+                    });
+                  }
+                  return yield* $.span("Loading...");
+                }),
+            },
+          ],
+          () => NotFoundPage(),
+        ),
+      ]),
     ]);
   }),
 );
@@ -151,9 +269,19 @@ const App = component("App", () =>
 const appElement = document.getElementById("app");
 
 const program = Effect.gen(function* () {
-  const appEffect = App({});
+  // Create the router
+  const router = yield* Router.make(routes);
 
-  yield* mount(appEffect, appElement!);
+  // Create layers for both contexts:
+  // - RouterContext (BaseRouter) for Link components
+  // - AppRouterContext (typed) for App component
+  const routerLayer = Layer.merge(
+    makeRouterLayer(router),
+    Layer.succeed(AppRouterContext, router),
+  );
+
+  // Mount the app with both router contexts provided
+  yield* mount(App().pipe(Effect.provide(routerLayer)), appElement!);
 
   // Keep the scope alive forever (until page unload)
   yield* Effect.never;

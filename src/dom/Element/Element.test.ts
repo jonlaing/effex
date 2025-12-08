@@ -59,9 +59,9 @@ describe("Element", () => {
   })
 
   describe("attributes", () => {
-    it("should apply className", async () => {
+    it("should apply class", async () => {
       const element = await Effect.runPromise(
-        Effect.scoped(div({ className: "container" }))
+        Effect.scoped(div({ class: "container" }))
       )
       expect(element.className).toBe("container")
     })
@@ -91,7 +91,7 @@ describe("Element", () => {
     it("should apply attributes with children", async () => {
       const element = await Effect.runPromise(
         Effect.scoped(
-          div({ className: "wrapper" }, [
+          div({ class: "wrapper" }, [
             span("content"),
           ])
         )
@@ -102,7 +102,7 @@ describe("Element", () => {
 
     it("should apply attributes with single child", async () => {
       const element = await Effect.runPromise(
-        Effect.scoped(button({ className: "btn" }, "Click"))
+        Effect.scoped(button({ class: "btn" }, "Click"))
       )
       expect(element.className).toBe("btn")
       expect(element.textContent).toBe("Click")
@@ -110,13 +110,13 @@ describe("Element", () => {
   })
 
   describe("reactive attributes", () => {
-    it("should update className reactively", async () => {
+    it("should update class reactively", async () => {
       const element = await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
             const isActive = yield* Signal.make(false)
             const el = yield* div({
-              className: isActive.map((a) => (a ? "active" : "inactive")),
+              class: isActive.map((a) => (a ? "active" : "inactive")),
             })
 
             expect(el.className).toBe("inactive")

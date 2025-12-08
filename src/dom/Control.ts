@@ -16,10 +16,10 @@ import type { Element } from "./Element";
  * )
  * ```
  */
-export const ErrorBoundary = <E, E2 = never>(
-  tryRender: () => Effect.Effect<HTMLElement, E, Scope.Scope>,
-  catchRender: (error: E) => Element<E2>,
-): Element<E2> =>
+export const ErrorBoundary = <E, R1 = never, E2 = never, R2 = never>(
+  tryRender: () => Effect.Effect<HTMLElement, E, Scope.Scope | R1>,
+  catchRender: (error: E) => Element<E2, R2>,
+): Element<E2, R1 | R2> =>
   Effect.gen(function* () {
     const result = yield* tryRender().pipe(Effect.either);
 
@@ -43,10 +43,10 @@ export const ErrorBoundary = <E, E2 = never>(
  * )
  * ```
  */
-export const Suspense = <E = never>(
-  asyncRender: () => Effect.Effect<HTMLElement, never, Scope.Scope>,
-  fallbackRender: () => Element<E>,
-): Element<E> =>
+export const Suspense = <R1 = never, E = never, R2 = never>(
+  asyncRender: () => Effect.Effect<HTMLElement, never, Scope.Scope | R1>,
+  fallbackRender: () => Element<E, R2>,
+): Element<E, R1 | R2> =>
   Effect.gen(function* () {
     const scope = yield* Effect.scope;
     const container = document.createElement("div");
@@ -84,11 +84,11 @@ export const Suspense = <E = never>(
  * )
  * ```
  */
-export const SuspenseWithBoundary = <E, E2 = never, E3 = never>(
-  asyncRender: () => Effect.Effect<HTMLElement, E, Scope.Scope>,
-  fallbackRender: () => Element<E2>,
-  catchRender: (error: E) => Element<E3>,
-): Element<E2 | E3> =>
+export const SuspenseWithBoundary = <E, R1 = never, E2 = never, R2 = never, E3 = never, R3 = never>(
+  asyncRender: () => Effect.Effect<HTMLElement, E, Scope.Scope | R1>,
+  fallbackRender: () => Element<E2, R2>,
+  catchRender: (error: E) => Element<E3, R3>,
+): Element<E2 | E3, R1 | R2 | R3> =>
   Effect.gen(function* () {
     const scope = yield* Effect.scope;
     const container = document.createElement("div");
@@ -133,11 +133,11 @@ export const SuspenseWithBoundary = <E, E2 = never, E3 = never>(
  * )
  * ```
  */
-export const when = <E1 = never, E2 = never>(
+export const when = <E1 = never, R1 = never, E2 = never, R2 = never>(
   condition: Readable<boolean>,
-  onTrue: () => Element<E1>,
-  onFalse: () => Element<E2>,
-): Element<E1 | E2> =>
+  onTrue: () => Element<E1, R1>,
+  onFalse: () => Element<E2, R2>,
+): Element<E1 | E2, R1 | R2> =>
   Effect.gen(function* () {
     const scope = yield* Effect.scope;
     const container = document.createElement("div");
@@ -148,7 +148,7 @@ export const when = <E1 = never, E2 = never>(
 
     const render = (
       value: boolean,
-    ): Effect.Effect<void, E1 | E2, Scope.Scope> =>
+    ): Effect.Effect<void, E1 | E2, Scope.Scope | R1 | R2> =>
       Effect.gen(function* () {
         if (value === currentValue) return;
 
@@ -180,11 +180,11 @@ export const when = <E1 = never, E2 = never>(
 /**
  * A case for pattern matching with {@link match}.
  */
-export interface MatchCase<A, E = never> {
+export interface MatchCase<A, E = never, R = never> {
   /** The value to match against */
   readonly pattern: A;
   /** Element to render when matched */
-  readonly render: () => Element<E>;
+  readonly render: () => Element<E, R>;
 }
 
 /**
@@ -205,11 +205,11 @@ export interface MatchCase<A, E = never> {
  * ])
  * ```
  */
-export const match = <A, E = never, E2 = never>(
+export const match = <A, E = never, R = never, E2 = never, R2 = never>(
   value: Readable<A>,
-  cases: readonly MatchCase<A, E>[],
-  fallback?: () => Element<E2>,
-): Element<E | E2> =>
+  cases: readonly MatchCase<A, E, R>[],
+  fallback?: () => Element<E2, R2>,
+): Element<E | E2, R | R2> =>
   Effect.gen(function* () {
     const scope = yield* Effect.scope;
     const container = document.createElement("div");
@@ -218,7 +218,7 @@ export const match = <A, E = never, E2 = never>(
     let currentElement: HTMLElement | null = null;
     let currentPattern: A | null = null;
 
-    const render = (val: A): Effect.Effect<void, E | E2, Scope.Scope> =>
+    const render = (val: A): Effect.Effect<void, E | E2, Scope.Scope | R | R2> =>
       Effect.gen(function* () {
         if (val === currentPattern) return;
 
@@ -269,11 +269,11 @@ export const match = <A, E = never, E2 = never>(
  * )
  * ```
  */
-export const each = <A, E = never>(
+export const each = <A, E = never, R = never>(
   items: Readable<readonly A[]>,
   keyFn: (item: A) => string,
-  render: (item: Readable<A>) => Element<E>,
-): Element<E> =>
+  render: (item: Readable<A>) => Element<E, R>,
+): Element<E, R> =>
   Effect.gen(function* () {
     const scope = yield* Effect.scope;
     const container = document.createElement("div");
@@ -295,7 +295,7 @@ export const each = <A, E = never>(
 
     const updateList = (
       newItems: readonly A[],
-    ): Effect.Effect<void, E, Scope.Scope> =>
+    ): Effect.Effect<void, E, Scope.Scope | R> =>
       Effect.gen(function* () {
         const newKeys = new Set(newItems.map(keyFn));
 

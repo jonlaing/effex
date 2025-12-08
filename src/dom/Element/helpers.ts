@@ -9,10 +9,10 @@ export const isReadable = (value: unknown): value is Readable<unknown> =>
   "changes" in value &&
   "values" in value;
 
-export const isElement = (value: unknown): value is Element<unknown> =>
+export const isElement = (value: unknown): value is Element<unknown, unknown> =>
   Effect.isEffect(value);
 
-export const flattenChildren = <E>(children: readonly Child<E>[]): Child<E>[] =>
+export const flattenChildren = <E, R>(children: readonly Child<E, R>[]): Child<E, R>[] =>
   Array.flatMap(children, (child) =>
     globalThis.Array.isArray(child) ? flattenChildren(child) : [child],
   );
@@ -34,7 +34,7 @@ export const subscribeToReadable = <A>(
     );
   });
 
-export const applyClassName = (
+export const applyClass = (
   element: HTMLElement,
   value: string | Readable<string>,
 ): Effect.Effect<void, never, Scope.Scope> => {

@@ -76,6 +76,7 @@ export {
   type MatchCase,
   // Components
   type Component,
+  type Children,
   component,
   // Refs
   type RefType,
@@ -85,3 +86,37 @@ export {
   // Template helpers
   t,
 } from "./dom";
+
+// Router
+export {
+  // Route
+  Route,
+  makeRoute,
+  routeSpecificity,
+  // Router
+  Router,
+  makeRouter,
+  type RouterInfer,
+  // RouterContext and Link
+  RouterContext,
+  Link,
+  useRouter,
+  makeRouterLayer,
+  setRouter,
+  clearRouter,
+  getRouter,
+  type LinkProps,
+  // Types
+  type PathSegment,
+  type RouteOptions,
+  type RouteType,
+  type RouteMatchErrorType,
+  type MatchedRoute,
+  type RouteState,
+  type NavigateOptions,
+  type RouterType,
+  type RouterOptions,
+  type BaseRouter,
+  // Error constructor
+  RouteMatchError,
+} from "./router";

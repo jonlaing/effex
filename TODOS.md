@@ -90,6 +90,27 @@ const router = yield* Router.make({
 })
 ```
 
+#### V1 Scope (MVP)
+
+**Included:**
+- Flat routes (no nesting)
+- History API only
+- Path params with Effect Schema validation
+- Query params as simple `Readable<URLSearchParams>` on router
+- Most-specific-wins route matching (static segments before dynamic)
+- Optional catch-all/fallback route
+- Route-specific readables: `router.routes.user.params`, `router.routes.user.isActive`
+- Navigation as Effects: `router.push(...)`, `router.replace(...)`, `router.back()`
+
+**Deferred to V2:**
+- Nested routes with accumulated params
+- Hash-based routing (`/#/path`)
+- Route guards via Effect error channel
+- Query params with Schema validation (currently just `URLSearchParams`)
+- Code splitting / lazy route loading
+
+#### Full Feature Set (Future)
+
 **Key features:**
 - Type-safe params per route (inferred from Schema)
 - Effect Schema for runtime validation

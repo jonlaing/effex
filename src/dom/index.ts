@@ -51,7 +51,7 @@ export { when, match, each, ErrorBoundary, Suspense, SuspenseWithBoundary } from
 export type { MatchCase } from "./Control";
 
 // Components
-export type { Component } from "./Component";
+export type { Component, Children } from "./Component";
 export { component } from "./Component";
 
 // Refs

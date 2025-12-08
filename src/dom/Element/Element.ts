@@ -1,7 +1,7 @@
 import { Array, Effect, Scope } from "effect";
 import type { Readable } from "@core/Readable";
 import {
-  applyClassName,
+  applyClass,
   applyEventHandler,
   applyGenericAttribute,
   applyStyle,
@@ -26,8 +26,8 @@ const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
     for (const [key, value] of Object.entries(attrs)) {
       if (value === undefined) continue;
 
-      if (key === "className") {
-        yield* applyClassName(element, value as string | Readable<string>);
+      if (key === "class") {
+        yield* applyClass(element, value as string | Readable<string>);
       } else if (key === "style") {
         yield* applyStyle(
           element,
@@ -45,10 +45,10 @@ const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
     }
   });
 
-const appendChildren = <E>(
+const appendChildren = <E, R>(
   parent: HTMLElement,
-  children: readonly Child<E>[],
-): Effect.Effect<void, E, Scope.Scope> =>
+  children: readonly Child<E, R>[],
+): Effect.Effect<void, E, Scope.Scope | R> =>
   Effect.gen(function* () {
     const flattened = flattenChildren(children);
 
@@ -71,11 +71,11 @@ const appendChildren = <E>(
     }
   });
 
-const createElement = <K extends keyof HTMLElementTagNameMap, E>(
+const createElement = <K extends keyof HTMLElementTagNameMap, E, R>(
   tagName: K,
   attrs: HTMLAttributes<K>,
-  children: readonly Child<E>[],
-): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope> =>
+  children: readonly Child<E, R>[],
+): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R> =>
   Effect.gen(function* () {
     const element = document.createElement(tagName);
     yield* applyAttributes(element, attrs);
@@ -158,7 +158,7 @@ export const td = makeElementFactory("td");
  * import { $ } from "@jonlaing/effect-ui"
  *
  * const MyComponent = Effect.gen(function* () {
- *   return yield* $.div({ className: "card" }, [
+ *   return yield* $.div({ class: "card" }, [
  *     $.h1("Title"),
  *     $.p("Content"),
  *     $.button({ onClick: handleClick }, "Submit"),

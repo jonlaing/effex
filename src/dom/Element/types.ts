@@ -4,6 +4,7 @@ import type { Readable } from "@core/Readable";
 /**
  * A DOM element wrapped in an Effect with scope management.
  * @template E - The error type (defaults to never for infallible elements)
+ * @template R - The requirements/context type (defaults to never for no requirements)
  *
  * @example
  * ```ts
@@ -14,13 +15,24 @@ import type { Readable } from "@core/Readable";
  *   const user = yield* fetchUser(userId)
  *   return yield* div([user.name])
  * })
+ *
+ * // Component with requirements
+ * const NavLink: Element<never, RouterContext> = Effect.gen(function* () {
+ *   const router = yield* RouterContext
+ *   return yield* button({ onClick: () => router.push("/") }, "Home")
+ * })
  * ```
  */
-export type Element<E = never> = Effect.Effect<HTMLElement, E, Scope.Scope>;
+export type Element<E = never, R = never> = Effect.Effect<
+  HTMLElement,
+  E,
+  Scope.Scope | R
+>;
 
 /**
  * Valid child types for an element: strings, numbers, elements, reactive values, or arrays thereof.
  * @template E - The error type for child elements
+ * @template R - The requirements/context type for child elements
  *
  * @example
  * ```ts
@@ -38,13 +50,13 @@ export type Element<E = never> = Effect.Effect<HTMLElement, E, Scope.Scope>;
  * ])
  * ```
  */
-export type Child<E = never> =
+export type Child<E = never, R = never> =
   | string
   | number
-  | Element<E>
+  | Element<E, R>
   | Readable<string>
   | Readable<number>
-  | readonly Child<E>[];
+  | readonly Child<E, R>[];
 
 /**
  * Handler for DOM events that can optionally return an Effect.
@@ -76,11 +88,11 @@ export type StyleValue = string | number | Readable<string> | Readable<number>;
  * @example
  * ```ts
  * // Static class
- * div({ className: "container" }, [...])
+ * div({ class: "container" }, [...])
  *
  * // Reactive class
  * const isActive = yield* Signal.make(false)
- * div({ className: isActive.map(a => a ? "active" : "inactive") }, [...])
+ * div({ class: isActive.map(a => a ? "active" : "inactive") }, [...])
  *
  * // Static styles
  * div({ style: { color: "red", "font-size": "16px" } }, [...])
@@ -92,7 +104,7 @@ export type StyleValue = string | number | Readable<string> | Readable<number>;
  */
 export interface BaseAttributes {
   /** CSS class name(s) */
-  readonly className?: string | Readable<string>;
+  readonly class?: string | Readable<string>;
   /** Inline styles as a record of property-value pairs */
   readonly style?:
     | Record<string, StyleValue>
@@ -120,7 +132,8 @@ export interface EventAttributes {
 /** Keys to exclude from the mapped element attributes (handled by BaseAttributes/EventAttributes) */
 type ExcludedKeys =
   | "style"
-  | "className"
+  | "class"
+  | "className" // Exclude the DOM property name too
   | "id"
   | "onclick"
   | "oninput"
@@ -149,38 +162,40 @@ export type HTMLAttributes<K extends keyof HTMLElementTagNameMap> =
           ? number | Readable<number>
           : HTMLElementTagNameMap[K][P] extends boolean
             ? boolean | Readable<boolean>
-            : never;
+            : HTMLElementTagNameMap[K][P] extends (...args: unknown[]) => unknown
+              ? undefined // Exclude methods (like toString, normalize, etc.)
+              : never;
     };
 
 /**
  * Factory function for creating a specific HTML element type.
  * Supports multiple call signatures for convenience.
- * The error type is inferred from children.
+ * The error and requirements types are inferred from children.
  * @template K - The HTML element tag name
  */
 export type ElementFactory<K extends keyof HTMLElementTagNameMap> = {
   // (attrs, children[])
-  <E = never>(
+  <E = never, R = never>(
     attrs: HTMLAttributes<K>,
-    children: readonly Child<E>[],
-  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+    children: readonly Child<E, R>[],
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R>;
   // (attrs, singleChild)
-  <E = never>(
+  <E = never, R = never>(
     attrs: HTMLAttributes<K>,
-    child: Child<E>,
-  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+    child: Child<E, R>,
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R>;
   // (attrs)
   (
     attrs: HTMLAttributes<K>,
   ): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
   // (children[])
-  <E = never>(
-    children: readonly Child<E>[],
-  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+  <E = never, R = never>(
+    children: readonly Child<E, R>[],
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R>;
   // (singleChild)
-  <E = never>(
-    child: Child<E>,
-  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+  <E = never, R = never>(
+    child: Child<E, R>,
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R>;
   // ()
   (): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
 };

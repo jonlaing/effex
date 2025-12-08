@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { Effect } from "effect"
+import { Context, Effect } from "effect"
 import { Signal } from "@core/Signal"
 import { component } from "./Component"
 import { div, button, span } from "./Element"
+import type { Element } from "./Element"
 
 describe("Component", () => {
   beforeEach(() => {
@@ -15,9 +16,19 @@ describe("Component", () => {
     expect(MyComponent._tag).toBe("MyComponent")
   })
 
-  it("should render component without props", async () => {
+  it("should render component without props - can omit argument", async () => {
     const Greeting = component("Greeting", () => div("Hello, World!"))
 
+    // Can call without any argument when props is empty
+    const el = await Effect.runPromise(Effect.scoped(Greeting()))
+
+    expect(el.textContent).toBe("Hello, World!")
+  })
+
+  it("should render component without props - can pass empty object", async () => {
+    const Greeting = component("Greeting", () => div("Hello, World!"))
+
+    // Can also pass explicit empty object
     const el = await Effect.runPromise(Effect.scoped(Greeting({})))
 
     expect(el.textContent).toBe("Hello, World!")
@@ -116,14 +127,14 @@ describe("Component", () => {
     }
 
     const Card = component("Card", (props: CardProps) =>
-      div({ className: "card" }, [
-        div({ className: "title" }, props.title),
+      div({ class: "card" }, [
+        div({ class: "title" }, props.title),
         div(
-          { className: "items" },
+          { class: "items" },
           props.items.map((item) =>
             div(
               {
-                className: "item",
+                class: "item",
                 onClick: () => props.onSelect?.(item),
               },
               item
@@ -183,5 +194,71 @@ describe("Component", () => {
     )
 
     expect(el.textContent).toBe("Hello, World!")
+  })
+
+  it("should accept children as second argument", async () => {
+    const Container = component("Container", (props: { class: string }, children?) =>
+      div(
+        { class: props.class },
+        Array.isArray(children) ? children : children ? [children] : []
+      )
+    )
+
+    const el = await Effect.runPromise(
+      Effect.scoped(Container({ class: "wrapper" }, [span("Child 1"), span("Child 2")]))
+    )
+
+    expect(el.className).toBe("wrapper")
+    expect(el.children.length).toBe(2)
+    expect(el.children[0].textContent).toBe("Child 1")
+    expect(el.children[1].textContent).toBe("Child 2")
+  })
+
+  it("should accept a single child as second argument", async () => {
+    const Container = component("Container", (props: { class: string }, children?) =>
+      div(
+        { class: props.class },
+        Array.isArray(children) ? children : children ? [children] : []
+      )
+    )
+
+    const el = await Effect.runPromise(
+      Effect.scoped(Container({ class: "wrapper" }, "Hello"))
+    )
+
+    expect(el.className).toBe("wrapper")
+    expect(el.textContent).toBe("Hello")
+  })
+
+  it("should propagate requirements from children", async () => {
+    // Create a test service
+    class TestService extends Context.Tag("TestService")<TestService, { value: string }>() {}
+
+    // Component that requires TestService
+    const ChildWithService = (): Element<never, TestService> =>
+      Effect.gen(function* () {
+        const svc = yield* TestService
+        return yield* span(svc.value)
+      })
+
+    // Parent component that accepts children
+    const Parent = component("Parent", (props: { title: string }, children?) =>
+      div([props.title, ...(Array.isArray(children) ? children : children ? [children] : [])])
+    )
+
+    // Call Parent with a child that requires TestService
+    const result = Parent({ title: "Title" }, [ChildWithService()])
+
+    // Provide the service and run
+    const el = await Effect.runPromise(
+      Effect.scoped(
+        result.pipe(
+          Effect.provideService(TestService, { value: "from service" })
+        )
+      )
+    )
+
+    expect(el.textContent).toContain("Title")
+    expect(el.textContent).toContain("from service")
   })
 })

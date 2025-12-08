@@ -169,6 +169,73 @@ button:focus-visible {
   margin-top: 1rem;
 }
 
+/* Navigation Styles */
+.nav {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.nav-link {
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #646cff;
+}
+
+.nav-link.active {
+  background: #646cff;
+  color: white;
+}
+
+.route-info {
+  text-align: center;
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.content {
+  min-height: 300px;
+}
+
+.page {
+  text-align: left;
+}
+
+.page h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.page ul {
+  text-align: left;
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.page li {
+  margin-bottom: 0.5rem;
+}
+
+.page.not-found {
+  text-align: center;
+  color: #ff6b6b;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -195,5 +262,17 @@ button:focus-visible {
 
   .todo-item:hover {
     background: rgba(0, 0, 0, 0.06);
+  }
+
+  .nav-link {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .nav-link:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .route-info {
+    background: rgba(0, 0, 0, 0.03);
   }
 }
