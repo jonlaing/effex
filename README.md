@@ -5,22 +5,22 @@ A reactive UI framework built on [Effect](https://effect.website/). Effect UI pr
 ## Installation
 
 ```bash
-pnpm add effect-ui effect
+pnpm add @jonlaing/effect-ui effect
 ```
 
 ## Basic Usage
 
 ```ts
 import { Effect } from "effect"
-import { Signal, div, button, mount } from "effect-ui"
+import { Signal, SignalRegistry, div, button, span, mount } from "@jonlaing/effect-ui"
 
 const Counter = Effect.gen(function* () {
   const count = yield* Signal.make(0)
 
-  return div([
-    button({ onClick: () => count.update((n) => n - 1) }, ["-"]),
-    count,
-    button({ onClick: () => count.update((n) => n + 1) }, ["+"]),
+  return yield* div([
+    button({ onClick: () => count.update((n) => n - 1) }, "-"),
+    span(count),
+    button({ onClick: () => count.update((n) => n + 1) }, "+"),
   ])
 })
 
@@ -31,7 +31,7 @@ Effect.runPromise(
       yield* mount(app, document.getElementById("root")!)
       yield* Effect.never
     })
-  )
+  ).pipe(Effect.provide(SignalRegistry.Live))
 )
 ```
 
@@ -68,13 +68,20 @@ const fullName = yield* Derived.sync(
 
 ### Elements
 
-Create DOM elements with reactive attributes and children:
+Create DOM elements with reactive attributes and children. Elements are Effects that must be yielded:
 
 ```ts
-div({ class: "container", style: { color: "red" } }, [
+yield* div({ className: "container", style: { color: "red" } }, [
   h1(["Hello, ", name]),
   p([count, " items"]),
 ])
+```
+
+Single children don't need to be wrapped in arrays:
+
+```ts
+yield* h1("Hello World")
+yield* button({ onClick: handleClick }, "Click me")
 ```
 
 ### Control Flow
@@ -84,14 +91,14 @@ Conditionally render elements:
 ```ts
 when(
   isLoggedIn,
-  () => div(["Welcome back!"]),
-  () => div(["Please log in"])
+  () => div("Welcome back!"),
+  () => div("Please log in")
 )
 
 each(
   todos,
   (todo) => todo.id,
-  (todo) => li([todo.map((t) => t.text)])
+  (todo) => li(todo.map((t) => t.text))
 )
 ```
 

@@ -117,6 +117,22 @@ export interface EventAttributes {
   readonly onMouseLeave?: EventHandler<MouseEvent>;
 }
 
+/** Keys to exclude from the mapped element attributes (handled by BaseAttributes/EventAttributes) */
+type ExcludedKeys =
+  | "style"
+  | "className"
+  | "id"
+  | "onclick"
+  | "oninput"
+  | "onchange"
+  | "onsubmit"
+  | "onkeydown"
+  | "onkeyup"
+  | "onfocus"
+  | "onblur"
+  | "onmouseenter"
+  | "onmouseleave";
+
 /**
  * Full HTML attributes for a specific element type, including base, events, and element-specific attributes.
  * @template K - The HTML element tag name
@@ -124,7 +140,10 @@ export interface EventAttributes {
 export type HTMLAttributes<K extends keyof HTMLElementTagNameMap> =
   BaseAttributes &
     EventAttributes & {
-      readonly [P in keyof HTMLElementTagNameMap[K]]?: HTMLElementTagNameMap[K][P] extends string
+      readonly [P in Exclude<
+        keyof HTMLElementTagNameMap[K],
+        ExcludedKeys
+      >]?: HTMLElementTagNameMap[K][P] extends string
         ? string | Readable<string>
         : HTMLElementTagNameMap[K][P] extends number
           ? number | Readable<number>
@@ -140,18 +159,28 @@ export type HTMLAttributes<K extends keyof HTMLElementTagNameMap> =
  * @template K - The HTML element tag name
  */
 export type ElementFactory<K extends keyof HTMLElementTagNameMap> = {
+  // (attrs, children[])
   <E = never>(
     attrs: HTMLAttributes<K>,
     children: readonly Child<E>[],
   ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+  // (attrs, singleChild)
+  <E = never>(
+    attrs: HTMLAttributes<K>,
+    child: Child<E>,
+  ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+  // (attrs)
   (
     attrs: HTMLAttributes<K>,
   ): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
+  // (children[])
   <E = never>(
     children: readonly Child<E>[],
   ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+  // (singleChild)
   <E = never>(
     child: Child<E>,
   ): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope>;
+  // ()
   (): Effect.Effect<HTMLElementTagNameMap[K], never, Scope.Scope>;
 };

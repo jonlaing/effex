@@ -37,9 +37,9 @@ const Counter = component("Counter", () =>
           {
             onClick: () => count.update((n) => n - 1),
           },
-          ["-"],
+          "-",
         ),
-        button({ onClick: () => count.update((n) => n + 1) }, ["+"]),
+        button({ onClick: () => count.update((n) => n + 1) }, "+"),
       ]),
     ]);
   }),
@@ -155,36 +155,18 @@ const App = component("App", () =>
   }),
 );
 
-console.log("[effect-ui] Starting app...");
-
 const appElement = document.getElementById("app");
-console.log("[effect-ui] App element:", appElement);
 
 const program = Effect.gen(function* () {
-  console.log("[effect-ui] Effect.gen started");
-
-  console.log("[effect-ui] Creating App component...");
   const appEffect = App({});
-  console.log("[effect-ui] App component created, mounting...");
 
   yield* mount(appEffect, appElement!);
-  console.log("[effect-ui] Mount complete");
 
   // Keep the scope alive forever (until page unload)
   yield* Effect.never;
 });
 
-console.log("[effect-ui] Running program...");
-
-Effect.scoped(program)
-  .pipe(
-    Effect.provide(SignalRegistry.Live),
-    Effect.tapError((e) =>
-      Effect.sync(() => console.error("[effect-ui] Error:", e)),
-    ),
-    Effect.runPromise,
-  )
-  .then(
-    () => console.log("[effect-ui] Program completed successfully"),
-    (err) => console.error("[effect-ui] Program failed:", err),
-  );
+Effect.scoped(program).pipe(
+  Effect.provide(SignalRegistry.Live),
+  Effect.runPromise,
+);
