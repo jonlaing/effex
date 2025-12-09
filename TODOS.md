@@ -37,7 +37,14 @@
 
 - [ ] **Form handling utilities** - Validation, form state management
 
-- [ ] **Router** - Full-featured routing system (see Design Decisions below)
+- [x] **Router V1** - Basic routing system implemented (see Design Decisions below)
+  - [x] Flat routes with path params
+  - [x] Effect Schema validation for params
+  - [x] History API navigation
+  - [x] Route-specific readables (isActive, params)
+  - [x] RouterContext and typed router layers
+  - [x] Link component
+  - [ ] V2: Nested routes, hash routing, route guards, query param schemas
 
 - [ ] **Documentation site** - Full documentation with examples (TypeDoc is set up)
 
@@ -274,6 +281,32 @@ each(items, keyFn, render, {
 ### className vs class
 
 Using `class` directly since we're not using JSX. No reserved word issues with function calls.
+
+### Suspense API
+
+Unified all Suspense variants into a single `Suspense` component with options:
+
+```ts
+Suspense({
+  render: () => asyncEffect,
+  fallback: () => loadingElement,
+  catch: (error) => errorElement,  // optional
+  delay: "200 millis",              // optional - delays fallback to avoid flash
+})
+```
+
+The `delay` option accepts Effect Duration strings. If the render completes before the delay, no fallback is shown - great for route transitions.
+
+### Class arrays for Tailwind
+
+The `class` attribute accepts multiple formats for Tailwind-friendly ergonomics:
+
+```ts
+div({ class: "flex items-center" })                     // string
+div({ class: ["flex", "items-center", "gap-4"] })       // string[]
+div({ class: isActive.map(a => a ? "on" : "off") })     // Readable<string>
+div({ class: ["btn", variant.map(v => `btn-${v}`)] })   // mixed with reactives
+```
 
 ## Notes
 
