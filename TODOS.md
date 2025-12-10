@@ -2,22 +2,22 @@
 
 ## High Priority
 
-- [ ] **Unit Tests for Everything** - Comprehensive test coverage
+- [x] **Unit Tests for Everything** - Comprehensive test coverage
   - [x] Signal.ts
   - [x] Derived/Derived.ts
-  - [ ] Derived/helpers.ts
+  - [x] Derived/helpers.ts
   - [x] Readable.ts
   - [x] Reaction.ts
   - [x] Element/Element.ts
-  - [ ] Element/helpers.ts
+  - [x] Element/helpers.ts
   - [x] Control.ts (when, match, each, ErrorBoundary, Suspense)
   - [x] Component.ts
   - [x] Mount.ts
   - [x] Ref.ts
   - [x] Template.ts
   - [x] Form.ts
-  - [ ] Field.ts
-  - [ ] form/helpers.ts
+  - [x] Field.ts
+  - [x] form/helpers.ts
 
 ## Medium Priority
 
@@ -26,7 +26,7 @@
   - Create stories for built-in components
   - Document component patterns
 
-- [ ] **Clean up unused Scope imports** - Build warning shows Scope imported but unused in several files
+- [x] **Clean up unused imports** - Fixed build warnings (ParseResult type-only import)
 
 - [ ] **Improve error messages** - Better developer experience when things go wrong
 
