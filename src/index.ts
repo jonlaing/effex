@@ -104,6 +104,9 @@ export {
   runApp,
   // Template helpers
   t,
+  // Portal
+  type PortalOptions,
+  Portal,
 } from "./dom";
 
 // Router

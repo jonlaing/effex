@@ -19,6 +19,7 @@ A reactive UI framework built on [Effect](https://effect.website/). Effect UI pr
 - [Async Data Loading](#async-data-loading)
 - [Forms](#forms)
 - [Animation](#animation)
+- [Portal](#portal)
 - [Why No JSX?](#why-no-jsx)
 - [API Documentation](#api-documentation)
 
@@ -853,6 +854,66 @@ Animation features:
 - **Reduced motion**: Respects `prefers-reduced-motion` by default
 - **Backward compatible**: Animation options are optional - existing code works unchanged
 - **Lifecycle hooks**: Run code before/after animations (e.g., focus an element after enter)
+
+### Portal
+
+Portals render children into a different DOM node, outside the normal component hierarchy. This is useful for modals, dropdowns, and tooltips that need to escape parent `overflow: hidden` or `z-index` stacking contexts.
+
+```ts
+import { Portal, $ } from "@jonlaing/effect-ui"
+
+// Render to document.body (default)
+Portal(() => Modal({ title: "Hello" }))
+
+// Render to a specific element by selector
+Portal({ target: "#modal-root" }, () =>
+  $.div({ class: "dropdown" }, [
+    $.button("Option 1"),
+    $.button("Option 2"),
+  ])
+)
+
+// Render to an element reference
+Portal({ target: containerElement }, () =>
+  Tooltip({ content: "Help text" })
+)
+```
+
+Portal returns a hidden placeholder element in the original DOM position while the actual content lives in the portal target. When the component unmounts (scope closes), the portal content is automatically cleaned up.
+
+**Options:**
+
+```ts
+interface PortalOptions {
+  target?: HTMLElement | string;  // Default: document.body
+}
+```
+
+**Example: Modal with Portal**
+
+```ts
+const Modal = component("Modal", (props: {
+  isOpen: Readable<boolean>
+  onClose: () => void
+  children: () => Element
+}) =>
+  when(
+    props.isOpen,
+    () => Portal(() =>
+      $.div({ class: "modal-overlay", onClick: props.onClose }, [
+        $.div({
+          class: "modal-content",
+          onClick: (e) => e.stopPropagation()  // Prevent closing when clicking content
+        }, [
+          $.button({ class: "close", onClick: props.onClose }, "×"),
+          props.children(),
+        ]),
+      ])
+    ),
+    () => $.span()
+  )
+)
+```
 
 ## Why No JSX?
 

@@ -72,6 +72,44 @@
 
 - [ ] **Map and Set as reactive state** - Better ergonomics for using Map and Set as state. React makes this painful because of reference equality checks. Explore reactive Map/Set primitives that trigger updates on mutations.
 
+- [x] **Portal** - Render children into a different DOM node (like React Portal)
+  - [x] `Portal(children)` or `Portal({ target }, children)` - defaults to `document.body`
+  - [x] Supports element reference or CSS selector as target
+  - [x] Cleans up on unmount via scope finalizer
+  - [ ] Consider: `PortalTarget` component for named portals
+
+- [ ] **Headless Component Library** - Radix Primitives-style unstyled components with full accessibility
+  - No styling opinions, just behavior and a11y
+  - WAI-ARIA compliant out of the box
+  - Keyboard navigation built-in
+  - Focus management
+  - Components to include:
+    - [ ] Dialog / Modal
+    - [ ] Dropdown Menu
+    - [ ] Select
+    - [ ] Combobox / Autocomplete
+    - [ ] Popover
+    - [ ] Tooltip
+    - [ ] Tabs
+    - [ ] Accordion
+    - [ ] Toggle / Switch
+    - [ ] Radio Group
+    - [ ] Checkbox
+    - [ ] Slider
+    - [ ] Toast / Notifications
+    - [ ] Alert Dialog
+    - [ ] Context Menu
+    - [ ] Navigation Menu
+    - [ ] Collapsible
+    - [ ] Scroll Area
+    - [ ] Progress
+  - Design principles:
+    - Composable parts (e.g., `Dialog.Root`, `Dialog.Trigger`, `Dialog.Content`)
+    - Render props or slot pattern for full control
+    - Works with any CSS framework (Tailwind, CSS modules, etc.)
+    - Animation integration via existing animation primitives
+    - Typed with full inference
+
 ## Design Decisions
 
 ### JSX (Decided Against)

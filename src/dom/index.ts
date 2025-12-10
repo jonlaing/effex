@@ -86,3 +86,7 @@ export { mount, runApp } from "./Mount";
 
 // Template helpers
 export { t } from "./Template";
+
+// Portal
+export type { PortalOptions } from "./Portal";
+export { Portal } from "./Portal";
