@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / ElementFactory
 
@@ -8,7 +8,7 @@
 
 > **ElementFactory**\<`K`\> = \{\<`E`, `R`\>(`attrs`, `children`): `Effect`\<`HTMLElementTagNameMap`\[`K`\], `E`, `Scope` \| `R`\>; \<`E`, `R`\>(`attrs`, `child`): `Effect`\<`HTMLElementTagNameMap`\[`K`\], `E`, `Scope` \| `R`\>; (`attrs`): `Effect`\<`HTMLElementTagNameMap`\[`K`\], `never`, `Scope`\>; \<`E`, `R`\>(`children`): `Effect`\<`HTMLElementTagNameMap`\[`K`\], `E`, `Scope` \| `R`\>; \<`E`, `R`\>(`child`): `Effect`\<`HTMLElementTagNameMap`\[`K`\], `E`, `Scope` \| `R`\>; (): `Effect`\<`HTMLElementTagNameMap`\[`K`\], `never`, `Scope`\>; \}
 
-Defined in: [src/dom/Element/types.ts:176](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Element/types.ts#L176)
+Defined in: [src/dom/Element/types.ts:199](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Element/types.ts#L199)
 
 Factory function for creating a specific HTML element type.
 Supports multiple call signatures for convenience.
@@ -18,7 +18,7 @@ The error and requirements types are inferred from children.
 
 ### K
 
-`K` _extends_ keyof `HTMLElementTagNameMap`
+`K` *extends* keyof `HTMLElementTagNameMap`
 
 The HTML element tag name
 

@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / RouteState
 
 # Interface: RouteState\<P\>
 
-Defined in: [src/router/types.ts:81](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L81)
+Defined in: [src/router/types.ts:84](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L84)
 
 State for an individual route within the router.
 
@@ -24,16 +24,16 @@ The params type
 
 > `readonly` **isActive**: [`Readable`](Readable.md)\<`boolean`\>
 
-Defined in: [src/router/types.ts:83](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L83)
+Defined in: [src/router/types.ts:86](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L86)
 
 Whether this route is currently active
 
----
+***
 
 ### params
 
-> `readonly` **params**: [`Readable`](Readable.md)\<`P` \| `null`\>
+> `readonly` **params**: [`Readable`](Readable.md)\<`P`\>
 
-Defined in: [src/router/types.ts:85](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L85)
+Defined in: [src/router/types.ts:88](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L88)
 
 The current params (only meaningful when active)

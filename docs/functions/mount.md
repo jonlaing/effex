@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / mount
 
@@ -8,7 +8,7 @@
 
 > **mount**(`element`, `container`): `Effect`\<`void`, `never`, `Scope`\>
 
-Defined in: [src/dom/Mount.ts:60](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Mount.ts#L60)
+Defined in: [src/dom/Mount.ts:61](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Mount.ts#L61)
 
 Mount an Element into a DOM container. Automatically cleans up when the scope closes.
 
@@ -37,36 +37,44 @@ The DOM container to mount into
 ## Examples
 
 ```ts
-const app = div([h1(["Hello, Effect UI!"])]);
+const app = div([
+  h1(["Hello, Effect UI!"])
+])
 
 // Mount the app and run it
-Effect.runPromise(Effect.scoped(mount(app, document.getElementById("root")!)));
+Effect.runPromise(
+  Effect.scoped(
+    mount(app, document.getElementById("root")!)
+  )
+)
 ```
 
 ```ts
 // Handle errors before mounting
-const riskyApp = fetchAndRenderData(); // Element<FetchError>
+const riskyApp = fetchAndRenderData() // Element<FetchError>
 
 const safeApp = ErrorBoundary(
   () => riskyApp,
-  (error) => div(["Failed to load: ", String(error)]),
-); // Element<never>
+  (error) => div(["Failed to load: ", String(error)])
+) // Element<never>
 
 Effect.runPromise(
-  Effect.scoped(mount(safeApp, document.getElementById("root")!)),
-);
+  Effect.scoped(
+    mount(safeApp, document.getElementById("root")!)
+  )
+)
 ```
 
 ```ts
 // Provide context before mounting
-const appWithRouter = Link({ href: "/home", children: "Home" }); // Element<never, RouterContext>
+const appWithRouter = Link({ href: "/home", children: "Home" }) // Element<never, RouterContext>
 
 Effect.runPromise(
   Effect.scoped(
     mount(
       appWithRouter.pipe(Effect.provide(routerLayer)),
-      document.getElementById("root")!,
-    ),
-  ),
-);
+      document.getElementById("root")!
+    )
+  )
+)
 ```

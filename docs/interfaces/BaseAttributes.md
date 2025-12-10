@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / BaseAttributes
 
 # Interface: BaseAttributes
 
-Defined in: [src/dom/Element/types.ts:105](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Element/types.ts#L105)
+Defined in: [src/dom/Element/types.ts:126](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Element/types.ts#L126)
 
 Base attributes available on all elements.
 
@@ -16,9 +16,20 @@ Base attributes available on all elements.
 // Static class
 div({ class: "container" }, [...])
 
+// Array of classes (great for Tailwind)
+div({ class: ["flex", "items-center", "gap-4"] }, [...])
+
 // Reactive class
 const isActive = yield* Signal.make(false)
 div({ class: isActive.map(a => a ? "active" : "inactive") }, [...])
+
+// Mixed array with reactive items
+const variant = yield* Signal.make("primary")
+div({ class: ["btn", variant.map(v => `btn-${v}`), "rounded"] }, [...])
+
+// Reactive array of classes
+const classes = yield* Signal.make(["btn", "btn-primary"])
+div({ class: classes }, [...])
 
 // Static styles
 div({ style: { color: "red", "font-size": "16px" } }, [...])
@@ -32,28 +43,28 @@ div({ style: { width: width.map(w => `${w}px`) } }, [...])
 
 ### class?
 
-> `readonly` `optional` **class**: `string` \| [`Readable`](Readable.md)\<`string`\>
+> `readonly` `optional` **class**: `ClassValue`
 
-Defined in: [src/dom/Element/types.ts:107](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Element/types.ts#L107)
+Defined in: [src/dom/Element/types.ts:128](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Element/types.ts#L128)
 
-CSS class name(s)
+CSS class name(s) - can be a string, array of strings, or reactive versions
 
----
+***
 
 ### id?
 
 > `readonly` `optional` **id**: `string`
 
-Defined in: [src/dom/Element/types.ts:113](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Element/types.ts#L113)
+Defined in: [src/dom/Element/types.ts:134](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Element/types.ts#L134)
 
 Element ID
 
----
+***
 
 ### style?
 
 > `readonly` `optional` **style**: `Record`\<`string`, `StyleValue`\> \| [`Readable`](Readable.md)\<`Record`\<`string`, `string`\>\>
 
-Defined in: [src/dom/Element/types.ts:109](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Element/types.ts#L109)
+Defined in: [src/dom/Element/types.ts:130](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Element/types.ts#L130)
 
 Inline styles as a record of property-value pairs

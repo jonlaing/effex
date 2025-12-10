@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / Link
 
@@ -8,7 +8,7 @@
 
 > `const` **Link**: [`Component`](../type-aliases/Component.md)\<`"Link"`, [`LinkProps`](../interfaces/LinkProps.md), `never`, [`RouterContext`](../classes/RouterContext.md)\>
 
-Defined in: [src/router/RouterContext.ts:75](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/RouterContext.ts#L75)
+Defined in: [src/router/RouterContext.ts:113](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/RouterContext.ts#L113)
 
 A navigation link component that uses the RouterContext.
 Components using Link will have RouterContext in their requirements.
@@ -17,14 +17,14 @@ Components using Link will have RouterContext in their requirements.
 
 ```ts
 // Basic link with children as second argument
-Link({ href: "/users" }, "Users");
+Link({ href: "/users" }, "Users")
 
 // With custom class (adds "active" when route matches)
-Link({ href: "/", class: "nav-link" }, "Home");
+Link({ href: "/", class: "nav-link" }, "Home")
 
 // With multiple children
-Link({ href: "/about" }, ["About ", "Us"]);
+Link({ href: "/about" }, ["About ", "Us"])
 
 // Replace instead of push
-Link({ href: "/login", replace: true }, "Login");
+Link({ href: "/login", replace: true }, "Login")
 ```

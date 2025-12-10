@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / EventHandler
 
@@ -8,7 +8,7 @@
 
 > **EventHandler**\<`E`\> = (`event`) => `Effect.Effect`\<`void`, `never`\> \| `void`
 
-Defined in: [src/dom/Element/types.ts:78](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Element/types.ts#L78)
+Defined in: [src/dom/Element/types.ts:78](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Element/types.ts#L78)
 
 Handler for DOM events that can optionally return an Effect.
 
@@ -16,7 +16,7 @@ Handler for DOM events that can optionally return an Effect.
 
 ### E
 
-`E` _extends_ `Event`
+`E` *extends* `Event`
 
 The specific Event type
 
@@ -34,18 +34,12 @@ The specific Event type
 
 ```ts
 // Synchronous handler
-button(
-  {
-    onClick: (e) => console.log("clicked", e.target),
-  },
-  ["Click"],
-);
+button({
+  onClick: (e) => console.log("clicked", e.target)
+}, ["Click"])
 
 // Effect-based handler
-button(
-  {
-    onClick: (e) => Effect.log(`Clicked at ${e.clientX}, ${e.clientY}`),
-  },
-  ["Click"],
-);
+button({
+  onClick: (e) => Effect.log(`Clicked at ${e.clientX}, ${e.clientY}`)
+}, ["Click"])
 ```

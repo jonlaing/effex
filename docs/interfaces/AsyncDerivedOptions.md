@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / AsyncDerivedOptions
 
 # Interface: AsyncDerivedOptions\<A\>
 
-Defined in: [src/core/Derived/types.ts:39](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Derived/types.ts#L39)
+Defined in: [src/core/Derived/types.ts:39](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Derived/types.ts#L39)
 
 Options for creating an asynchronous Derived value.
 
@@ -24,17 +24,17 @@ The type of the derived value
 
 > `readonly` `optional` **debounceMs**: `number`
 
-Defined in: [src/core/Derived/types.ts:43](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Derived/types.ts#L43)
+Defined in: [src/core/Derived/types.ts:43](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Derived/types.ts#L43)
 
 Debounce delay in milliseconds (only used with "debounce" strategy)
 
----
+***
 
 ### equals()?
 
 > `readonly` `optional` **equals**: (`a`, `b`) => `boolean`
 
-Defined in: [src/core/Derived/types.ts:45](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Derived/types.ts#L45)
+Defined in: [src/core/Derived/types.ts:45](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Derived/types.ts#L45)
 
 Custom equality function to determine if the value has changed
 
@@ -52,12 +52,12 @@ Custom equality function to determine if the value has changed
 
 `boolean`
 
----
+***
 
 ### strategy?
 
 > `readonly` `optional` **strategy**: [`AsyncStrategy`](../type-aliases/AsyncStrategy.md)
 
-Defined in: [src/core/Derived/types.ts:41](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Derived/types.ts#L41)
+Defined in: [src/core/Derived/types.ts:41](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Derived/types.ts#L41)
 
 Strategy for handling concurrent computations (default: "abort")

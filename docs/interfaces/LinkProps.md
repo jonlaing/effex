@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / LinkProps
 
 # Interface: LinkProps
 
-Defined in: [src/router/RouterContext.ts:47](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/RouterContext.ts#L47)
+Defined in: [src/router/RouterContext.ts:85](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/RouterContext.ts#L85)
 
 Props for the Link component.
 
@@ -16,26 +16,26 @@ Props for the Link component.
 
 > `readonly` `optional` **class**: `string`
 
-Defined in: [src/router/RouterContext.ts:51](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/RouterContext.ts#L51)
+Defined in: [src/router/RouterContext.ts:89](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/RouterContext.ts#L89)
 
 Optional CSS class
 
----
+***
 
 ### href
 
 > `readonly` **href**: `string`
 
-Defined in: [src/router/RouterContext.ts:49](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/RouterContext.ts#L49)
+Defined in: [src/router/RouterContext.ts:87](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/RouterContext.ts#L87)
 
 The path to navigate to
 
----
+***
 
 ### replace?
 
 > `readonly` `optional` **replace**: `boolean`
 
-Defined in: [src/router/RouterContext.ts:53](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/RouterContext.ts#L53)
+Defined in: [src/router/RouterContext.ts:91](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/RouterContext.ts#L91)
 
 Whether to replace instead of push

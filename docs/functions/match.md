@@ -1,16 +1,18 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / match
 
 # Function: match()
 
-> **match**\<`A`, `E`, `R`, `E2`, `R2`\>(`value`, `cases`, `fallback?`): [`Element`](../type-aliases/Element.md)\<`E` \| `E2`, `R` \| `R2`\>
+> **match**\<`A`, `E`, `R`, `E2`, `R2`\>(`value`, `cases`, `fallback?`, `options?`): [`Element`](../type-aliases/Element.md)\<`E` \| `E2`, `R` \| `R2`\>
 
-Defined in: [src/dom/Control.ts:208](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Control.ts#L208)
+Defined in: [src/dom/Control.ts:529](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Control.ts#L529)
 
 Pattern match on a reactive value and render the corresponding element.
+For async data loading, use DeferredSuspense or DeferredSuspenseWithBoundary
+inside the render function.
 
 ## Type Parameters
 
@@ -54,19 +56,59 @@ Array of pattern-render pairs
 
 Optional fallback if no pattern matches
 
+### options?
+
+[`ControlAnimationOptions`](../interfaces/ControlAnimationOptions.md)
+
+Optional animation configuration
+
 ## Returns
 
 [`Element`](../type-aliases/Element.md)\<`E` \| `E2`, `R` \| `R2`\>
 
-## Example
+## Examples
 
 ```ts
-type Status = "loading" | "success" | "error";
-const status = yield * Signal.make<Status>("loading");
+// Simple matching
+type Status = "loading" | "success" | "error"
+const status = yield* Signal.make<Status>("loading")
 
 match(status, [
-  { pattern: "loading", render: () => div(["Loading..."]) },
-  { pattern: "success", render: () => div(["Done!"]) },
-  { pattern: "error", render: () => div(["Failed"]) },
-]);
+  { pattern: "loading", render: () => div("Loading...") },
+  { pattern: "success", render: () => div("Done!") },
+  { pattern: "error", render: () => div("Failed") },
+])
+```
+
+```ts
+// With animations
+match(status, [
+  { pattern: "loading", render: () => Spinner() },
+  { pattern: "success", render: () => SuccessMessage() },
+  { pattern: "error", render: () => ErrorMessage() },
+], undefined, { animate: { enter: "fade-in", exit: "fade-out" } })
+```
+
+```ts
+// Route matching with async data loading
+match(router.currentRoute, [
+  {
+    pattern: "home",
+    render: () => HomePage(),
+  },
+  {
+    pattern: "user",
+    render: () =>
+      DeferredSuspenseWithBoundary(
+        () => Effect.gen(function* () {
+          const params = yield* router.routes.user.params.get
+          const user = yield* fetchUser(params.id)
+          return yield* UserPage({ user })
+        }),
+        () => div("Loading user..."),
+        (error) => div(["Error: ", String(error)]),
+        { delay: 200 }
+      ),
+  },
+])
 ```

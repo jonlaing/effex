@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / SignalType
 
 # Interface: SignalType\<A\>
 
-Defined in: [src/core/Signal.ts:15](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Signal.ts#L15)
+Defined in: [src/core/Signal.ts:11](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Signal.ts#L11)
 
 A mutable reactive value that extends Readable with write capabilities.
 
@@ -28,7 +28,7 @@ The type of the value
 
 > `readonly` **changes**: `Stream`\<`A`\>
 
-Defined in: [src/core/Readable.ts:11](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Readable.ts#L11)
+Defined in: [src/core/Readable.ts:11](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Readable.ts#L11)
 
 Stream of value changes (does not include current value)
 
@@ -36,13 +36,13 @@ Stream of value changes (does not include current value)
 
 [`Readable`](Readable.md).[`changes`](Readable.md#changes)
 
----
+***
 
 ### get
 
 > `readonly` **get**: `Effect`\<`A`\>
 
-Defined in: [src/core/Readable.ts:9](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Readable.ts#L9)
+Defined in: [src/core/Readable.ts:9](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Readable.ts#L9)
 
 Get the current value
 
@@ -50,13 +50,13 @@ Get the current value
 
 [`Readable`](Readable.md).[`get`](Readable.md#get)
 
----
+***
 
 ### map()
 
 > `readonly` **map**: \<`B`\>(`f`) => [`Readable`](Readable.md)\<`B`\>
 
-Defined in: [src/core/Readable.ts:15](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Readable.ts#L15)
+Defined in: [src/core/Readable.ts:15](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Readable.ts#L15)
 
 Transform the readable value
 
@@ -80,13 +80,13 @@ Transform the readable value
 
 [`Readable`](Readable.md).[`map`](Readable.md#map)
 
----
+***
 
 ### set()
 
 > `readonly` **set**: (`a`) => `Effect`\<`void`\>
 
-Defined in: [src/core/Signal.ts:17](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Signal.ts#L17)
+Defined in: [src/core/Signal.ts:13](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Signal.ts#L13)
 
 Set the signal to a new value
 
@@ -100,13 +100,13 @@ Set the signal to a new value
 
 `Effect`\<`void`\>
 
----
+***
 
 ### update()
 
 > `readonly` **update**: (`f`) => `Effect`\<`void`\>
 
-Defined in: [src/core/Signal.ts:19](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Signal.ts#L19)
+Defined in: [src/core/Signal.ts:15](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Signal.ts#L15)
 
 Update the signal value using a function
 
@@ -120,13 +120,13 @@ Update the signal value using a function
 
 `Effect`\<`void`\>
 
----
+***
 
 ### values
 
 > `readonly` **values**: `Stream`\<`A`\>
 
-Defined in: [src/core/Readable.ts:13](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/core/Readable.ts#L13)
+Defined in: [src/core/Readable.ts:13](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/core/Readable.ts#L13)
 
 Stream of all values (current value followed by changes)
 

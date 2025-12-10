@@ -1,14 +1,14 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / when
 
 # Function: when()
 
-> **when**\<`E1`, `R1`, `E2`, `R2`\>(`condition`, `onTrue`, `onFalse`): [`Element`](../type-aliases/Element.md)\<`E1` \| `E2`, `R1` \| `R2`\>
+> **when**\<`E1`, `R1`, `E2`, `R2`\>(`condition`, `onTrue`, `onFalse`, `options?`): [`Element`](../type-aliases/Element.md)\<`E1` \| `E2`, `R1` \| `R2`\>
 
-Defined in: [src/dom/Control.ts:136](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Control.ts#L136)
+Defined in: [src/dom/Control.ts:379](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Control.ts#L379)
 
 Conditionally render one of two elements based on a reactive boolean.
 
@@ -50,17 +50,33 @@ Element to render when true
 
 Element to render when false
 
+### options?
+
+[`ControlAnimationOptions`](../interfaces/ControlAnimationOptions.md)
+
+Optional animation configuration
+
 ## Returns
 
 [`Element`](../type-aliases/Element.md)\<`E1` \| `E2`, `R1` \| `R2`\>
 
-## Example
+## Examples
 
 ```ts
-const isLoggedIn = yield * Signal.make(false);
+const isLoggedIn = yield* Signal.make(false)
 when(
   isLoggedIn,
   () => div(["Welcome back!"]),
-  () => div(["Please log in"]),
-);
+  () => div(["Please log in"])
+)
+```
+
+```ts
+// With animations
+when(
+  isVisible,
+  () => Modal(),
+  () => div(),
+  { animate: { enter: "fade-in", exit: "fade-out" } }
+)
 ```

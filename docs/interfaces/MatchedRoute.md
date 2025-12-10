@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / MatchedRoute
 
 # Interface: MatchedRoute\<P\>
 
-Defined in: [src/router/types.ts:70](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L70)
+Defined in: [src/router/types.ts:73](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L73)
 
 A matched route with its parsed params.
 
@@ -22,16 +22,16 @@ A matched route with its parsed params.
 
 > `readonly` **params**: `P`
 
-Defined in: [src/router/types.ts:74](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L74)
+Defined in: [src/router/types.ts:77](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L77)
 
 The parsed and validated params
 
----
+***
 
 ### route
 
 > `readonly` **route**: [`RouteType`](RouteType.md)\<`string`, `AnyNoContext`\>
 
-Defined in: [src/router/types.ts:72](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L72)
+Defined in: [src/router/types.ts:75](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L75)
 
 The route that matched

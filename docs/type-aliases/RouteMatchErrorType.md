@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / RouteMatchErrorType
 
@@ -8,7 +8,7 @@
 
 > **RouteMatchErrorType** = (`path`, `reason`, `details?`) => `RouteMatchError`
 
-Defined in: [src/router/types.ts:46](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L46)
+Defined in: [src/router/types.ts:49](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L49)
 
 Create a RouteMatchError.
 

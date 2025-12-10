@@ -5,7 +5,6 @@ A reactive UI framework built on [Effect](https://effect.website/). Effect UI pr
 ## Table of Contents
 
 - [Why Effect UI?](#why-effect-ui)
-- [Coming from React](#coming-from-react)
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Core Concepts](#core-concepts)
@@ -25,17 +24,15 @@ A reactive UI framework built on [Effect](https://effect.website/). Effect UI pr
 
 ## Why Effect UI?
 
-If you're coming from React, you might wonder why you'd learn another UI framework. Here's what Effect UI does differently:
+Effect UI brings the power of [Effect](https://effect.website/) to frontend development. If you're building with Effect, this is a UI framework that speaks the same language.
 
 ### Typed Error Handling
 
-In React, component errors are runtime surprises. You catch them with error boundaries, but there's no compile-time visibility into what can fail.
-
-In Effect UI, every element has type `Element<E>` where `E` is the error channel. Errors propagate through the component tree, and you **must** handle them before mounting:
+Every element has type `Element<E>` where `E` is the error channel. Errors propagate through the component tree, and you **must** handle them before mounting:
 
 ```ts
 // This won't compile - UserProfile might fail with ApiError
-mount(UserProfile(), document.body); // ❌ Type error!
+mount(UserProfile(), document.body); // Type error!
 
 // Handle the error first
 mount(
@@ -44,117 +41,39 @@ mount(
     (error) => $.div(`Failed to load: ${error.message}`),
   ),
   document.body,
-); // ✅ Compiles
+); // Compiles
 ```
 
-TypeScript tells you at build time which components can fail and forces you to handle it. No more "white screen of death" in production.
+TypeScript tells you at build time which components can fail and forces you to handle it.
 
-### Fine-Grained Reactivity (No Virtual DOM)
+### Fine-Grained Reactivity
 
-React re-renders entire component subtrees when state changes, then diffs a virtual DOM to find what actually changed. This works, but it's wasteful.
-
-Effect UI uses signals. When a signal updates, only the DOM nodes that actually depend on that signal update. No diffing, no wasted renders:
+Effect UI uses signals for reactive state. When a signal updates, only the DOM nodes that actually depend on that signal update. No virtual DOM, no diffing, no wasted work:
 
 ```ts
-// React: Changing count re-renders the entire component
-function Counter() {
-  const [count, setCount] = useState(0)
-  console.log("render")  // Logs on every click
-  return <div>{count}</div>
-}
-
-// Effect UI: Only the text node updates
 const Counter = component("Counter", () =>
   Effect.gen(function* () {
     const count = yield* Signal.make(0)
-    console.log("render")  // Logs once, on mount
-    return yield* $.div(count)  // count changes update only this text
+    console.log("setup")  // Logs once, on mount
+    return yield* $.div(count)  // count changes update only this text node
   })
 )
 ```
 
-### No Rules of Hooks
-
-React hooks have rules you must memorize:
-
-- Don't call hooks conditionally
-- Exhaustive dependency arrays (with lint rules that don't always help)
-- Stale closure bugs when you forget a dependency
-- `useCallback` and `useMemo` everywhere for performance
-
-Effect UI has none of this. Create signals wherever you want. Use them wherever you want. The reactivity system tracks dependencies automatically:
-
-```ts
-// React: Must memoize, manage deps, avoid stale closures
-const [items, setItems] = useState([]);
-const handleAdd = useCallback(() => {
-  setItems((prev) => [...prev, newItem]); // Must use prev, not items!
-}, []); // Stale closure if you use items directly
-
-// Effect UI: Just write code
-const items = yield * Signal.make([]);
-const handleAdd = () => items.update((current) => [...current, newItem]); // Always fresh
-```
+Signal updates are surgical. A parent's state change doesn't affect unrelated children.
 
 ### Automatic Resource Cleanup
 
-React's `useEffect` cleanup is manual and easy to get wrong. Forget to clean up a subscription? Memory leak. Return a non-function? Runtime error.
-
-Effect UI uses Effect's scope system. Resources are automatically cleaned up when components unmount:
+Effect UI uses Effect's scope system. Subscriptions, timers, and other resources are automatically cleaned up when components unmount:
 
 ```ts
-// React: Manual cleanup, easy to forget
-useEffect(() => {
-  const subscription = eventSource.subscribe(handler);
-  return () => subscription.unsubscribe(); // Don't forget!
-}, []);
-
-// Effect UI: Automatic cleanup via scope
-yield *
-  eventSource.pipe(
-    Stream.runForEach(handler),
-    Effect.forkIn(scope), // Cleaned up when scope closes
-  );
+yield* eventSource.pipe(
+  Stream.runForEach(handler),
+  Effect.forkIn(scope), // Cleaned up when scope closes
+);
 ```
 
-### No Re-render Cascades
-
-In React, when a parent re-renders, all children re-render too (unless wrapped in `React.memo`). This leads to prop drilling `memo` everywhere or using context for everything.
-
-In Effect UI, signal updates only notify actual subscribers. Parent "re-renders" don't exist:
-
-```ts
-// React: Parent re-render causes child re-render
-function Parent() {
-  const [count, setCount] = useState(0)  // Child re-renders too!
-  return <Child />  // Unless wrapped in memo()
-}
-
-// Effect UI: Parent signal doesn't affect unrelated children
-const Parent = component("Parent", () =>
-  Effect.gen(function* () {
-    const count = yield* Signal.make(0)  // Child doesn't care
-    return yield* $.div([Child()])  // Child never "re-renders"
-  })
-)
-```
-
-### Better Async
-
-React's Suspense requires experimental features for data fetching, and error handling is separate from loading states. In Effect UI, it's unified:
-
-```ts
-Suspense({
-  render: () =>
-    Effect.gen(function* () {
-      const user = yield* fetchUser(id); // Can fail!
-      return yield* UserProfile({ user });
-    }),
-  fallback: () => $.div("Loading..."),
-  catch: (error) => $.div(`Error: ${error.message}`), // Same place
-  delay: "200 millis", // Avoid loading flash
-});
-```
+No manual cleanup, no forgotten unsubscribes, no memory leaks.
 
 ### The Effect Ecosystem
 
@@ -162,191 +81,30 @@ Effect UI gives you access to Effect's entire ecosystem:
 
 - **Schema**: Runtime validation with static types
 - **Streams**: Reactive data flows
-- **Services**: Dependency injection without prop drilling
+- **Services**: Dependency injection via Effect's context system
 - **Retry/timeout**: Built-in resilience patterns
-- **Structured concurrency**: No race conditions
+- **Structured concurrency**: Fork, join, and race without footguns
 
----
+### Unified Async Handling
 
-## Coming from React
+Loading states, errors, and success rendering in one place:
 
-A quick reference for React developers learning Effect UI.
-
-### Concept Mapping
-
-| React                          | Effect UI                                | Notes                     |
-| ------------------------------ | ---------------------------------------- | ------------------------- |
-| `useState(initial)`            | `Signal.make(initial)`                   | Must `yield*` to create   |
-| `useMemo(() => x, deps)`       | `Derived.sync([deps], () => x)`          | Deps are explicit signals |
-| `useEffect(() => {...}, deps)` | `Reaction` or scope finalizers           | Automatic cleanup         |
-| `useCallback(fn, deps)`        | Just use the function                    | No stale closures         |
-| `useContext(Ctx)`              | `yield* ServiceTag`                      | Effect services           |
-| `useRef(initial)`              | `Ref.make(initial)`                      | For DOM refs              |
-| `<Component prop={x} />`       | `Component({ prop: x })`                 | Function calls            |
-| `{cond && <El/>}`              | `when(cond, () => El(), () => $.span())` | Always two branches       |
-| `{arr.map(x => <El key/>)}`    | `each(arr, keyFn, renderFn)`             | Key function, not prop    |
-| `<ErrorBoundary>`              | `ErrorBoundary(try, catch)`              | Typed errors!             |
-| `<Suspense>`                   | `Suspense({ render, fallback })`         | With typed `catch`        |
-| Component re-render            | Doesn't exist                            | Only signals update DOM   |
-| Virtual DOM diff               | Doesn't exist                            | Direct DOM updates        |
-| `React.memo()`                 | Not needed                               | Fine-grained by default   |
-
-### Side-by-Side Examples
-
-**State and Updates**
-
-```tsx
-// React
-function Counter() {
-  const [count, setCount] = useState(0);
-  return <button onClick={() => setCount((c) => c + 1)}>{count}</button>;
-}
-
-// Effect UI
-const Counter = component("Counter", () =>
-  Effect.gen(function* () {
-    const count = yield* Signal.make(0);
-    return yield* $.button(
-      { onClick: () => count.update((c) => c + 1) },
-      count,
-    );
-  }),
-);
+```ts
+Suspense({
+  render: () =>
+    Effect.gen(function* () {
+      const user = yield* fetchUser(id);
+      return yield* UserProfile({ user });
+    }),
+  fallback: () => $.div("Loading..."),
+  catch: (error) => $.div(`Error: ${error.message}`),
+  delay: "200 millis", // Avoid loading flash
+});
 ```
 
-**Derived State**
+### Coming from React?
 
-```tsx
-// React
-function Cart({ items }) {
-  const total = useMemo(
-    () => items.reduce((sum, i) => sum + i.price, 0),
-    [items],
-  );
-  return <div>Total: ${total}</div>;
-}
-
-// Effect UI
-const Cart = component("Cart", (props: { items: Readable<Item[]> }) =>
-  Effect.gen(function* () {
-    const total = yield* Derived.sync([props.items], ([items]) =>
-      items.reduce((sum, i) => sum + i.price, 0),
-    );
-    return yield* $.div(total.map((t) => `Total: $${t}`));
-  }),
-);
-```
-
-**Conditional Rendering**
-
-```tsx
-// React
-function Auth({ isLoggedIn }) {
-  return isLoggedIn ? <Dashboard /> : <Login />;
-}
-
-// Effect UI
-const Auth = component("Auth", (props: { isLoggedIn: Readable<boolean> }) =>
-  when(
-    props.isLoggedIn,
-    () => Dashboard(),
-    () => Login(),
-  ),
-);
-```
-
-**Lists**
-
-```tsx
-// React
-function TodoList({ todos }) {
-  return (
-    <ul>
-      {todos.map((todo) => (
-        <li key={todo.id}>{todo.text}</li>
-      ))}
-    </ul>
-  );
-}
-
-// Effect UI
-const TodoList = component("TodoList", (props: { todos: Readable<Todo[]> }) =>
-  $.ul([
-    each(
-      props.todos,
-      (todo) => todo.id, // Key function
-      (todo) => $.li(todo.map((t) => t.text)), // Render function
-    ),
-  ]),
-);
-```
-
-**Data Fetching**
-
-```tsx
-// React (with Suspense + error boundary)
-function UserProfile({ id }) {
-  const user = use(fetchUser(id)); // Experimental
-  return <div>{user.name}</div>;
-}
-
-// Wrapped in error boundary + suspense elsewhere...
-
-// Effect UI (all-in-one)
-const UserProfile = component("UserProfile", (props: { id: string }) =>
-  Suspense({
-    render: () =>
-      Effect.gen(function* () {
-        const user = yield* fetchUser(props.id);
-        return yield* $.div(user.name);
-      }),
-    fallback: () => $.div("Loading..."),
-    catch: (e) => $.div(`Error: ${e}`),
-  }),
-);
-```
-
-**Context / Services**
-
-```tsx
-// React
-const ThemeContext = createContext("light");
-function App() {
-  return (
-    <ThemeContext.Provider value="dark">
-      <Page />
-    </ThemeContext.Provider>
-  );
-}
-function Page() {
-  const theme = useContext(ThemeContext);
-  return <div className={theme}>...</div>;
-}
-
-// Effect UI
-class ThemeService extends Context.Tag("Theme")<ThemeService, string>() {}
-
-const Page = component("Page", () =>
-  Effect.gen(function* () {
-    const theme = yield* ThemeService;
-    return yield* $.div({ class: theme }, "...");
-  }),
-);
-
-runApp(mount(Page().pipe(Effect.provideService(ThemeService, "dark")), root));
-```
-
-### Key Mindset Shifts
-
-1. **Components don't re-render** - There's no render cycle. Signals update, and only their subscribers react.
-
-2. **Errors are values** - Instead of try/catch around everything, errors flow through the type system. Handle them explicitly with `ErrorBoundary` or Effect combinators.
-
-3. **Effects are explicit** - Side effects aren't hidden in `useEffect`. They're Effect values that you compose and run explicitly.
-
-4. **No dependency arrays** - The reactive system tracks dependencies automatically. You never list them manually.
-
-5. **Cleanup is automatic** - Effect's scope system handles resource cleanup. No more forgotten unsubscribes.
+If you're transitioning from React, see our [migration guide](./REACT-MIGRATION.md) for concept mapping and side-by-side examples.
 
 ---
 
@@ -474,10 +232,6 @@ const userDisplay =
     { equals: (a, b) => a.id === b.id && a.displayName === b.displayName },
   );
 ```
-
-**How this differs from React:**
-
-React's `useMemo` and `useEffect` use a dependency array with shallow comparison, and there's no built-in way to customize equality. You'd need external libraries or manual `useRef` tracking. In Effect UI, equality is a first-class option on every reactive primitive, giving you fine-grained control over when the UI re-renders.
 
 This is particularly useful for:
 

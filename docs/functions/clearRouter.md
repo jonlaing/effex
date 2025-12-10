@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / clearRouter
 
@@ -8,7 +8,7 @@
 
 > **clearRouter**(): `void`
 
-Defined in: [src/router/RouterContext.ts:143](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/RouterContext.ts#L143)
+Defined in: [src/router/RouterContext.ts:156](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/RouterContext.ts#L156)
 
 ## Returns
 

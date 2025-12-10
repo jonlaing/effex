@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / MatchCase
 
 # Interface: MatchCase\<A, E, R\>
 
-Defined in: [src/dom/Control.ts:183](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Control.ts#L183)
+Defined in: [src/dom/Control.ts:466](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Control.ts#L466)
 
 A case for pattern matching with [match](../functions/match.md).
 
@@ -30,19 +30,15 @@ A case for pattern matching with [match](../functions/match.md).
 
 > `readonly` **pattern**: `A`
 
-Defined in: [src/dom/Control.ts:185](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Control.ts#L185)
+Defined in: [src/dom/Control.ts:467](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Control.ts#L467)
 
-The value to match against
-
----
+***
 
 ### render()
 
 > `readonly` **render**: () => [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
 
-Defined in: [src/dom/Control.ts:187](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Control.ts#L187)
-
-Element to render when matched
+Defined in: [src/dom/Control.ts:468](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Control.ts#L468)
 
 #### Returns
 

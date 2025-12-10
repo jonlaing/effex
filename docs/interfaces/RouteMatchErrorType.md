@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / RouteMatchErrorType
 
 # Interface: RouteMatchErrorType
 
-Defined in: [src/router/types.ts:46](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L46)
+Defined in: [src/router/types.ts:49](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L49)
 
 Error when a route doesn't match.
 
@@ -16,28 +16,28 @@ Error when a route doesn't match.
 
 > `readonly` **\_tag**: `"RouteMatchError"`
 
-Defined in: [src/router/types.ts:47](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L47)
+Defined in: [src/router/types.ts:50](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L50)
 
----
+***
 
 ### details?
 
 > `readonly` `optional` **details**: `string`
 
-Defined in: [src/router/types.ts:50](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L50)
+Defined in: [src/router/types.ts:53](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L53)
 
----
+***
 
 ### path
 
 > `readonly` **path**: `string`
 
-Defined in: [src/router/types.ts:48](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L48)
+Defined in: [src/router/types.ts:51](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L51)
 
----
+***
 
 ### reason
 
 > `readonly` **reason**: `"no-match"` \| `"validation-failed"`
 
-Defined in: [src/router/types.ts:49](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L49)
+Defined in: [src/router/types.ts:52](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L52)

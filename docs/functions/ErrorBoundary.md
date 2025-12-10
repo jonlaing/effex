@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / ErrorBoundary
 
@@ -8,7 +8,7 @@
 
 > **ErrorBoundary**\<`E`, `R1`, `E2`, `R2`\>(`tryRender`, `catchRender`): [`Element`](../type-aliases/Element.md)\<`E2`, `R1` \| `R2`\>
 
-Defined in: [src/dom/Control.ts:19](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Control.ts#L19)
+Defined in: [src/dom/Control.ts:29](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Control.ts#L29)
 
 Catches errors from a render function and displays a fallback element.
 
@@ -53,6 +53,6 @@ Function to render the error fallback
 ```ts
 ErrorBoundary(
   () => riskyComponent(),
-  (error) => div(["Something went wrong: ", String(error)]),
-);
+  (error) => div(["Something went wrong: ", String(error)])
+)
 ```

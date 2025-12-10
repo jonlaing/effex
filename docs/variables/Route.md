@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / Route
 
@@ -8,7 +8,7 @@
 
 > `const` **Route**: `object`
 
-Defined in: [src/router/Route.ts:164](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/Route.ts#L164)
+Defined in: [src/router/Route.ts:157](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/Route.ts#L157)
 
 Route module namespace.
 
@@ -24,11 +24,11 @@ Create a route definition.
 
 ##### Path
 
-`Path` _extends_ `string`
+`Path` *extends* `string`
 
 ##### P
 
-`P` _extends_ `AnyNoContext` = `AnyNoContext`
+`P` *extends* `AnyNoContext` = `AnyNoContext`
 
 #### Parameters
 
@@ -52,10 +52,10 @@ Route configuration including params schema
 
 ```ts
 const UserRoute = Route.make("/users/:id", {
-  params: Schema.Struct({ id: Schema.String }),
-});
+  params: Schema.Struct({ id: Schema.String })
+})
 
-const HomeRoute = Route.make("/");
+const HomeRoute = Route.make("/")
 
-const CatchAllRoute = Route.make("/*");
+const CatchAllRoute = Route.make("/*")
 ```

@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / RouterType
 
 # Interface: RouterType\<Routes\>
 
-Defined in: [src/router/types.ts:100](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L100)
+Defined in: [src/router/types.ts:103](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L103)
 
 The main Router interface.
 
@@ -14,7 +14,7 @@ The main Router interface.
 
 ### Routes
 
-`Routes` _extends_ `Record`\<`string`, [`RouteType`](RouteType.md)\<`string`, `Schema.Schema.AnyNoContext`\>\>
+`Routes` *extends* `Record`\<`string`, [`RouteType`](RouteType.md)\<`string`, `Schema.Schema.AnyNoContext`\>\>
 
 Record of route names to Route definitions
 
@@ -24,7 +24,7 @@ Record of route names to Route definitions
 
 > `readonly` **back**: () => `Effect`\<`void`\>
 
-Defined in: [src/router/types.ts:124](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L124)
+Defined in: [src/router/types.ts:130](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L130)
 
 Go back in history
 
@@ -32,23 +32,23 @@ Go back in history
 
 `Effect`\<`void`\>
 
----
+***
 
 ### currentRoute
 
 > `readonly` **currentRoute**: [`Readable`](Readable.md)\<keyof `Routes` \| `null`\>
 
-Defined in: [src/router/types.ts:108](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L108)
+Defined in: [src/router/types.ts:111](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L111)
 
 The currently matched route name, or null if no match
 
----
+***
 
 ### forward()
 
 > `readonly` **forward**: () => `Effect`\<`void`\>
 
-Defined in: [src/router/types.ts:126](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L126)
+Defined in: [src/router/types.ts:132](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L132)
 
 Go forward in history
 
@@ -56,23 +56,23 @@ Go forward in history
 
 `Effect`\<`void`\>
 
----
+***
 
 ### pathname
 
 > `readonly` **pathname**: [`Readable`](Readable.md)\<`string`\>
 
-Defined in: [src/router/types.ts:104](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L104)
+Defined in: [src/router/types.ts:107](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L107)
 
 The current pathname
 
----
+***
 
 ### push()
 
 > `readonly` **push**: (`path`, `options?`) => `Effect`\<`void`\>
 
-Defined in: [src/router/types.ts:120](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L120)
+Defined in: [src/router/types.ts:123](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L123)
 
 Navigate to a path
 
@@ -90,13 +90,13 @@ Navigate to a path
 
 `Effect`\<`void`\>
 
----
+***
 
 ### replace()
 
 > `readonly` **replace**: (`path`) => `Effect`\<`void`\>
 
-Defined in: [src/router/types.ts:122](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L122)
+Defined in: [src/router/types.ts:128](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L128)
 
 Replace current path
 
@@ -110,22 +110,22 @@ Replace current path
 
 `Effect`\<`void`\>
 
----
+***
 
 ### routes
 
 > `readonly` **routes**: \{ readonly \[K in string \| number \| symbol\]: RouteState\<Routes\[K\] extends RouteType\<string, P\> ? P extends AnyNoContext ? Type\<P\<P\>\> : Record\<string, never\> : Record\<string, never\>\> \}
 
-Defined in: [src/router/types.ts:110](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L110)
+Defined in: [src/router/types.ts:113](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L113)
 
 Route-specific state for each defined route
 
----
+***
 
 ### searchParams
 
 > `readonly` **searchParams**: [`Readable`](Readable.md)\<`URLSearchParams`\>
 
-Defined in: [src/router/types.ts:106](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L106)
+Defined in: [src/router/types.ts:109](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L109)
 
 The current query params

@@ -1,6 +1,6 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / t
 
@@ -8,7 +8,7 @@
 
 > **t**(`strings`, ...`values`): [`Readable`](../interfaces/Readable.md)\<`string`\>
 
-Defined in: [src/dom/Template.ts:28](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Template.ts#L28)
+Defined in: [src/dom/Template.ts:28](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Template.ts#L28)
 
 Tagged template literal for creating reactive strings.
 Interpolated Readable values will automatically update the string when they change.
@@ -30,12 +30,12 @@ Interpolated Readable values will automatically update the string when they chan
 ## Example
 
 ```ts
-const name = yield * Signal.make("World");
-const count = yield * Signal.make(0);
+const name = yield* Signal.make("World")
+const count = yield* Signal.make(0)
 
 // Static parts stay static, reactive parts update
-const message = t`Hello, ${name}! Count: ${count}`;
+const message = t`Hello, ${name}! Count: ${count}`
 
 // Use in elements
-div([message]); // Updates when name or count changes
+div([message])  // Updates when name or count changes
 ```

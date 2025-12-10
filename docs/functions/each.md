@@ -1,14 +1,14 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / each
 
 # Function: each()
 
-> **each**\<`A`, `E`, `R`\>(`items`, `keyFn`, `render`): [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
+> **each**\<`A`, `E`, `R`\>(`items`, `keyFn`, `render`, `options?`): [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
 
-Defined in: [src/dom/Control.ts:272](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/dom/Control.ts#L272)
+Defined in: [src/dom/Control.ts:659](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/dom/Control.ts#L659)
 
 Render a list of items with efficient updates using keys.
 
@@ -46,22 +46,41 @@ Function to extract a unique key from each item
 
 Function to render each item (receives a Readable for the item)
 
+### options?
+
+[`ListControlAnimationOptions`](../interfaces/ListControlAnimationOptions.md)
+
+Optional animation configuration
+
 ## Returns
 
 [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
 
-## Example
+## Examples
 
 ```ts
-interface Todo {
-  id: string;
-  text: string;
-}
-const todos = yield * Signal.make<Todo[]>([]);
+interface Todo { id: string; text: string }
+const todos = yield* Signal.make<Todo[]>([])
 
 each(
   todos,
   (todo) => todo.id,
-  (todo) => li([todo.map((t) => t.text)]),
-);
+  (todo) => li([todo.map(t => t.text)])
+)
+```
+
+```ts
+// With staggered animations
+each(
+  items,
+  (item) => item.id,
+  (item) => ListItem(item),
+  {
+    animate: {
+      enter: "slide-in",
+      exit: "slide-out",
+      stagger: 50  // 50ms between items
+    }
+  }
+)
 ```

@@ -31,6 +31,8 @@
 - [ ] **Improve error messages** - Better developer experience when things go wrong
 
 - [ ] **Performance testing** - Benchmark reactive updates, large lists, etc.
+  - [ ] Vitest benchmarks in `benchmarks/` directory (internal regression testing)
+  - [ ] js-framework-benchmark integration (public comparison numbers)
 
 ## Future Considerations
 
@@ -66,6 +68,11 @@
   - [ ] V3: File-based routing (Vite plugin, `src/routes/` convention, auto-generated types)
 
 - [ ] **Documentation site** - Full documentation with examples (TypeDoc is set up)
+
+- [ ] **Migration guides** - Help developers coming from other frameworks
+  - [x] React migration guide (REACT-MIGRATION.md)
+  - [ ] Vue migration guide
+  - [ ] Svelte migration guide
 
 - [ ] **Table helpers** - TanStack Table-inspired utilities for building data tables with sorting, filtering, pagination, etc.
 

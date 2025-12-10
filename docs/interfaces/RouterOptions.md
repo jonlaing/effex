@@ -1,12 +1,12 @@
 [**@jonlaing/effect-ui**](../README.md)
 
----
+***
 
 [@jonlaing/effect-ui](../globals.md) / RouterOptions
 
 # Interface: RouterOptions
 
-Defined in: [src/router/types.ts:132](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L132)
+Defined in: [src/router/types.ts:138](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L138)
 
 Options for creating a Router.
 
@@ -16,6 +16,6 @@ Options for creating a Router.
 
 > `readonly` `optional` **initialPath**: `string`
 
-Defined in: [src/router/types.ts:134](https://github.com/jonlaing/effect-ui/blob/5dcbd96e71866aa767e66bbf641843f4b888e1d7/src/router/types.ts#L134)
+Defined in: [src/router/types.ts:140](https://github.com/jonlaing/effect-ui/blob/734f667177209887be58fbcdeaf94e3632c47f02/src/router/types.ts#L140)
 
 Initial path to start at (defaults to window.location.pathname)

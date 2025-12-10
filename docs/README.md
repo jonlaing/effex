@@ -1,10 +1,116 @@
 **@jonlaing/effect-ui**
 
----
+***
 
 # Effect UI
 
 A reactive UI framework built on [Effect](https://effect.website/). Effect UI provides a declarative way to build web interfaces with fine-grained reactivity, automatic cleanup, and full type safety.
+
+## Table of Contents
+
+- [Why Effect UI?](#why-effect-ui)
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Core Concepts](#core-concepts)
+  - [Signals](#signals)
+  - [Derived Values](#derived-values)
+  - [Custom Equality](#custom-equality)
+  - [Template Strings](#template-strings)
+  - [Elements](#elements)
+  - [Control Flow](#control-flow)
+- [Router](#router)
+- [Async Data Loading](#async-data-loading)
+- [Forms](#forms)
+- [Animation](#animation)
+- [Portal](#portal)
+- [Why No JSX?](#why-no-jsx)
+- [API Documentation](#api-documentation)
+
+## Why Effect UI?
+
+Effect UI brings the power of [Effect](https://effect.website/) to frontend development. If you're building with Effect, this is a UI framework that speaks the same language.
+
+### Typed Error Handling
+
+Every element has type `Element<E>` where `E` is the error channel. Errors propagate through the component tree, and you **must** handle them before mounting:
+
+```ts
+// This won't compile - UserProfile might fail with ApiError
+mount(UserProfile(), document.body); // Type error!
+
+// Handle the error first
+mount(
+  ErrorBoundary(
+    () => UserProfile(),
+    (error) => $.div(`Failed to load: ${error.message}`),
+  ),
+  document.body,
+); // Compiles
+```
+
+TypeScript tells you at build time which components can fail and forces you to handle it.
+
+### Fine-Grained Reactivity
+
+Effect UI uses signals for reactive state. When a signal updates, only the DOM nodes that actually depend on that signal update. No virtual DOM, no diffing, no wasted work:
+
+```ts
+const Counter = component("Counter", () =>
+  Effect.gen(function* () {
+    const count = yield* Signal.make(0)
+    console.log("setup")  // Logs once, on mount
+    return yield* $.div(count)  // count changes update only this text node
+  })
+)
+```
+
+Signal updates are surgical. A parent's state change doesn't affect unrelated children.
+
+### Automatic Resource Cleanup
+
+Effect UI uses Effect's scope system. Subscriptions, timers, and other resources are automatically cleaned up when components unmount:
+
+```ts
+yield* eventSource.pipe(
+  Stream.runForEach(handler),
+  Effect.forkIn(scope), // Cleaned up when scope closes
+);
+```
+
+No manual cleanup, no forgotten unsubscribes, no memory leaks.
+
+### The Effect Ecosystem
+
+Effect UI gives you access to Effect's entire ecosystem:
+
+- **Schema**: Runtime validation with static types
+- **Streams**: Reactive data flows
+- **Services**: Dependency injection via Effect's context system
+- **Retry/timeout**: Built-in resilience patterns
+- **Structured concurrency**: Fork, join, and race without footguns
+
+### Unified Async Handling
+
+Loading states, errors, and success rendering in one place:
+
+```ts
+Suspense({
+  render: () =>
+    Effect.gen(function* () {
+      const user = yield* fetchUser(id);
+      return yield* UserProfile({ user });
+    }),
+  fallback: () => $.div("Loading..."),
+  catch: (error) => $.div(`Error: ${error.message}`),
+  delay: "200 millis", // Avoid loading flash
+});
+```
+
+### Coming from React?
+
+If you're transitioning from React, see our [migration guide](_media/REACT-MIGRATION.md) for concept mapping and side-by-side examples.
+
+---
 
 ## Installation
 
@@ -51,19 +157,18 @@ const Counter = component("Counter", () =>
 );
 ```
 
-### Mounting
+### Running Your App
+
+Use `runApp` to mount your application. It handles scoping, the SignalRegistry, and keeping the app alive:
 
 ```ts
 import { Effect } from "effect";
-import { SignalRegistry, mount } from "@jonlaing/effect-ui";
+import { mount, runApp } from "@jonlaing/effect-ui";
 
-Effect.runPromise(
-  Effect.scoped(
-    Effect.gen(function* () {
-      yield* mount(Counter(), document.getElementById("root")!);
-      yield* Effect.never; // Keep scope alive
-    }),
-  ).pipe(Effect.provide(SignalRegistry.Live)),
+runApp(
+  Effect.gen(function* () {
+    yield* mount(Counter(), document.getElementById("root")!);
+  }),
 );
 ```
 
@@ -131,10 +236,6 @@ const userDisplay =
     { equals: (a, b) => a.id === b.id && a.displayName === b.displayName },
   );
 ```
-
-**How this differs from React:**
-
-React's `useMemo` and `useEffect` use a dependency array with shallow comparison, and there's no built-in way to customize equality. You'd need external libraries or manual `useRef` tracking. In Effect UI, equality is a first-class option on every reactive primitive, giving you fine-grained control over when the UI re-renders.
 
 This is particularly useful for:
 
@@ -212,12 +313,16 @@ each(
 Effect UI includes a typed router with Effect Schema validation for route params.
 
 ```ts
-import { Context, Effect, Layer, Schema } from "effect";
+import { Context, Effect, Schema } from "effect";
 import {
+  $,
+  component,
+  mount,
+  runApp,
   Route,
   Router,
   Link,
-  makeRouterLayer,
+  makeTypedRouterLayer,
   type RouterInfer,
 } from "@jonlaing/effect-ui";
 
@@ -254,24 +359,368 @@ const App = component("App", () =>
   }),
 );
 
-// Set up and run
-const program = Effect.gen(function* () {
-  const router = yield* Router.make(routes);
-
-  // Provide both contexts:
-  // - RouterContext (for Link components)
-  // - AppRouterContext (for typed access in your components)
-  const routerLayer = Layer.merge(
-    makeRouterLayer(router),
-    Layer.succeed(AppRouterContext, router),
-  );
-
-  yield* mount(App({}).pipe(Effect.provide(routerLayer)), document.body);
-  yield* Effect.never;
-});
+// Run the app
+runApp(
+  Effect.gen(function* () {
+    const router = yield* Router.make(routes);
+    const routerLayer = makeTypedRouterLayer(router, AppRouterContext);
+    yield* mount(App().pipe(Effect.provide(routerLayer)), document.body);
+  }),
+);
 ```
 
-The `Link` component uses `RouterContext` internally for navigation. Create your own typed context with `RouterInfer` when you need access to `currentRoute` or typed route params.
+The `Link` component uses `RouterContext` internally for navigation. Use `makeTypedRouterLayer` to provide both the base router context and your typed context in one layer.
+
+### Async Data Loading
+
+Use `Suspense` for async rendering with loading states. It accepts an options object:
+
+```ts
+import { match, Suspense } from "@jonlaing/effect-ui";
+
+// Simulate API call
+const fetchUser = (id: string) =>
+  Effect.gen(function* () {
+    yield* Effect.sleep("500 millis");
+    return { id, name: `User ${id}`, email: `user${id}@example.com` };
+  });
+
+// In your app
+match(router.currentRoute, [
+  // Simple route
+  {
+    pattern: "home",
+    render: () => HomePage(),
+  },
+  // Route with async data
+  {
+    pattern: "user",
+    render: () =>
+      Suspense({
+        render: () =>
+          Effect.gen(function* () {
+            const params = yield* router.routes.user.params.get;
+            const user = yield* fetchUser(params.id);
+            return yield* UserPage({ user });
+          }),
+        fallback: () => $.div("Loading user..."),
+        catch: (error) => $.div(`Error: ${error}`),
+        delay: "200 millis", // Only show loading after 200ms
+      }),
+  },
+]);
+```
+
+Suspense options:
+
+- `render`: Async Effect that returns the element
+- `fallback`: Element to show while loading
+- `catch`: Optional error handler
+- `delay`: Optional delay before showing fallback (accepts Effect Duration strings like `"200 millis"`, `"1 second"`, or a number in ms). Prevents loading flash on fast responses.
+
+### Forms
+
+Effect UI includes a form system with Effect Schema validation:
+
+```ts
+import { Effect, Schema } from "effect";
+import { $, Form, component, when } from "@jonlaing/effect-ui";
+
+// Define a schema for validation
+const LoginSchema = Schema.Struct({
+  email: Schema.String.pipe(
+    Schema.nonEmptyString({ message: () => "Email is required" }),
+  ),
+  password: Schema.String.pipe(
+    Schema.minLength(8, {
+      message: () => "Password must be at least 8 characters",
+    }),
+  ),
+});
+
+const LoginForm = component("LoginForm", () =>
+  Effect.gen(function* () {
+    const form = yield* Form.make({
+      schema: LoginSchema,
+      initial: { email: "", password: "" },
+    });
+
+    const handleSubmit = () =>
+      form.submit((values) =>
+        Effect.gen(function* () {
+          // values is typed as { email: string, password: string }
+          console.log("Submitting:", values);
+          yield* form.reset();
+        }),
+      );
+
+    return yield* $.div({ class: "login-form" }, [
+      $.div([
+        $.label("Email"),
+        $.input({
+          type: "email",
+          value: form.fields.email.value,
+          onInput: (e) =>
+            form.fields.email.value.set((e.target as HTMLInputElement).value),
+          onBlur: () => form.fields.email.touch(),
+        }),
+        // Show errors when field is touched
+        when(
+          form.fields.email.errors.map((errs) => errs.length > 0),
+          () =>
+            $.span(
+              { class: "error" },
+              form.fields.email.errors.map((e) => e[0] ?? ""),
+            ),
+          () => $.span(),
+        ),
+      ]),
+      $.div([
+        $.label("Password"),
+        $.input({
+          type: "password",
+          value: form.fields.password.value,
+          onInput: (e) =>
+            form.fields.password.value.set(
+              (e.target as HTMLInputElement).value,
+            ),
+          onBlur: () => form.fields.password.touch(),
+        }),
+        when(
+          form.fields.password.errors.map((errs) => errs.length > 0),
+          () =>
+            $.span(
+              { class: "error" },
+              form.fields.password.errors.map((e) => e[0] ?? ""),
+            ),
+          () => $.span(),
+        ),
+      ]),
+      $.button(
+        {
+          onClick: () => handleSubmit(),
+          disabled: form.isSubmitting,
+        },
+        form.isSubmitting.map((s) => (s ? "Submitting..." : "Log In")),
+      ),
+    ]);
+  }),
+);
+```
+
+Form features:
+
+- **Schema validation**: Uses Effect Schema for type-safe validation with custom error messages
+- **Field state**: Each field has `value`, `errors`, `touched`, and `dirty` readables
+- **Validation timing**: Configure when validation runs with `validation: "hybrid" | "blur" | "change" | "submit"`
+- **Form state**: Access `isValid`, `isSubmitting`, `isTouched`, `isDirty`, and aggregated `errors`
+- **Actions**: `submit()`, `reset()`, `setErrors()`, `validate()`, `getValues()`
+
+### Animation
+
+Effect UI provides CSS-based animation primitives for `when`, `match`, and `each` components. Animations are CSS-first - you provide class names, and the library manages the lifecycle and timing.
+
+```ts
+import { when, each, match, stagger } from "@jonlaing/effect-ui";
+
+// Simple enter/exit animations
+when(
+  isVisible,
+  () => Modal(),
+  () => $.span(),
+  { animate: { enter: "fade-in", exit: "fade-out" } },
+);
+
+// With initial and final state classes (great for Tailwind)
+when(
+  isOpen,
+  () => Dropdown(),
+  () => $.span(),
+  {
+    animate: {
+      enterFrom: "opacity-0 scale-95",
+      enterTo: "opacity-100 scale-100",
+      exit: "fade-out",
+    },
+  },
+);
+
+// Staggered list animations
+each(
+  items,
+  (item) => item.id,
+  (item) => ListItem(item),
+  {
+    animate: {
+      enter: "slide-in",
+      exit: "slide-out",
+      stagger: stagger(50), // 50ms between items
+    },
+  },
+);
+
+// Route transitions with match
+match(
+  router.currentRoute,
+  [
+    { pattern: "home", render: () => HomePage() },
+    { pattern: "about", render: () => AboutPage() },
+  ],
+  () => NotFound(),
+  { animate: { enter: "fade-in", exit: "fade-out" } },
+);
+```
+
+**Animation Options:**
+
+```ts
+interface AnimationOptions {
+  enter?: string; // CSS class(es) for enter animation
+  exit?: string; // CSS class(es) for exit animation
+  enterFrom?: string; // Initial state class (removed after animation)
+  enterTo?: string; // Final state class (persisted)
+  exitTo?: string; // Exit target state class
+  timeout?: number; // Max wait time in ms (default: 5000)
+  respectReducedMotion?: boolean; // Skip animations if user prefers (default: true)
+
+  // Lifecycle hooks
+  onBeforeEnter?: (el: HTMLElement) => Effect<void> | void;
+  onEnter?: (el: HTMLElement) => Effect<void> | void;
+  onBeforeExit?: (el: HTMLElement) => Effect<void> | void;
+  onExit?: (el: HTMLElement) => Effect<void> | void;
+}
+```
+
+**Stagger Utilities:**
+
+```ts
+import { stagger, staggerFromCenter, staggerEased } from "@jonlaing/effect-ui";
+
+stagger(50); // Linear: 0ms, 50ms, 100ms...
+staggerFromCenter(30); // Center-out: middle items animate first
+staggerEased(500, easeOut); // Apply easing curve to stagger timing
+```
+
+**Timing Utilities:**
+
+```ts
+import { delay, sequence, parallel } from "@jonlaing/effect-ui";
+
+// Delay before animation
+yield * delay(200, runEnterAnimation(element, options));
+
+// Run animations sequentially
+yield * sequence(exitAnimation, enterAnimation);
+
+// Run animations in parallel
+yield * parallel(anim1, anim2, anim3);
+```
+
+Example CSS for animations:
+
+```css
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+.fade-out {
+  animation: fade-in 0.2s ease-in reverse forwards;
+}
+.slide-in {
+  animation: slide-in 0.3s ease-out forwards;
+}
+.slide-out {
+  animation: slide-in 0.2s ease-in reverse forwards;
+}
+```
+
+Animation features:
+
+- **CSS-first**: Uses CSS classes for animations - works with any CSS framework
+- **Event-based timing**: Listens for `animationend`/`transitionend` to know when exit animations complete
+- **Reduced motion**: Respects `prefers-reduced-motion` by default
+- **Backward compatible**: Animation options are optional - existing code works unchanged
+- **Lifecycle hooks**: Run code before/after animations (e.g., focus an element after enter)
+
+### Portal
+
+Portals render children into a different DOM node, outside the normal component hierarchy. This is useful for modals, dropdowns, and tooltips that need to escape parent `overflow: hidden` or `z-index` stacking contexts.
+
+```ts
+import { Portal, $ } from "@jonlaing/effect-ui";
+
+// Render to document.body (default)
+Portal(() => Modal({ title: "Hello" }));
+
+// Render to a specific element by selector
+Portal({ target: "#modal-root" }, () =>
+  $.div({ class: "dropdown" }, [$.button("Option 1"), $.button("Option 2")]),
+);
+
+// Render to an element reference
+Portal({ target: containerElement }, () => Tooltip({ content: "Help text" }));
+```
+
+Portal returns a hidden placeholder element in the original DOM position while the actual content lives in the portal target. When the component unmounts (scope closes), the portal content is automatically cleaned up.
+
+**Options:**
+
+```ts
+interface PortalOptions {
+  target?: HTMLElement | string; // Default: document.body
+}
+```
+
+**Example: Modal with Portal**
+
+```ts
+const Modal = component(
+  "Modal",
+  (props: {
+    isOpen: Readable<boolean>;
+    onClose: () => void;
+    children: () => Element;
+  }) =>
+    when(
+      props.isOpen,
+      () =>
+        Portal(() =>
+          $.div({ class: "modal-overlay", onClick: props.onClose }, [
+            $.div(
+              {
+                class: "modal-content",
+                onClick: (e) => e.stopPropagation(), // Prevent closing when clicking content
+              },
+              [
+                $.button({ class: "close", onClick: props.onClose }, "×"),
+                props.children(),
+              ],
+            ),
+          ]),
+        ),
+      () => $.span(),
+    ),
+);
+```
 
 ## Why No JSX?
 
@@ -307,7 +756,7 @@ The function-based API is already quite clean for UI structure, and deeply neste
 
 ## API Documentation
 
-See the [docs](_media/docs) folder for full API documentation.
+See the [docs](./docs) folder for full API documentation.
 
 ## License
 
