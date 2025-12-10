@@ -183,7 +183,9 @@ export type HTMLAttributes<K extends keyof HTMLElementTagNameMap> =
           ? number | Readable<number>
           : HTMLElementTagNameMap[K][P] extends boolean
             ? boolean | Readable<boolean>
-            : HTMLElementTagNameMap[K][P] extends (...args: unknown[]) => unknown
+            : HTMLElementTagNameMap[K][P] extends (
+                  ...args: unknown[]
+                ) => unknown
               ? undefined // Exclude methods (like toString, normalize, etc.)
               : never;
     };

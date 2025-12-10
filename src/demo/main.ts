@@ -3,6 +3,7 @@ import {
   $,
   Signal,
   Derived,
+  Form,
   component,
   mount,
   runApp,
@@ -46,6 +47,13 @@ const Counter = component("Counter", () =>
   }),
 );
 
+// Schema for the new todo form
+const NewTodoSchema = Schema.Struct({
+  text: Schema.String.pipe(
+    Schema.nonEmptyString({ message: () => "Todo text is required" }),
+  ),
+});
+
 const TodoApp = component("TodoApp", () =>
   Effect.gen(function* () {
     const todos = yield* Signal.make<Todo[]>([
@@ -53,8 +61,13 @@ const TodoApp = component("TodoApp", () =>
       { id: 2, text: "Build Effect UI", completed: false },
       { id: 3, text: "Write tests", completed: false },
     ]);
-    const newTodoText = yield* Signal.make("");
     let nextId = 4;
+
+    // Create a form for adding new todos
+    const form = yield* Form.make({
+      schema: NewTodoSchema,
+      initial: { text: "" },
+    });
 
     const stats = yield* Derived.sync([todos], ([items]) => ({
       total: items.length,
@@ -63,16 +76,15 @@ const TodoApp = component("TodoApp", () =>
     }));
 
     const addTodo = () =>
-      Effect.gen(function* () {
-        const text = yield* newTodoText.get;
-        if (text.trim()) {
+      form.submit((values) =>
+        Effect.gen(function* () {
           yield* todos.update((items) => [
             ...items,
-            { id: nextId++, text: text.trim(), completed: false },
+            { id: nextId++, text: values.text.trim(), completed: false },
           ]);
-          yield* newTodoText.set("");
-        }
-      });
+          yield* form.reset();
+        }),
+      );
 
     const toggleTodo = (id: number) =>
       todos.update((items) =>
@@ -88,16 +100,28 @@ const TodoApp = component("TodoApp", () =>
         $.input({
           type: "text",
           placeholder: "What needs to be done?",
-          value: newTodoText,
-          onInput: (e) => newTodoText.set((e.target as HTMLInputElement).value),
+          value: form.fields.text.value,
+          onInput: (e) =>
+            form.fields.text.value.set((e.target as HTMLInputElement).value),
           onKeyDown: (e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               return addTodo();
             }
           },
         }),
         $.button({ onClick: () => addTodo() }, "Add"),
       ]),
+      // Show validation errors
+      when(
+        form.fields.text.errors.map((errs) => errs.length > 0),
+        () =>
+          $.div(
+            { class: "error-message" },
+            form.fields.text.errors.map((errs) => errs[0] ?? ""),
+          ),
+        () => $.span(),
+      ),
       $.ul({ class: "todo-list" }, [
         each(
           todos,

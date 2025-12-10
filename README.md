@@ -299,6 +299,91 @@ Suspense options:
 - `catch`: Optional error handler
 - `delay`: Optional delay before showing fallback (accepts Effect Duration strings like `"200 millis"`, `"1 second"`, or a number in ms). Prevents loading flash on fast responses.
 
+### Forms
+
+Effect UI includes a form system with Effect Schema validation:
+
+```ts
+import { Effect, Schema } from "effect"
+import { $, Form, component, when } from "@jonlaing/effect-ui"
+
+// Define a schema for validation
+const LoginSchema = Schema.Struct({
+  email: Schema.String.pipe(
+    Schema.nonEmptyString({ message: () => "Email is required" }),
+  ),
+  password: Schema.String.pipe(
+    Schema.minLength(8, { message: () => "Password must be at least 8 characters" }),
+  ),
+})
+
+const LoginForm = component("LoginForm", () =>
+  Effect.gen(function* () {
+    const form = yield* Form.make({
+      schema: LoginSchema,
+      initial: { email: "", password: "" },
+    })
+
+    const handleSubmit = () =>
+      form.submit((values) =>
+        Effect.gen(function* () {
+          // values is typed as { email: string, password: string }
+          console.log("Submitting:", values)
+          yield* form.reset()
+        })
+      )
+
+    return yield* $.div({ class: "login-form" }, [
+      $.div([
+        $.label("Email"),
+        $.input({
+          type: "email",
+          value: form.fields.email.value,
+          onInput: (e) =>
+            form.fields.email.value.set((e.target as HTMLInputElement).value),
+          onBlur: () => form.fields.email.touch(),
+        }),
+        // Show errors when field is touched
+        when(
+          form.fields.email.errors.map((errs) => errs.length > 0),
+          () => $.span({ class: "error" }, form.fields.email.errors.map((e) => e[0] ?? "")),
+          () => $.span(),
+        ),
+      ]),
+      $.div([
+        $.label("Password"),
+        $.input({
+          type: "password",
+          value: form.fields.password.value,
+          onInput: (e) =>
+            form.fields.password.value.set((e.target as HTMLInputElement).value),
+          onBlur: () => form.fields.password.touch(),
+        }),
+        when(
+          form.fields.password.errors.map((errs) => errs.length > 0),
+          () => $.span({ class: "error" }, form.fields.password.errors.map((e) => e[0] ?? "")),
+          () => $.span(),
+        ),
+      ]),
+      $.button(
+        {
+          onClick: () => handleSubmit(),
+          disabled: form.isSubmitting,
+        },
+        form.isSubmitting.map((s) => (s ? "Submitting..." : "Log In")),
+      ),
+    ])
+  })
+)
+```
+
+Form features:
+- **Schema validation**: Uses Effect Schema for type-safe validation with custom error messages
+- **Field state**: Each field has `value`, `errors`, `touched`, and `dirty` readables
+- **Validation timing**: Configure when validation runs with `validation: "hybrid" | "blur" | "change" | "submit"`
+- **Form state**: Access `isValid`, `isSubmitting`, `isTouched`, `isDirty`, and aggregated `errors`
+- **Actions**: `submit()`, `reset()`, `setErrors()`, `validate()`, `getValues()`
+
 ## Why No JSX?
 
 Effect UI uses function calls instead of JSX. This is a deliberate design choice:

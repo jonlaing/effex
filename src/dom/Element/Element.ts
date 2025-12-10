@@ -4,6 +4,7 @@ import {
   applyClass,
   applyEventHandler,
   applyGenericAttribute,
+  applyInputValue,
   applyStyle,
   flattenChildren,
   isElement,
@@ -40,6 +41,13 @@ const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
         applyEventHandler(element, key, value as EventHandler<Event>);
       } else if (key === "id") {
         element.id = value as string;
+      } else if (
+        key === "value" &&
+        (element instanceof HTMLInputElement ||
+          element instanceof HTMLTextAreaElement ||
+          element instanceof HTMLSelectElement)
+      ) {
+        yield* applyInputValue(element, value);
       } else {
         yield* applyGenericAttribute(element, key, value);
       }
@@ -95,18 +103,27 @@ const makeElementFactory = <K extends keyof HTMLElementTagNameMap>(
     if (args.length === 1) {
       const arg = args[0];
       if (Array.isArray(arg)) {
-        return createElement(tagName, {} as HTMLAttributes<K>, arg as Child<unknown>[]);
+        return createElement(
+          tagName,
+          {} as HTMLAttributes<K>,
+          arg as Child<unknown>[],
+        );
       }
       if (typeof arg === "string" || typeof arg === "number") {
         return createElement(tagName, {} as HTMLAttributes<K>, [arg]);
       }
       if (isElement(arg) || isReadable(arg)) {
-        return createElement(tagName, {} as HTMLAttributes<K>, [arg as Child<unknown>]);
+        return createElement(tagName, {} as HTMLAttributes<K>, [
+          arg as Child<unknown>,
+        ]);
       }
       return createElement(tagName, arg as HTMLAttributes<K>, []);
     }
 
-    const [attrs, children] = args as [HTMLAttributes<K>, readonly Child<unknown>[]];
+    const [attrs, children] = args as [
+      HTMLAttributes<K>,
+      readonly Child<unknown>[],
+    ];
     return createElement(
       tagName,
       attrs,

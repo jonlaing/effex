@@ -1,6 +1,13 @@
 import { Array, Effect, Scope, Stream } from "effect";
 import type { Readable } from "@core/Readable";
-import type { Child, ClassItem, ClassValue, Element, EventHandler, StyleValue } from "./types";
+import type {
+  Child,
+  ClassItem,
+  ClassValue,
+  Element,
+  EventHandler,
+  StyleValue,
+} from "./types";
 
 export const isReadable = (value: unknown): value is Readable<unknown> =>
   value !== null &&
@@ -12,7 +19,9 @@ export const isReadable = (value: unknown): value is Readable<unknown> =>
 export const isElement = (value: unknown): value is Element<unknown, unknown> =>
   Effect.isEffect(value);
 
-export const flattenChildren = <E, R>(children: readonly Child<E, R>[]): Child<E, R>[] =>
+export const flattenChildren = <E, R>(
+  children: readonly Child<E, R>[],
+): Child<E, R>[] =>
   Array.flatMap(children, (child) =>
     globalThis.Array.isArray(child) ? flattenChildren(child) : [child],
   );
@@ -164,5 +173,22 @@ export const applyGenericAttribute = (
     });
   }
   setBooleanOrStringAttribute(element, key, value);
+  return Effect.void;
+};
+
+export const applyInputValue = (
+  element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+  value: unknown,
+): Effect.Effect<void, never, Scope.Scope> => {
+  if (isReadable(value)) {
+    return subscribeToReadable(value as Readable<unknown>, (v) => {
+      const stringValue = String(v);
+      // Only update if different - prevents cursor position reset
+      if (element.value !== stringValue) {
+        element.value = stringValue;
+      }
+    });
+  }
+  element.value = String(value);
   return Effect.void;
 };

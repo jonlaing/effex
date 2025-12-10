@@ -2,7 +2,6 @@ import { Effect, Schema, Scope } from "effect";
 import { Signal } from "@core/Signal";
 import { Derived } from "@core/Derived";
 import type { Readable } from "@core/Readable";
-import { makeField, makeFieldArray } from "./Field";
 import type {
   Field,
   FieldArray,
@@ -12,7 +11,7 @@ import type {
   SubmitHandler,
   ValidationTiming,
 } from "./types";
-import { hasNoErrors, validateForm } from "./helpers";
+import { buildFieldEntries, hasNoErrors, validateForm } from "./helpers";
 
 /**
  * Create a new Form with reactive state management.
@@ -54,53 +53,11 @@ export const make = <
   return Effect.gen(function* () {
     const isSubmitting = yield* Signal.make(false);
 
-    // Get schema AST to understand field types
-    const schemaAst = options.schema.ast;
-
-    // Create fields for each property in the schema
-    const fieldEntries: [string, Field<unknown> | FieldArray<unknown>][] = [];
-    const initialData = options.initial as Record<string, unknown>;
-
-    // For struct schemas, iterate over properties
-    if (schemaAst._tag === "TypeLiteral") {
-      for (const prop of schemaAst.propertySignatures) {
-        const fieldName = String(prop.name);
-        const initialValue = initialData[fieldName];
-
-        // Check if the field is an array type
-        const isArrayField =
-          prop.type._tag === "TupleType" ||
-          (prop.type._tag === "Refinement" &&
-            prop.type.from._tag === "TupleType");
-
-        if (isArrayField && Array.isArray(initialValue)) {
-          // Create a field array
-          const fieldArray = yield* makeFieldArray({
-            initial: initialValue,
-            validation,
-            itemSchemaValidate: (_value) => Effect.succeed([]),
-          });
-          fieldEntries.push([fieldName, fieldArray as FieldArray<unknown>]);
-        } else {
-          // Create a regular field
-          // Extract field schema for validation
-          const fieldSchemaValidate = (value: unknown) =>
-            Effect.gen(function* () {
-              // Validate just this field by wrapping in struct
-              const testData = { [fieldName]: value };
-              const errors = yield* validateForm(options.schema, testData);
-              return errors[fieldName] ?? [];
-            });
-
-          const field = yield* makeField({
-            initial: initialValue,
-            validation,
-            schemaValidate: fieldSchemaValidate,
-          });
-          fieldEntries.push([fieldName, field as Field<unknown>]);
-        }
-      }
-    }
+    const fieldEntries = yield* buildFieldEntries(
+      options.initial,
+      options.schema,
+      validation,
+    );
 
     const fields = Object.fromEntries(fieldEntries) as FormFields<T>;
 
@@ -117,13 +74,15 @@ export const make = <
 
     // Derive form-level errors (aggregate from all fields)
     const errors: Readable<Record<string, readonly string[]>> =
-      yield* Derived.sync(errorReadables, (allErrors) => {
-        const result: Record<string, readonly string[]> = {};
-        fieldNames.forEach((key, idx) => {
-          result[key] = allErrors[idx];
-        });
-        return result;
-      });
+      yield* Derived.sync(errorReadables, (allErrors) =>
+        fieldNames.reduce(
+          (acc, key, idx) => ({
+            ...acc,
+            [key]: allErrors[idx],
+          }),
+          {} as Record<string, readonly string[]>,
+        ),
+      );
 
     // Derive isValid from errors
     const isValid: Readable<boolean> = yield* Derived.sync([errors], ([errs]) =>
@@ -191,17 +150,10 @@ export const make = <
           }
         }
 
-        // Merge errors
-        const allFieldNamesSet = new Set([
-          ...Object.keys(schemaErrors),
-          ...Object.keys(asyncErrors),
-        ]);
-        const merged: Record<string, readonly string[]> = {};
-        for (const name of allFieldNamesSet) {
-          merged[name] = [
-            ...(schemaErrors[name] ?? []),
-            ...(asyncErrors[name] ?? []),
-          ];
+        // Merge errors - start with schema errors, then append async errors
+        const merged = { ...schemaErrors };
+        for (const [name, errs] of Object.entries(asyncErrors)) {
+          merged[name] = [...(merged[name] ?? []), ...errs];
         }
 
         return merged as Record<keyof T, readonly string[]>;
@@ -214,56 +166,48 @@ export const make = <
       Effect.gen(function* () {
         yield* isSubmitting.set(true);
 
-        try {
-          // Touch all fields to show validation
-          for (const field of Object.values(fields)) {
-            const f = field as Field<unknown>;
-            yield* f.touch();
-          }
-
-          // Validate all
-          const allErrors = yield* validateAll();
-
-          if (!hasNoErrors(allErrors as Record<string, readonly string[]>)) {
-            // Set errors on fields
-            for (const [name, errs] of Object.entries(allErrors)) {
-              const field = (fields as Record<string, Field<unknown>>)[name];
-              if (field) {
-                yield* field.setErrors(errs as readonly string[]);
-              }
-            }
-            return;
-          }
-
-          // Get validated values and call handler
-          const values = yield* getValues();
-          yield* handler(values);
-        } finally {
-          yield* isSubmitting.set(false);
+        // Touch all fields to show validation
+        for (const field of Object.values(fields)) {
+          const f = field as Field<unknown>;
+          yield* f.touch();
         }
-      });
+
+        // Validate all
+        const allErrors = yield* validateAll();
+
+        if (!hasNoErrors(allErrors as Record<string, readonly string[]>)) {
+          // Set errors on fields
+          for (const [name, errs] of Object.entries(allErrors)) {
+            const field = (fields as Record<string, Field<unknown>>)[name];
+            yield* field?.setErrors(errs as readonly string[]);
+          }
+          return;
+        }
+
+        // Get validated values and call handler
+        const values = yield* getValues();
+        yield* handler(values);
+      }).pipe(Effect.ensuring(isSubmitting.set(false)));
 
     // Reset all fields
     const reset = (): Effect.Effect<void> =>
-      Effect.gen(function* () {
-        for (const field of Object.values(fields)) {
-          const f = field as Field<unknown>;
-          yield* f.reset();
-        }
-      });
+      Effect.all(
+        Object.values(fields).map((field) => (field as Field<unknown>).reset()),
+      );
 
     // Set external errors
     const setErrors = (
       externalErrors: Partial<Record<keyof T, readonly string[]>>,
     ): Effect.Effect<void> =>
-      Effect.gen(function* () {
-        for (const [name, errs] of Object.entries(externalErrors)) {
+      Effect.all(
+        Object.entries(externalErrors).map(([name, errs]) => {
           const field = (fields as Record<string, Field<unknown>>)[name];
           if (field && errs) {
-            yield* field.setErrors(errs as readonly string[]);
+            return field.setErrors(errs as readonly string[]);
           }
-        }
-      });
+          return Effect.void;
+        }),
+      );
 
     const form: FormType<S, E, R> = {
       fields,

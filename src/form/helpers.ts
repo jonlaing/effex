@@ -1,40 +1,19 @@
-import { Array as Arr, Effect, ParseResult, Schema } from "effect";
-
-/**
- * Default equality check for values.
- */
-export const defaultEquals = <A>(a: A, b: A): boolean => a === b;
-
-/**
- * Deep equality check for objects.
- */
-export const deepEquals = <A>(a: A, b: A): boolean => {
-  if (a === b) return true;
-  if (typeof a !== "object" || typeof b !== "object") return false;
-  if (a === null || b === null) return false;
-
-  const keysA = Object.keys(a as object);
-  const keysB = Object.keys(b as object);
-
-  if (keysA.length !== keysB.length) return false;
-
-  return keysA.every((key) =>
-    deepEquals(
-      (a as Record<string, unknown>)[key],
-      (b as Record<string, unknown>)[key],
-    ),
-  );
-};
+import {
+  Array as Arr,
+  Effect,
+  ParseResult,
+  Schema,
+  SchemaAST as AST,
+  Either,
+} from "effect";
+import { makeField, makeFieldArray } from "./Field";
+import type { Field, FieldArray, ValidationTiming } from "./types";
 
 /**
  * Convert a Path to an array of property keys.
  */
-const pathToArray = (path: ParseResult.Path): PropertyKey[] => {
-  if (Array.isArray(path)) {
-    return path as PropertyKey[];
-  }
-  return [path as PropertyKey];
-};
+const pathToArray = (path: ParseResult.Path): PropertyKey[] =>
+  Array.isArray(path) ? (path as PropertyKey[]) : [path as PropertyKey];
 
 /**
  * Extract error messages from a ParseIssue for a specific field.
@@ -122,9 +101,7 @@ const extractMessagesFromIssue = (
 export const extractFieldErrors = (
   error: ParseResult.ParseError,
   fieldName: string,
-): readonly string[] => {
-  return extractMessagesFromIssue(error.issue, fieldName);
-};
+): readonly string[] => extractMessagesFromIssue(error.issue, fieldName);
 
 /**
  * Validate a single field value against a schema.
@@ -134,17 +111,16 @@ export const validateField = <A>(
   value: unknown,
   fieldName: string,
 ): Effect.Effect<readonly string[]> =>
-  Effect.gen(function* () {
-    const result = yield* Schema.decodeUnknown(schema)(value).pipe(
-      Effect.either,
-    );
-
-    if (result._tag === "Left") {
-      return extractFieldErrors(result.left, fieldName);
-    }
-
-    return [];
-  });
+  Schema.decodeUnknown(schema)(value).pipe(
+    Effect.either,
+    Effect.map(
+      Either.mapBoth({
+        onLeft: (e) => extractFieldErrors(e, fieldName),
+        onRight: () => [],
+      }),
+    ),
+    Effect.map(Either.merge),
+  );
 
 /**
  * Extract all errors grouped by field from a ParseIssue.
@@ -231,17 +207,16 @@ export const validateForm = <S extends Schema.Schema.AnyNoContext>(
   schema: S,
   data: unknown,
 ): Effect.Effect<Record<string, readonly string[]>> =>
-  Effect.gen(function* () {
-    const result = yield* Schema.decodeUnknown(schema)(data).pipe(
-      Effect.either,
-    );
-
-    if (result._tag === "Left") {
-      return extractAllErrors(result.left.issue);
-    }
-
-    return {};
-  });
+  Schema.decodeUnknown(schema)(data).pipe(
+    Effect.either,
+    Effect.map(
+      Either.mapBoth({
+        onLeft: (e) => extractAllErrors(e.issue),
+        onRight: () => ({}),
+      }),
+    ),
+    Effect.map(Either.merge),
+  );
 
 /**
  * Check if an object is empty (has no own properties).
@@ -255,3 +230,40 @@ export const isEmptyObject = (obj: object): boolean =>
 export const hasNoErrors = (
   errors: Record<string, readonly string[]>,
 ): boolean => Object.values(errors).every((arr) => arr.length === 0);
+
+export const buildFieldEntries = <S extends Schema.Schema.AnyNoContext>(
+  initalValues: Record<string, unknown>,
+  schema: S,
+  validation: ValidationTiming,
+) =>
+  Effect.all(
+    AST.getPropertySignatures(schema.ast).map((prop) => {
+      const fieldName = String(prop.name);
+      const initial = initalValues[fieldName];
+
+      // Check if the field is an array type (unwrap refinements to find TupleType)
+      const isArrayField = AST.isTupleType(AST.typeAST(prop.type));
+
+      return (
+        isArrayField && Array.isArray(initial)
+          ? makeFieldArray({
+              initial,
+              validation,
+              itemSchemaValidate: () => Effect.succeed([]),
+            })
+          : makeField({
+              initial,
+              validation,
+              schemaValidate: (value: unknown) =>
+                validateForm(schema, { [fieldName]: value }).pipe(
+                  Effect.map((errs) => errs[fieldName] ?? []),
+                ),
+            })
+      ).pipe(
+        Effect.map(
+          (f: Field<unknown> | FieldArray<unknown>) =>
+            [fieldName, f] as [string, Field<unknown> | FieldArray<unknown>],
+        ),
+      );
+    }),
+  );

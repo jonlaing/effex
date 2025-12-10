@@ -3,8 +3,8 @@ import { Signal } from "@core/Signal";
 import { Derived } from "@core/Derived";
 import type { AsyncState } from "@core/Derived";
 import type { Readable } from "@core/Readable";
+import { defaultEquals } from "@core/Derived/helpers";
 import type { Field as FieldType, FieldArray, ValidationTiming } from "./types";
-import { defaultEquals } from "./helpers";
 
 /**
  * Options for creating a Field.

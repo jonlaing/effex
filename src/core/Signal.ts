@@ -7,6 +7,7 @@ import {
 } from "effect";
 import type { Readable } from "./Readable.js";
 import { make as makeReadable } from "./Readable.js";
+import { defaultEquals } from "./Derived/helpers.js";
 
 /**
  * A mutable reactive value that extends Readable with write capabilities.
@@ -27,8 +28,6 @@ export interface SignalOptions<A> {
   /** Custom equality function to determine if the value has changed */
   readonly equals?: (a: A, b: A) => boolean;
 }
-
-const defaultEquals = <A>(a: A, b: A): boolean => a === b;
 
 /**
  * Create a new Signal with an initial value.
