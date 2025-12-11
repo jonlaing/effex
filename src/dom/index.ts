@@ -90,3 +90,12 @@ export { t } from "./Template";
 // Portal
 export type { PortalOptions } from "./Portal";
 export { Portal } from "./Portal";
+
+// Virtual List
+export type {
+  VirtualEachOptions,
+  VirtualListRefType,
+  VirtualListControl,
+  VisibleRange,
+} from "./VirtualList/index.js";
+export { virtualEach, VirtualListRef } from "./VirtualList/index.js";

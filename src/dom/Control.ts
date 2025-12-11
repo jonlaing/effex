@@ -735,6 +735,9 @@ export const each = <A, E = never, R = never>(
         // Track new items for enter animation
         const newEntries: { element: HTMLElement; index: number }[] = [];
 
+        // Use DocumentFragment for batch insertion during initial render
+        const fragment = isInitial ? document.createDocumentFragment() : null;
+
         for (let i = 0; i < newItems.length; i++) {
           const item = newItems[i];
           const key = keyFn(item);
@@ -743,19 +746,22 @@ export const each = <A, E = never, R = never>(
           if (existing) {
             existing.readable._update(item);
 
-            const expectedPosition = i;
-            const currentPosition = Array.from(container.children).indexOf(
-              existing.element,
-            );
+            // Only reposition during updates, not initial render
+            if (!isInitial) {
+              const expectedPosition = i;
+              const currentPosition = Array.from(container.children).indexOf(
+                existing.element,
+              );
 
-            if (currentPosition !== expectedPosition) {
-              if (expectedPosition >= container.children.length) {
-                container.appendChild(existing.element);
-              } else {
-                container.insertBefore(
-                  existing.element,
-                  container.children[expectedPosition],
-                );
+              if (currentPosition !== expectedPosition) {
+                if (expectedPosition >= container.children.length) {
+                  container.appendChild(existing.element);
+                } else {
+                  container.insertBefore(
+                    existing.element,
+                    container.children[expectedPosition],
+                  );
+                }
               }
             }
           } else {
@@ -764,6 +770,21 @@ export const each = <A, E = never, R = never>(
 
             let currentValue = item;
             const subscribers = new Set<(value: A) => void>();
+
+            // Cache the changes stream - only create once
+            let cachedChanges: Stream.Stream<A> | null = null;
+            const getChanges = (): Stream.Stream<A> => {
+              if (!cachedChanges) {
+                cachedChanges = Stream.async<A>((emit) => {
+                  const handler = (value: A) => emit.single(value);
+                  subscribers.add(handler);
+                  return Effect.sync(() => {
+                    subscribers.delete(handler);
+                  });
+                });
+              }
+              return cachedChanges;
+            };
 
             const itemReadable: {
               get: Effect.Effect<A>;
@@ -774,13 +795,7 @@ export const each = <A, E = never, R = never>(
             } = {
               get: Effect.sync(() => currentValue),
               get changes(): Stream.Stream<A> {
-                return Stream.async<A>((emit) => {
-                  const handler = (value: A) => emit.single(value);
-                  subscribers.add(handler);
-                  return Effect.sync(() => {
-                    subscribers.delete(handler);
-                  });
-                });
+                return getChanges();
               },
               get values(): Stream.Stream<A> {
                 return Stream.concat(Stream.make(currentValue), this.changes);
@@ -800,10 +815,15 @@ export const each = <A, E = never, R = never>(
               Effect.provideService(Scope.Scope, itemScope),
             );
 
-            if (i >= container.children.length) {
-              container.appendChild(element);
+            // Batch insert during initial render, individual inserts during updates
+            if (isInitial && fragment) {
+              fragment.appendChild(element);
             } else {
-              container.insertBefore(element, container.children[i]);
+              if (i >= container.children.length) {
+                container.appendChild(element);
+              } else {
+                container.insertBefore(element, container.children[i]);
+              }
             }
 
             itemMap.set(key, {
@@ -817,6 +837,11 @@ export const each = <A, E = never, R = never>(
               newEntries.push({ element, index: newEntries.length });
             }
           }
+        }
+
+        // Append all elements at once during initial render
+        if (isInitial && fragment && fragment.childNodes.length > 0) {
+          container.appendChild(fragment);
         }
 
         // Run enter animations with stagger on new items (skip on initial render)

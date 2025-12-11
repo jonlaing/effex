@@ -42,6 +42,7 @@
     "format": "prettier --write .",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
+    "bench": "vitest bench",
     "docs:gen": "pnpm typedoc && cp REACT-MIGRATION.md docs/",
     "typecheck": "tsc --noEmit"
   },

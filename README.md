@@ -53,11 +53,11 @@ Effect UI uses signals for reactive state. When a signal updates, only the DOM n
 ```ts
 const Counter = component("Counter", () =>
   Effect.gen(function* () {
-    const count = yield* Signal.make(0)
-    console.log("setup")  // Logs once, on mount
-    return yield* $.div(count)  // count changes update only this text node
-  })
-)
+    const count = yield* Signal.make(0);
+    console.log("setup"); // Logs once, on mount
+    return yield* $.div(count); // count changes update only this text node
+  }),
+);
 ```
 
 Signal updates are surgical. A parent's state change doesn't affect unrelated children.
@@ -67,10 +67,11 @@ Signal updates are surgical. A parent's state change doesn't affect unrelated ch
 Effect UI uses Effect's scope system. Subscriptions, timers, and other resources are automatically cleaned up when components unmount:
 
 ```ts
-yield* eventSource.pipe(
-  Stream.runForEach(handler),
-  Effect.forkIn(scope), // Cleaned up when scope closes
-);
+yield *
+  eventSource.pipe(
+    Stream.runForEach(handler),
+    Effect.forkIn(scope), // Cleaned up when scope closes
+  );
 ```
 
 No manual cleanup, no forgotten unsubscribes, no memory leaks.

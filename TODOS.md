@@ -31,8 +31,16 @@
 - [ ] **Improve error messages** - Better developer experience when things go wrong
 
 - [ ] **Performance testing** - Benchmark reactive updates, large lists, etc.
-  - [ ] Vitest benchmarks in `benchmarks/` directory (internal regression testing)
+  - [x] Vitest benchmarks in `benchmarks/` directory (internal regression testing)
   - [ ] js-framework-benchmark integration (public comparison numbers)
+
+- [x] **Virtualized list rendering** - Only render visible items for large lists
+  - [x] `virtualEach` component with scroll-based visibility detection
+  - [x] Fixed-height item support with `itemHeight` option
+  - [x] Variable-height support with `estimatedHeight` option (framework ready)
+  - [x] Buffer zone via `overscan` option (default: 3 items)
+  - [x] Scroll control methods via optional `VirtualListRef`
+  - Note: Current `each` handles 100-500 items well; use `virtualEach` for 1000+ items
 
 ## Future Considerations
 

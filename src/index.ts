@@ -107,6 +107,13 @@ export {
   // Portal
   type PortalOptions,
   Portal,
+  // Virtual List
+  type VirtualEachOptions,
+  type VirtualListRefType,
+  type VirtualListControl,
+  type VisibleRange,
+  virtualEach,
+  VirtualListRef,
 } from "./dom";
 
 // Router
