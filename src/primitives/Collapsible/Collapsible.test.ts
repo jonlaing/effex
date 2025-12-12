@@ -197,7 +197,7 @@ describe("Collapsible", () => {
   });
 
   describe("Content", () => {
-    it("should be hidden when closed", async () => {
+    it("should have data-state='closed' when closed", async () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
@@ -209,9 +209,10 @@ describe("Collapsible", () => {
               ],
             );
 
-            // Content should not be rendered when closed (without forceMount)
+            // Content is always rendered, visibility controlled by CSS via data-state
             const content = el.querySelector("[role='region']");
-            expect(content).toBeNull();
+            expect(content).not.toBeNull();
+            expect(content?.getAttribute("data-state")).toBe("closed");
           }),
         ),
       );
@@ -256,7 +257,7 @@ describe("Collapsible", () => {
       );
     });
 
-    it("should respect forceMount", async () => {
+    it("should always render content (for CSS animations)", async () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
@@ -264,14 +265,14 @@ describe("Collapsible", () => {
               { defaultOpen: false },
               [
                 Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({ forceMount: true }, [$.div("Content")]),
+                Collapsible.Content({}, [$.div("Content")]),
               ],
             );
 
-            // Content should be in DOM but hidden
+            // Content should always be in DOM with data-state="closed"
             const content = el.querySelector("[role='region']") as HTMLElement;
             expect(content).not.toBeNull();
-            expect(content.hidden).toBe(true);
+            expect(content.getAttribute("data-state")).toBe("closed");
           }),
         ),
       );

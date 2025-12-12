@@ -1,9 +1,8 @@
 import { Context, Effect } from "effect";
 import { Signal } from "@core/Signal";
-import { Derived } from "@core/Derived";
-import type { Readable } from "@core/Readable";
+import * as Readable from "@core/Readable";
 import { $ } from "@dom/Element/Element";
-import { when, provide } from "@dom/Control";
+import { provide } from "@dom/Control";
 import { component } from "@dom/Component";
 import { UniqueId } from "@dom/UniqueId";
 import type { Element } from "@dom/Element";
@@ -21,6 +20,79 @@ class CollapsibleCtx extends Context.Tag("CollapsibleContext")<
   CollapsibleCtx,
   CollapsibleContext
 >() {}
+
+/**
+ * Root container for a Collapsible. Manages open/closed state and provides
+ * context to child components.
+ *
+ * @example
+ * ```ts
+ * Collapsible.Root({ defaultOpen: false }, [
+ *   Collapsible.Trigger({}, "Toggle"),
+ *   Collapsible.Content({}, [
+ *     $.div("Collapsible content here"),
+ *   ]),
+ * ])
+ * ```
+ */
+const Root = (
+  props: CollapsibleRootProps,
+  children: Element<never, CollapsibleCtx> | Element<never, CollapsibleCtx>[],
+): Element =>
+  Effect.gen(function* () {
+    // Handle controlled vs uncontrolled state
+    const isOpen: Signal<boolean> = props.open
+      ? props.open
+      : yield* Signal.make(props.defaultOpen ?? false);
+
+    // Handle disabled state
+    const disabled: Readable.Readable<boolean> = Readable.of(
+      props.disabled ?? false,
+    );
+
+    const contentId = yield* UniqueId.make("collapsible-content");
+
+    const setOpenState = (newValue: boolean) =>
+      Effect.gen(function* () {
+        const isDisabled = yield* disabled.get;
+        if (isDisabled) return;
+
+        yield* isOpen.set(newValue);
+
+        if (props.onOpenChange) {
+          yield* props.onOpenChange(newValue);
+        }
+      });
+
+    const toggle = () =>
+      Effect.gen(function* () {
+        const current = yield* isOpen.get;
+        yield* setOpenState(!current);
+      });
+
+    const open = () => setOpenState(true);
+    const close = () => setOpenState(false);
+
+    const ctxValue: CollapsibleContext = {
+      isOpen,
+      toggle,
+      open,
+      close,
+      contentId,
+      disabled,
+    };
+
+    const dataState = isOpen.map((open) => (open ? "open" : "closed"));
+    const dataDisabled = disabled.map((d) => (d ? "" : undefined));
+
+    return yield* $.div(
+      {
+        "data-state": dataState,
+        "data-disabled": dataDisabled,
+      },
+      provide(CollapsibleCtx, ctxValue, children),
+    );
+  });
 
 /**
  * Button that toggles the Collapsible open/closed state.
@@ -87,13 +159,15 @@ const Trigger = component(
 
 /**
  * Content area that shows/hides based on the Collapsible state.
- * Supports animation and force mounting.
+ * Uses CSS transitions triggered by data-state attribute.
+ *
+ * The content is always rendered to the DOM. Animation is controlled by CSS:
+ * - `data-state="open"` / `data-state="closed"` triggers CSS transitions
+ * - Uses CSS grid trick for smooth height animation without JS measurement
  *
  * @example
  * ```ts
- * Collapsible.Content({
- *   animate: { enter: "slide-down", exit: "slide-up" },
- * }, [
+ * Collapsible.Content({ class: "my-content" }, [
  *   $.p("This content can be shown or hidden"),
  * ])
  * ```
@@ -106,109 +180,19 @@ const Content = component(
 
       const dataState = ctx.isOpen.map((open) => (open ? "open" : "closed"));
 
-      const renderContent = () =>
-        $.div(
-          {
-            id: ctx.contentId,
-            class: props.class,
-            role: "region",
-            "data-state": dataState,
-            hidden: props.forceMount
-              ? ctx.isOpen.map((open) => !open)
-              : undefined,
-          },
-          children ?? [],
-        );
-
-      if (props.forceMount) {
-        return yield* renderContent();
-      }
-
-      // Conditional render with animation support
-      return yield* when(ctx.isOpen, renderContent, () => $.span(), {
-        animate: props.animate,
-      });
+      // Outer div uses CSS grid for height animation
+      // Inner div wraps children with overflow: hidden for the animation to work
+      return yield* $.div(
+        {
+          id: ctx.contentId,
+          class: props.class,
+          role: "region",
+          "data-state": dataState,
+        },
+        [$.div({ "data-collapsible-inner": "" }, children ?? [])],
+      );
     }),
 );
-
-/**
- * Root container for a Collapsible. Manages open/closed state and provides
- * context to child components.
- *
- * @example
- * ```ts
- * Collapsible.Root({ defaultOpen: false }, [
- *   Collapsible.Trigger({}, "Toggle"),
- *   Collapsible.Content({}, [
- *     $.div("Collapsible content here"),
- *   ]),
- * ])
- * ```
- */
-const Root = (
-  props: CollapsibleRootProps,
-  children: Element<never, CollapsibleCtx> | Element<never, CollapsibleCtx>[],
-): Element =>
-  Effect.gen(function* () {
-    // Handle controlled vs uncontrolled state
-    const isOpen: Signal<boolean> = props.open
-      ? props.open
-      : yield* Signal.make(props.defaultOpen ?? false);
-
-    // Handle disabled state
-    const disabled: Readable<boolean> =
-      typeof props.disabled === "boolean"
-        ? yield* Derived.sync([], () => props.disabled as boolean)
-        : props.disabled
-          ? props.disabled
-          : yield* Derived.sync([], () => false);
-
-    const contentId = yield* UniqueId.make("collapsible-content");
-
-    const setOpenState = (newValue: boolean) =>
-      Effect.gen(function* () {
-        const isDisabled = yield* disabled.get;
-        if (isDisabled) return;
-
-        yield* isOpen.set(newValue);
-
-        if (props.onOpenChange) {
-          yield* props.onOpenChange(newValue);
-        }
-      });
-
-    const toggle = () =>
-      Effect.gen(function* () {
-        const isDisabled = yield* disabled.get;
-        if (isDisabled) return;
-
-        const current = yield* isOpen.get;
-        yield* setOpenState(!current);
-      });
-
-    const open = () => setOpenState(true);
-    const close = () => setOpenState(false);
-
-    const ctxValue: CollapsibleContext = {
-      isOpen,
-      toggle,
-      open,
-      close,
-      contentId,
-      disabled,
-    };
-
-    const dataState = isOpen.map((open) => (open ? "open" : "closed"));
-    const dataDisabled = disabled.map((d) => (d ? "" : undefined));
-
-    return yield* $.div(
-      {
-        "data-state": dataState,
-        "data-disabled": dataDisabled,
-      },
-      provide(CollapsibleCtx, ctxValue, children),
-    );
-  });
 
 /**
  * Headless Collapsible primitive for building accessible

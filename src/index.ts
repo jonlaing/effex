@@ -2,6 +2,7 @@
 export {
   // Readable
   type Readable,
+  readableOf,
   makeReadable,
   mapReadable,
   fromStream,

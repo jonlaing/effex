@@ -21,10 +21,17 @@
 
 ## Medium Priority
 
-- [ ] **Storybook Support** - Visual component development and documentation
-  - Set up Storybook
-  - Create stories for built-in components
-  - Document component patterns
+- [ ] **SVG element support** - Add SVG element factories (`$.svg`, `$.path`, `$.rect`, `$.circle`, `$.line`, `$.g`, `$.text`, etc.)
+  - SVG elements require `document.createElementNS` with SVG namespace
+  - Different type maps (`SVGElementTagNameMap` vs `HTMLElementTagNameMap`)
+  - Enables building charts, icons, and graphics with fine-grained reactivity
+
+- [x] **Storybook Support** - Visual component development and documentation
+  - [x] Set up Storybook with HTML framework and Vite
+  - [x] Configure path aliases (@core, @dom)
+  - [x] Create render helpers for Effect UI components
+  - [x] Create Collapsible stories (Default, Animated, Controlled, Nested, etc.)
+  - [ ] Create stories for other built-in components as they're developed
 
 - [x] **Clean up unused imports** - Fixed build warnings (ParseResult type-only import)
 
@@ -81,8 +88,11 @@
   - [x] React migration guide (REACT-MIGRATION.md)
   - [x] Vue migration guide (VUE-MIGRATION.md)
   - [x] Svelte migration guide (SVELTE-MIGRATION.md)
+  - [ ] Add "State Management Patterns" section to React migration guide - Show how Effect's existing primitives (Signals, Derived, Context, Streams) replace Redux/useReducer/XState. Most apps don't need dedicated state management libraries.
 
 - [ ] **Table helpers** - TanStack Table-inspired utilities for building data tables with sorting, filtering, pagination, etc.
+
+- [ ] **Chart integration guide** - Document pattern for integrating charting libraries (ECharts, Chart.js, etc.) using refs + Reaction for reactive updates. Don't build our own chart library - wrap existing mature solutions.
 
 - [ ] **Streaming async data** - Support for streaming data (e.g., AI chatbot responses). Consider how Effect Streams integrate with reactive UI updates.
 

@@ -2,7 +2,6 @@ import type { Effect } from "effect";
 import type { Readable } from "@core/Readable";
 import type { Signal } from "@core/Signal";
 import type { Element } from "@dom/Element";
-import type { AnimationOptions } from "@dom/Animation";
 
 /**
  * Context shared between Collapsible parts.
@@ -53,11 +52,7 @@ export type CollapsibleTriggerChildren = Element | string | Readable<string>;
  * Props for Collapsible.Content
  */
 export interface CollapsibleContentProps {
-  /** Animation options for enter/exit */
-  readonly animate?: AnimationOptions;
-  /** Whether to force mount (keep in DOM when closed) */
-  readonly forceMount?: boolean;
-  /** Additional class names */
+  /** Additional class names for the outer container */
   readonly class?: string | Readable<string>;
 }
 

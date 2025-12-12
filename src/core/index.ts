@@ -1,6 +1,7 @@
 // Readable
 export type { Readable } from "./Readable";
 export {
+  of as readableOf,
   make as makeReadable,
   map as mapReadable,
   fromStream,

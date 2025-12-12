@@ -19,6 +19,14 @@ import type {
   HTMLAttributes,
   StyleValue,
 } from "./types";
+import type { Ref } from "@dom/Ref";
+
+const applyRef = <K extends keyof HTMLElementTagNameMap>(
+  element: HTMLElementTagNameMap[K],
+  ref: Ref<HTMLElementTagNameMap[K]>,
+): void => {
+  ref._set(element);
+};
 
 const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
   element: HTMLElementTagNameMap[K],
@@ -28,7 +36,9 @@ const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
     for (const [key, value] of Object.entries(attrs)) {
       if (value === undefined) continue;
 
-      if (key === "class") {
+      if (key === "ref") {
+        applyRef(element, value as Ref<HTMLElementTagNameMap[K]>);
+      } else if (key === "class") {
         yield* applyClass(element, value as ClassValue);
       } else if (key === "style") {
         yield* applyStyle(

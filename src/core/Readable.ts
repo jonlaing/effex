@@ -15,6 +15,33 @@ export interface Readable<A> {
   readonly map: <B>(f: (a: A) => B) => Readable<B>;
 }
 
+export const isReadable = <A>(value: A | Readable<A>): value is Readable<A> =>
+  value !== null &&
+  typeof value === "object" &&
+  "get" in value &&
+  "changes" in value &&
+  "values" in value &&
+  "map" in value;
+
+/**
+ * Create a constant Readable that never changes.
+ * Useful for normalizing `T | Readable<T>` props.
+ *
+ * @example
+ * ```ts
+ * const disabled = Readable.of(false)
+ * // disabled.get returns false, disabled.changes is empty
+ *
+ * // Normalize a prop that can be static or reactive
+ * const normalized: Readable<boolean> =
+ *   typeof props.disabled === "boolean"
+ *     ? Readable.of(props.disabled)
+ *     : props.disabled ?? Readable.of(false)
+ * ```
+ */
+export const of = <A>(value: A | Readable<A>): Readable<A> =>
+  isReadable(value) ? value : make(Effect.succeed(value), () => Stream.empty);
+
 /**
  * Create a Readable from a getter effect and a changes stream factory.
  * @param get - Effect that returns the current value

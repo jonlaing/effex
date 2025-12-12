@@ -1,5 +1,6 @@
 import type { Effect, Scope } from "effect";
 import type { Readable } from "@core/Readable";
+import type { Ref } from "@dom/Ref";
 
 /**
  * A DOM element wrapped in an Effect with scope management.
@@ -171,6 +172,7 @@ export interface BaseAttributes extends DataAttributes, AriaAttributes {
   readonly id?: string;
   /** ARIA role attribute */
   readonly role?: string | Readable<string>;
+  readonly ref?: Ref<HTMLElement>;
 }
 
 /**
