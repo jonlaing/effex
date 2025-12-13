@@ -71,11 +71,10 @@ Signal updates are surgical. A parent's state change doesn't affect unrelated ch
 Effect UI uses Effect's scope system. Subscriptions, timers, and other resources are automatically cleaned up when components unmount:
 
 ```ts
-yield *
-  eventSource.pipe(
-    Stream.runForEach(handler),
-    Effect.forkIn(scope), // Cleaned up when scope closes
-  );
+yield* eventSource.pipe(
+  Stream.runForEach(handler),
+  Effect.forkIn(scope), // Cleaned up when scope closes
+);
 ```
 
 No manual cleanup, no forgotten unsubscribes, no memory leaks.
@@ -190,14 +189,14 @@ import { div, span, button } from "@jonlaing/effect-ui";
 Signals are reactive values that can be read and updated:
 
 ```ts
-const count = yield * Signal.make(0);
+const count = yield* Signal.make(0);
 
 // Read the current value
-const current = yield * count.get;
+const current = yield* count.get;
 
 // Update the value
-yield * count.set(5);
-yield * count.update((n) => n + 1);
+yield* count.set(5);
+yield* count.update((n) => n + 1);
 ```
 
 ### Derived Values
@@ -205,12 +204,13 @@ yield * count.update((n) => n + 1);
 Derived values automatically recompute when their dependencies change:
 
 ```ts
-const firstName = yield * Signal.make("John");
-const lastName = yield * Signal.make("Doe");
+const firstName = yield* Signal.make("John");
+const lastName = yield* Signal.make("Doe");
 
-const fullName =
-  yield *
-  Derived.sync([firstName, lastName], ([first, last]) => `${first} ${last}`);
+const fullName = yield* Derived.sync(
+  [firstName, lastName],
+  ([first, last]) => `${first} ${last}`,
+);
 ```
 
 ### Custom Equality
@@ -225,21 +225,17 @@ interface User {
 }
 
 // Only trigger updates when the user ID changes, ignoring lastSeen timestamps
-const currentUser =
-  yield *
-  Signal.make<User>(
-    { id: 1, name: "Alice", lastSeen: new Date() },
-    { equals: (a, b) => a.id === b.id },
-  );
+const currentUser = yield* Signal.make<User>(
+  { id: 1, name: "Alice", lastSeen: new Date() },
+  { equals: (a, b) => a.id === b.id },
+);
 
 // For derived values too
-const userDisplay =
-  yield *
-  Derived.sync(
-    [currentUser],
-    ([user]) => ({ id: user.id, displayName: user.name.toUpperCase() }),
-    { equals: (a, b) => a.id === b.id && a.displayName === b.displayName },
-  );
+const userDisplay = yield* Derived.sync(
+  [currentUser],
+  ([user]) => ({ id: user.id, displayName: user.name.toUpperCase() }),
+  { equals: (a, b) => a.id === b.id && a.displayName === b.displayName },
+);
 ```
 
 This is particularly useful for:
@@ -255,15 +251,15 @@ The `t` tagged template literal creates reactive strings that update when any in
 ```ts
 import { t } from "@jonlaing/effect-ui";
 
-const name = yield * Signal.make("World");
-const count = yield * Signal.make(0);
+const name = yield* Signal.make("World");
+const count = yield* Signal.make(0);
 
 // Creates a Readable<string> that updates automatically
 const message = t`Hello, ${name}! Count: ${count}`;
 
 // Use directly as element children
-yield * $.div(message);
-yield * $.p(t`You have ${count} items`);
+yield* $.div(message);
+yield* $.p(t`You have ${count} items`);
 ```
 
 This is cleaner than array concatenation for text with multiple reactive values:
@@ -281,18 +277,17 @@ $.p([count, " items remaining (", completed, " done)"]);
 Create DOM elements with reactive attributes and children. Elements are Effects that must be yielded:
 
 ```ts
-yield *
-  $.div({ class: "container", style: { color: "red" } }, [
-    $.h1(["Hello, ", name]),
-    $.p(t`${count} items`),
-  ]);
+yield* $.div({ class: "container", style: { color: "red" } }, [
+  $.h1(["Hello, ", name]),
+  $.p(t`${count} items`),
+]);
 ```
 
 Single children don't need to be wrapped in arrays:
 
 ```ts
-yield * $.h1("Hello World");
-yield * $.button({ onClick: handleClick }, "Click me");
+yield* $.h1("Hello World");
+yield* $.button({ onClick: handleClick }, "Click me");
 ```
 
 ### Control Flow
@@ -612,13 +607,13 @@ staggerEased(500, easeOut); // Apply easing curve to stagger timing
 import { delay, sequence, parallel } from "@jonlaing/effect-ui";
 
 // Delay before animation
-yield * delay(200, runEnterAnimation(element, options));
+yield* delay(200, runEnterAnimation(element, options));
 
 // Run animations sequentially
-yield * sequence(exitAnimation, enterAnimation);
+yield* sequence(exitAnimation, enterAnimation);
 
 // Run animations in parallel
-yield * parallel(anim1, anim2, anim3);
+yield* parallel(anim1, anim2, anim3);
 ```
 
 Example CSS for animations:

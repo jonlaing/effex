@@ -183,13 +183,11 @@ const PostRoute = Route.make("/posts/:postId/comments/:commentId?", {
   }),
 });
 
-const router =
-  yield *
-  Router.make({
-    home: HomeRoute,
-    user: UserRoute,
-    post: PostRoute,
-  });
+const router = yield* Router.make({
+  home: HomeRoute,
+  user: UserRoute,
+  post: PostRoute,
+});
 ```
 
 #### V1 Scope (MVP)
@@ -250,16 +248,14 @@ const router =
 **Approach:** Effect Schema integration, headless, TanStack Form-style API
 
 ```ts
-const form =
-  yield *
-  Form.make({
-    schema: Schema.Struct({
-      email: Schema.String.pipe(Schema.nonEmpty(), Schema.pattern(emailRegex)),
-      password: Schema.String.pipe(Schema.minLength(8)),
-      rememberMe: Schema.Boolean,
-    }),
-    initial: { email: "", password: "", rememberMe: false },
-  });
+const form = yield* Form.make({
+  schema: Schema.Struct({
+    email: Schema.String.pipe(Schema.nonEmpty(), Schema.pattern(emailRegex)),
+    password: Schema.String.pipe(Schema.minLength(8)),
+    rememberMe: Schema.Boolean,
+  }),
+  initial: { email: "", password: "", rememberMe: false },
+});
 ```
 
 **Field access - each field is a Signal with metadata:**
