@@ -11,6 +11,7 @@ const config: StorybookConfig = {
     "@storybook/addon-vitest",
     "@storybook/addon-a11y",
     "@storybook/addon-docs",
+    "@storybook/addon-storysource",
   ],
   framework: "@storybook/html-vite",
   viteFinal: async (config) => {

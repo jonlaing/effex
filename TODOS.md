@@ -31,7 +31,9 @@
   - [x] Configure path aliases (@core, @dom)
   - [x] Create render helpers for Effect UI components
   - [x] Create Collapsible stories (Default, Animated, Controlled, Nested, etc.)
+  - [x] Added storysource addon for viewing Effect-UI code in stories
   - [ ] Create stories for other built-in components as they're developed
+  - [ ] Custom Storybook addon to show clean Effect-UI code snippets (instead of full story source)
 
 - [x] **Clean up unused imports** - Fixed build warnings (ParseResult type-only import)
 
@@ -117,8 +119,9 @@
     - [ ] Popover
     - [ ] Tooltip
     - [ ] Tabs
-    - [ ] Accordion
-    - [ ] Toggle / Switch
+    - [x] Accordion
+    - [x] Toggle
+    - [x] Switch
     - [ ] Radio Group
     - [ ] Checkbox
     - [ ] Slider
@@ -126,7 +129,7 @@
     - [ ] Alert Dialog
     - [ ] Context Menu
     - [ ] Navigation Menu
-    - [ ] Collapsible
+    - [x] Collapsible
     - [ ] Scroll Area
     - [ ] Progress
   - Design principles:

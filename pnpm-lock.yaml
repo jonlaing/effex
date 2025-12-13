@@ -23,6 +23,9 @@ importers:
       '@storybook/addon-docs':
         specifier: ^10.1.8
         version: 10.1.8(@types/react@19.2.7)(esbuild@0.25.12)(rollup@4.53.3)(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.2.6(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.2))
+      '@storybook/addon-storysource':
+        specifier: ^8.6.14
+        version: 8.6.14(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@storybook/addon-vitest':
         specifier: ^10.1.8
         version: 10.1.8(@vitest/browser-playwright@4.0.15)(@vitest/browser@4.0.15(vite@7.2.6(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.2))(vitest@4.0.15))(@vitest/runner@4.0.15)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vitest@4.0.15)
@@ -565,6 +568,11 @@ packages:
     peerDependencies:
       storybook: ^10.1.8
 
+  '@storybook/addon-storysource@8.6.14':
+    resolution: {integrity: sha512-/eDCNUHPdsVDF53B+Ebi9gHSNcRrA3puo1UCDio8wMN+jBMoWh6E5wSjXDsxWaOyp0Zwuq8XUx8AdgTlg/rcrw==}
+    peerDependencies:
+      storybook: ^8.6.14
+
   '@storybook/addon-vitest@10.1.8':
     resolution: {integrity: sha512-/g8/etTGkcuzDINUxy9mSrKgCfB4A3xJyDaEsDJRzDcua0jAnxSQj090cNrFtlxrgiIShjgjXD2GKfHeLclMjA==}
     peerDependencies:
@@ -632,6 +640,11 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       storybook: ^10.1.8
+
+  '@storybook/source-loader@8.6.14':
+    resolution: {integrity: sha512-aFUqrkWh4XSXDmkrK0Nm8q4K94bfgnixFMmql8lBAFuEllFek9Rd3i2RwGOhLUtwzpM89f74nzEgR1kd/ijJ+g==}
+    peerDependencies:
+      storybook: ^8.6.14
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -1000,6 +1013,9 @@ packages:
 
   es-module-lexer@1.7.0:
     resolution: {integrity: sha512-jEQoCwk8hyb2AZziIOLhDqpm5+2ww5uIE6lkO/6jcOCusfk6LhMHpXXfBLXTZ7Ydyt0j4VoUQv6uGNYbdW+kBA==}
+
+  es-toolkit@1.43.0:
+    resolution: {integrity: sha512-SKCT8AsWvYzBBuUqMk4NPwFlSdqLpJwmy6AP322ERn8W2YLIB6JBXnwMI2Qsh2gfphT3q7EKAxKb23cvFHFwKA==}
 
   esbuild@0.25.12:
     resolution: {integrity: sha512-bbPBYYrtZbkt6Os6FiTLCTFxvq4tt3JKall1vRwshA3fdVztsLAatFaZobhkBC8/BrPetoa0oksYoKXoG4ryJg==}
@@ -2199,6 +2215,13 @@ snapshots:
       - vite
       - webpack
 
+  '@storybook/addon-storysource@8.6.14(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
+    dependencies:
+      '@storybook/source-loader': 8.6.14(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+      estraverse: 5.3.0
+      storybook: 10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      tiny-invariant: 1.3.3
+
   '@storybook/addon-vitest@10.1.8(@vitest/browser-playwright@4.0.15)(@vitest/browser@4.0.15(vite@7.2.6(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.2))(vitest@4.0.15))(@vitest/runner@4.0.15)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vitest@4.0.15)':
     dependencies:
       '@storybook/global': 5.0.0
@@ -2264,6 +2287,13 @@ snapshots:
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
+      storybook: 10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+
+  '@storybook/source-loader@8.6.14(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
+    dependencies:
+      es-toolkit: 1.43.0
+      estraverse: 5.3.0
+      prettier: 3.7.4
       storybook: 10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
   '@testing-library/dom@10.4.1':
@@ -2685,6 +2715,8 @@ snapshots:
   entities@6.0.1: {}
 
   es-module-lexer@1.7.0: {}
+
+  es-toolkit@1.43.0: {}
 
   esbuild@0.25.12:
     optionalDependencies:
