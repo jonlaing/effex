@@ -2,7 +2,60 @@ import { Effect } from "effect";
 import { Signal } from "@core/Signal";
 import { component } from "@dom/Component";
 import { $ } from "@dom/Element/Element";
-import type { SwitchProps } from "./types";
+
+/**
+ * Props for Switch component.
+ */
+export interface SwitchProps {
+  /**
+   * The id attribute for the switch button.
+   */
+  readonly id?: string;
+
+  /**
+   * The controlled checked state. Pass a Signal for controlled mode.
+   */
+  readonly checked?: Signal<boolean>;
+
+  /**
+   * The default checked state for uncontrolled mode.
+   * @default false
+   */
+  readonly defaultChecked?: boolean;
+
+  /**
+   * Callback fired when the checked state changes.
+   */
+  readonly onCheckedChange?: (checked: boolean) => Effect.Effect<void>;
+
+  /**
+   * Whether the switch is disabled.
+   * @default false
+   */
+  readonly disabled?: boolean;
+
+  /**
+   * Whether the switch is required in a form context.
+   * @default false
+   */
+  readonly required?: boolean;
+
+  /**
+   * The name attribute for form submission.
+   */
+  readonly name?: string;
+
+  /**
+   * The value attribute for form submission.
+   * @default "on"
+   */
+  readonly value?: string;
+
+  /**
+   * CSS class name(s) for styling.
+   */
+  readonly class?: string;
+}
 
 /**
  * A control that toggles between on and off states.
