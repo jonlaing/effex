@@ -23,3 +23,6 @@ export {
 
 // Toggle
 export { Toggle, type ToggleProps } from "./Toggle/index.js";
+
+// Switch
+export { Switch, type SwitchProps } from "./Switch/index.js";
