@@ -58,6 +58,7 @@ export const Toggle = component("Toggle", (props: ToggleProps, children) =>
     return yield* $.button(
       {
         type: "button",
+        id: props.id,
         class: props.class,
         disabled: props.disabled,
         "aria-pressed": ariaPressed,

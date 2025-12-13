@@ -196,6 +196,7 @@ type ExcludedKeys =
   | "style"
   | "class"
   | "className" // Exclude the DOM property name too
+  | "htmlFor" // We use HTML attribute name "for" instead
   | "id"
   | "role" // Handled by BaseAttributes
   | "onclick"
@@ -210,12 +211,25 @@ type ExcludedKeys =
   | "onmouseleave";
 
 /**
+ * HTML attribute aliases - maps HTML attribute names to their DOM property equivalents.
+ * These provide friendlier attribute names that match HTML rather than DOM API.
+ */
+type HTMLAttributeAliases<K extends keyof HTMLElementTagNameMap> =
+  K extends "label"
+    ? {
+        /** The id of the form element this label is associated with */
+        readonly for?: string | Readable<string>;
+      }
+    : object;
+
+/**
  * Full HTML attributes for a specific element type, including base, events, and element-specific attributes.
  * @template K - The HTML element tag name
  */
 export type HTMLAttributes<K extends keyof HTMLElementTagNameMap> =
   BaseAttributes &
-    EventAttributes & {
+    EventAttributes &
+    HTMLAttributeAliases<K> & {
       readonly [P in Exclude<
         keyof HTMLElementTagNameMap[K],
         ExcludedKeys

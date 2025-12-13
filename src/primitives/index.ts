@@ -26,3 +26,6 @@ export { Toggle, type ToggleProps } from "./Toggle/index.js";
 
 // Switch
 export { Switch, type SwitchProps } from "./Switch/index.js";
+
+// Checkbox
+export { Checkbox, type CheckboxProps, type CheckedState } from "./Checkbox/index.js";

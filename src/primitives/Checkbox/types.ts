@@ -2,38 +2,43 @@ import type { Effect } from "effect";
 import type { Signal } from "@core/Signal";
 
 /**
- * Props for Switch component.
+ * Checkbox state - can be checked, unchecked, or indeterminate.
  */
-export interface SwitchProps {
+export type CheckedState = boolean | "indeterminate";
+
+/**
+ * Props for Checkbox component.
+ */
+export interface CheckboxProps {
   /**
-   * The id attribute for the switch button.
+   * The id attribute for the checkbox button.
    */
   readonly id?: string;
 
   /**
    * The controlled checked state. Pass a Signal for controlled mode.
    */
-  readonly checked?: Signal<boolean>;
+  readonly checked?: Signal<CheckedState>;
 
   /**
    * The default checked state for uncontrolled mode.
    * @default false
    */
-  readonly defaultChecked?: boolean;
+  readonly defaultChecked?: CheckedState;
 
   /**
    * Callback fired when the checked state changes.
    */
-  readonly onCheckedChange?: (checked: boolean) => Effect.Effect<void>;
+  readonly onCheckedChange?: (checked: CheckedState) => Effect.Effect<void>;
 
   /**
-   * Whether the switch is disabled.
+   * Whether the checkbox is disabled.
    * @default false
    */
   readonly disabled?: boolean;
 
   /**
-   * Whether the switch is required in a form context.
+   * Whether the checkbox is required in a form context.
    * @default false
    */
   readonly required?: boolean;

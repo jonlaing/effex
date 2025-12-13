@@ -1,0 +1,80 @@
+import { Effect } from "effect";
+import { Signal } from "@core/Signal";
+import { component } from "@dom/Component";
+import { $ } from "@dom/Element/Element";
+import type { CheckboxProps, CheckedState } from "./types";
+
+/**
+ * A checkbox control with support for checked, unchecked, and indeterminate states.
+ *
+ * @example
+ * ```ts
+ * // Uncontrolled
+ * Checkbox({ class: "checkbox" })
+ *
+ * // Controlled
+ * const accepted = yield* Signal.make<CheckedState>(false)
+ * Checkbox({ checked: accepted, class: "checkbox" })
+ *
+ * // Indeterminate (for "select all" patterns)
+ * const selectAll = yield* Signal.make<CheckedState>("indeterminate")
+ * Checkbox({ checked: selectAll, class: "checkbox" })
+ *
+ * // In a form
+ * Checkbox({ name: "terms", required: true })
+ * ```
+ */
+export const Checkbox = component("Checkbox", (props: CheckboxProps) =>
+  Effect.gen(function* () {
+    const checked: Signal<CheckedState> = props.checked
+      ? props.checked
+      : yield* Signal.make(props.defaultChecked ?? false);
+
+    const handleClick = () =>
+      Effect.gen(function* () {
+        if (props.disabled) return;
+
+        const current = yield* checked.get;
+        // Clicking always toggles to checked or unchecked (never to indeterminate)
+        const newChecked = current === true ? false : true;
+        yield* checked.set(newChecked);
+
+        if (props.onCheckedChange) {
+          yield* props.onCheckedChange(newChecked);
+        }
+      });
+
+    const dataState = checked.map((c) => {
+      if (c === "indeterminate") return "indeterminate";
+      return c ? "checked" : "unchecked";
+    });
+
+    const ariaChecked = checked.map((c) => {
+      if (c === "indeterminate") return "mixed";
+      return c ? "true" : "false";
+    });
+
+    const dataDisabled = props.disabled ? "" : undefined;
+
+    // The indicator shows the check/indeterminate mark
+    const indicator = $.span({ "data-checkbox-indicator": "" });
+
+    return yield* $.button(
+      {
+        type: "button",
+        role: "checkbox",
+        id: props.id,
+        class: props.class,
+        disabled: props.disabled,
+        "aria-checked": ariaChecked,
+        "aria-required": props.required ? "true" : undefined,
+        "data-state": dataState,
+        "data-disabled": dataDisabled,
+        name: props.name,
+        value: props.value ?? "on",
+        onClick: handleClick,
+      },
+      [indicator],
+    );
+  }),
+);

@@ -123,7 +123,7 @@
     - [x] Toggle
     - [x] Switch
     - [ ] Radio Group
-    - [ ] Checkbox
+    - [x] Checkbox
     - [ ] Slider
     - [ ] Toast / Notifications
     - [ ] Alert Dialog

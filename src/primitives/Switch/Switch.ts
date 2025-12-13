@@ -57,6 +57,7 @@ export const Switch = component("Switch", (props: SwitchProps) =>
       {
         type: "button",
         role: "switch",
+        id: props.id,
         class: props.class,
         disabled: props.disabled,
         "aria-checked": ariaChecked,

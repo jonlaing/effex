@@ -6,6 +6,11 @@ import type { Signal } from "@core/Signal";
  */
 export interface ToggleProps {
   /**
+   * The id attribute for the toggle button.
+   */
+  readonly id?: string;
+
+  /**
    * The controlled pressed state. Pass a Signal for controlled mode.
    */
   readonly pressed?: Signal<boolean>;
