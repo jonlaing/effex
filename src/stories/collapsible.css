@@ -1,6 +1,9 @@
 /* Story container */
 .story-container {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   padding: 1rem;
   max-width: 400px;
 }
@@ -62,7 +65,9 @@
   overflow: hidden;
   min-height: 0;
   padding: 0 1rem;
-  transition: padding 0.2s ease-out, opacity 0.2s ease-out;
+  transition:
+    padding 0.2s ease-out,
+    opacity 0.2s ease-out;
   opacity: 0;
 }
 
@@ -101,7 +106,9 @@
   border-radius: 6px;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .custom-trigger:hover {

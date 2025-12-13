@@ -161,8 +161,8 @@ const Item = (
     });
 
     // Item can be disabled by itself or by parent
-    const disabled = accordionCtx.disabled.map((parentDisabled) =>
-      parentDisabled || props.disabled === true,
+    const disabled = accordionCtx.disabled.map(
+      (parentDisabled) => parentDisabled || props.disabled === true,
     );
 
     const itemCtx: AccordionItemContext = {
@@ -234,7 +234,9 @@ const Trigger = component(
           return Effect.void;
         });
 
-      const dataState = itemCtx.isOpen.map((open) => (open ? "open" : "closed"));
+      const dataState = itemCtx.isOpen.map((open) =>
+        open ? "open" : "closed",
+      );
       const dataDisabled = itemCtx.disabled.map((d) => (d ? "" : undefined));
       const ariaExpanded = itemCtx.isOpen.map((open) =>
         open ? "true" : "false",
@@ -276,7 +278,9 @@ const Content = component(
     Effect.gen(function* () {
       const itemCtx = yield* AccordionItemCtx;
 
-      const dataState = itemCtx.isOpen.map((open) => (open ? "open" : "closed"));
+      const dataState = itemCtx.isOpen.map((open) =>
+        open ? "open" : "closed",
+      );
 
       // Outer div uses CSS grid for height animation
       // Inner div wraps children with overflow: hidden for the animation to work

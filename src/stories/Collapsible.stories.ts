@@ -48,7 +48,10 @@ const meta: Meta<CollapsibleStoryArgs> = {
         disabled: args.disabled,
       },
       [
-        Collapsible.Trigger({ class: "collapsible-trigger" }, args.triggerText!),
+        Collapsible.Trigger(
+          { class: "collapsible-trigger" },
+          args.triggerText!,
+        ),
         Collapsible.Content({ class: "collapsible-content" }, [
           $.p(args.contentText!),
         ]),
@@ -90,7 +93,10 @@ export const WithAnimation: Story = {
     // Animation is now automatic via CSS transitions on data-state changes.
     // The collapsible-content class styles both open and closed states.
     const element = Collapsible.Root({ defaultOpen: false }, [
-      Collapsible.Trigger({ class: "collapsible-trigger" }, "Toggle with Animation"),
+      Collapsible.Trigger(
+        { class: "collapsible-trigger" },
+        "Toggle with Animation",
+      ),
       Collapsible.Content({ class: "collapsible-content" }, [
         $.p("This content animates in and out."),
         $.p("The animation uses CSS grid transitions."),
@@ -122,7 +128,10 @@ export const Controlled: Story = {
       );
 
       const collapsible = Collapsible.Root({ open: isOpen }, [
-        Collapsible.Trigger({ class: "collapsible-trigger" }, "Internal Toggle"),
+        Collapsible.Trigger(
+          { class: "collapsible-trigger" },
+          "Internal Toggle",
+        ),
         Collapsible.Content({ class: "collapsible-content" }, [
           $.p("This collapsible can be controlled from outside!"),
           $.p("Click either button to toggle."),
@@ -154,7 +163,9 @@ export const CustomTrigger: Story = {
         $.span("Click anywhere on this row"),
       ]),
       Collapsible.Content({ class: "collapsible-content" }, [
-        $.p("Using as='div' allows custom trigger content with keyboard support."),
+        $.p(
+          "Using as='div' allows custom trigger content with keyboard support.",
+        ),
       ]),
     ]);
 
@@ -172,11 +183,17 @@ export const CustomTrigger: Story = {
 export const Nested: Story = {
   render: () => {
     const element = Collapsible.Root({ defaultOpen: true }, [
-      Collapsible.Trigger({ class: "collapsible-trigger" }, "Outer Collapsible"),
+      Collapsible.Trigger(
+        { class: "collapsible-trigger" },
+        "Outer Collapsible",
+      ),
       Collapsible.Content({ class: "collapsible-content" }, [
         $.p("This is the outer content."),
         Collapsible.Root({ defaultOpen: false }, [
-          Collapsible.Trigger({ class: "collapsible-trigger nested" }, "Inner Collapsible"),
+          Collapsible.Trigger(
+            { class: "collapsible-trigger nested" },
+            "Inner Collapsible",
+          ),
           Collapsible.Content({ class: "collapsible-content nested" }, [
             $.p("This is nested content!"),
           ]),

@@ -20,3 +20,6 @@ export {
   type AccordionTriggerProps,
   type AccordionContentProps,
 } from "./Accordion/index.js";
+
+// Toggle
+export { Toggle, type ToggleProps } from "./Toggle/index.js";

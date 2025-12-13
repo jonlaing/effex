@@ -61,7 +61,9 @@ export interface AccordionRootProps {
    */
   readonly collapsible?: boolean;
   /** Callback when value changes */
-  readonly onValueChange?: (value: string | string[] | null) => Effect.Effect<void>;
+  readonly onValueChange?: (
+    value: string | string[] | null,
+  ) => Effect.Effect<void>;
 }
 
 /**

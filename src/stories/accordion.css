@@ -1,6 +1,9 @@
 /* Story container */
 .accordion-story-container {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   padding: 1rem;
   max-width: 500px;
 }
@@ -80,7 +83,9 @@
   overflow: hidden;
   min-height: 0;
   padding: 0 1rem;
-  transition: padding 0.2s ease-out, opacity 0.2s ease-out;
+  transition:
+    padding 0.2s ease-out,
+    opacity 0.2s ease-out;
   opacity: 0;
 }
 

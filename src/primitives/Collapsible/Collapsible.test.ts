@@ -14,13 +14,10 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [
-                Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({}, [$.div("Content")]),
-              ],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({}, "Toggle"),
+              Collapsible.Content({}, [$.div("Content")]),
+            ]);
 
             expect(el.tagName).toBe("DIV");
             expect(el.children.length).toBe(2);
@@ -33,10 +30,9 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [Collapsible.Trigger({}, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({}, "Toggle"),
+            ]);
 
             expect(el.dataset.state).toBe("closed");
           }),
@@ -48,10 +44,9 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: true },
-              [Collapsible.Trigger({}, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: true }, [
+              Collapsible.Trigger({}, "Toggle"),
+            ]);
 
             expect(el.dataset.state).toBe("open");
           }),
@@ -65,10 +60,9 @@ describe("Collapsible", () => {
           Effect.gen(function* () {
             const isOpen = yield* Signal.make(true);
 
-            const el = yield* Collapsible.Root(
-              { open: isOpen },
-              [Collapsible.Trigger({}, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ open: isOpen }, [
+              Collapsible.Trigger({}, "Toggle"),
+            ]);
 
             expect(el.dataset.state).toBe("open");
 
@@ -87,10 +81,9 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [Collapsible.Trigger({}, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({}, "Toggle"),
+            ]);
 
             const trigger = el.querySelector("button");
             expect(trigger).not.toBeNull();
@@ -104,10 +97,9 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [Collapsible.Trigger({ as: "div" }, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({ as: "div" }, "Toggle"),
+            ]);
 
             const trigger = el.firstElementChild as HTMLElement;
             expect(trigger.tagName).toBe("DIV");
@@ -121,10 +113,9 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [Collapsible.Trigger({}, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({}, "Toggle"),
+            ]);
 
             const trigger = el.querySelector("button");
             expect(trigger?.getAttribute("aria-expanded")).toBe("false");
@@ -137,13 +128,10 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: true },
-              [
-                Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({}, [$.div("Content")]),
-              ],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: true }, [
+              Collapsible.Trigger({}, "Toggle"),
+              Collapsible.Content({}, [$.div("Content")]),
+            ]);
 
             const trigger = el.querySelector("button");
             const content = el.querySelector("[role='region']");
@@ -157,10 +145,9 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [Collapsible.Trigger({}, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({}, "Toggle"),
+            ]);
 
             expect(el.dataset.state).toBe("closed");
 
@@ -183,10 +170,9 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [Collapsible.Trigger({ class: "my-trigger" }, "Toggle")],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({ class: "my-trigger" }, "Toggle"),
+            ]);
 
             const trigger = el.querySelector("button");
             expect(trigger?.className).toBe("my-trigger");
@@ -201,13 +187,10 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [
-                Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({}, [$.div("Content")]),
-              ],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({}, "Toggle"),
+              Collapsible.Content({}, [$.div("Content")]),
+            ]);
 
             // Content is always rendered, visibility controlled by CSS via data-state
             const content = el.querySelector("[role='region']");
@@ -222,13 +205,10 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: true },
-              [
-                Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({}, [$.div("Content")]),
-              ],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: true }, [
+              Collapsible.Trigger({}, "Toggle"),
+              Collapsible.Content({}, [$.div("Content")]),
+            ]);
 
             const content = el.querySelector("[role='region']");
             expect(content).not.toBeNull();
@@ -242,13 +222,10 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: true },
-              [
-                Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({}, [$.div("Content")]),
-              ],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: true }, [
+              Collapsible.Trigger({}, "Toggle"),
+              Collapsible.Content({}, [$.div("Content")]),
+            ]);
 
             const content = el.querySelector("[role='region']");
             expect(content?.getAttribute("role")).toBe("region");
@@ -261,13 +238,10 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: false },
-              [
-                Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({}, [$.div("Content")]),
-              ],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: false }, [
+              Collapsible.Trigger({}, "Toggle"),
+              Collapsible.Content({}, [$.div("Content")]),
+            ]);
 
             // Content should always be in DOM with data-state="closed"
             const content = el.querySelector("[role='region']") as HTMLElement;
@@ -282,13 +256,10 @@ describe("Collapsible", () => {
       await Effect.runPromise(
         Effect.scoped(
           Effect.gen(function* () {
-            const el = yield* Collapsible.Root(
-              { defaultOpen: true },
-              [
-                Collapsible.Trigger({}, "Toggle"),
-                Collapsible.Content({ class: "my-content" }, [$.div("Content")]),
-              ],
-            );
+            const el = yield* Collapsible.Root({ defaultOpen: true }, [
+              Collapsible.Trigger({}, "Toggle"),
+              Collapsible.Content({ class: "my-content" }, [$.div("Content")]),
+            ]);
 
             const content = el.querySelector("[role='region']");
             expect(content?.className).toBe("my-content");

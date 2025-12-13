@@ -169,29 +169,32 @@ export const Controlled: Story = {
     const element = Effect.gen(function* () {
       const value = yield* Signal.make<string | null>("item-2");
 
-      const buttons = $.div({ style: { marginBottom: "1rem", display: "flex", gap: "0.5rem" } }, [
-        $.button(
-          {
-            onClick: () => value.set("item-1"),
-            style: { padding: "0.5rem 1rem", cursor: "pointer" },
-          },
-          "Open 1",
-        ),
-        $.button(
-          {
-            onClick: () => value.set("item-2"),
-            style: { padding: "0.5rem 1rem", cursor: "pointer" },
-          },
-          "Open 2",
-        ),
-        $.button(
-          {
-            onClick: () => value.set(null),
-            style: { padding: "0.5rem 1rem", cursor: "pointer" },
-          },
-          "Close All",
-        ),
-      ]);
+      const buttons = $.div(
+        { style: { marginBottom: "1rem", display: "flex", gap: "0.5rem" } },
+        [
+          $.button(
+            {
+              onClick: () => value.set("item-1"),
+              style: { padding: "0.5rem 1rem", cursor: "pointer" },
+            },
+            "Open 1",
+          ),
+          $.button(
+            {
+              onClick: () => value.set("item-2"),
+              style: { padding: "0.5rem 1rem", cursor: "pointer" },
+            },
+            "Open 2",
+          ),
+          $.button(
+            {
+              onClick: () => value.set(null),
+              style: { padding: "0.5rem 1rem", cursor: "pointer" },
+            },
+            "Close All",
+          ),
+        ],
+      );
 
       // Wrap accordion in a div to add class
       const accordionWrapper = $.div({ class: "accordion-root" }, [
