@@ -1,7 +1,9 @@
 export {
   DropdownMenu,
   DropdownMenuCtx,
+  DropdownMenuSubCtx,
   type DropdownMenuContext,
+  type DropdownMenuSubContext,
   type DropdownMenuRootProps,
   type DropdownMenuTriggerProps,
   type DropdownMenuContentProps,
@@ -9,4 +11,7 @@ export {
   type DropdownMenuGroupProps,
   type DropdownMenuLabelProps,
   type DropdownMenuSeparatorProps,
+  type DropdownMenuSubProps,
+  type DropdownMenuSubTriggerProps,
+  type DropdownMenuSubContentProps,
 } from "./DropdownMenu.js";

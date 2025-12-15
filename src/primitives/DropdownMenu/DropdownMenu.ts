@@ -6,8 +6,14 @@ import { provide, when } from "@dom/Control";
 import { component } from "@dom/Component";
 import { UniqueId } from "@dom/UniqueId";
 import { Portal } from "@dom/Portal";
+import { Ref } from "@dom/Ref";
 import type { Element } from "@dom/Element";
 import { calculatePosition, getTransform } from "../helpers";
+import { getMenuNavigationState, handleMenuArrowNavigation } from "./helpers";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
 /**
  * Context shared between DropdownMenu parts.
@@ -22,7 +28,7 @@ export interface DropdownMenuContext {
   /** Toggle the menu open state */
   readonly toggle: () => Effect.Effect<void>;
   /** Reference to the trigger element */
-  readonly triggerRef: Signal<HTMLElement | null>;
+  readonly triggerRef: Ref<HTMLElement>;
   /** Unique ID for the content */
   readonly contentId: string;
   /** Unique ID for the trigger */
@@ -104,11 +110,75 @@ export interface DropdownMenuSeparatorProps {
 }
 
 /**
+ * Context for DropdownMenu.Sub
+ */
+export interface DropdownMenuSubContext {
+  /** Whether the submenu is currently open */
+  readonly isOpen: Readable.Readable<boolean>;
+  /** Open the submenu */
+  readonly open: () => Effect.Effect<void>;
+  /** Close the submenu */
+  readonly close: () => Effect.Effect<void>;
+  /** Cancel any pending close timeout */
+  readonly cancelClose: () => void;
+  /** Schedule a close with delay */
+  readonly scheduleClose: () => void;
+  /** Reference to the SubTrigger element */
+  readonly triggerRef: Ref<HTMLElement>;
+  /** Unique ID for the submenu content */
+  readonly contentId: string;
+  /** Unique ID for the SubTrigger */
+  readonly triggerId: string;
+}
+
+/**
+ * Props for DropdownMenu.Sub
+ */
+export interface DropdownMenuSubProps {
+  /** Controlled open state */
+  readonly open?: Signal<boolean>;
+  /** Default open state */
+  readonly defaultOpen?: boolean;
+  /** Callback when open state changes */
+  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
+}
+
+/**
+ * Props for DropdownMenu.SubTrigger
+ */
+export interface DropdownMenuSubTriggerProps {
+  /** Additional class names */
+  readonly class?: string | Readable.Readable<string>;
+  /** Whether this trigger is disabled */
+  readonly disabled?: boolean;
+}
+
+/**
+ * Props for DropdownMenu.SubContent
+ */
+export interface DropdownMenuSubContentProps {
+  /** Additional class names */
+  readonly class?: string | Readable.Readable<string>;
+  /** Gap between trigger and content in pixels (default: 0) */
+  readonly sideOffset?: number;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+}
+
+/**
  * Effect Context for DropdownMenu state sharing between parts.
  */
 export class DropdownMenuCtx extends Context.Tag("DropdownMenuContext")<
   DropdownMenuCtx,
   DropdownMenuContext
+>() {}
+
+/**
+ * Effect Context for DropdownMenu.Sub state sharing.
+ */
+export class DropdownMenuSubCtx extends Context.Tag("DropdownMenuSubContext")<
+  DropdownMenuSubCtx,
+  DropdownMenuSubContext
 >() {}
 
 /**
@@ -135,7 +205,7 @@ const Root = (
       ? props.open
       : yield* Signal.make(props.defaultOpen ?? false);
 
-    const triggerRef = yield* Signal.make<HTMLElement | null>(null);
+    const triggerRef = yield* Ref.make<HTMLElement>();
     const contentId = yield* UniqueId.make("menu-content");
     const triggerId = yield* UniqueId.make("menu-trigger");
 
@@ -222,8 +292,9 @@ const Trigger = component(
           }
         });
 
-      const button = yield* $.button(
+      return yield* $.button(
         {
+          ref: ctx.triggerRef,
           id: ctx.triggerId,
           class: props.class,
           type: "button",
@@ -239,10 +310,6 @@ const Trigger = component(
         },
         children ?? [],
       );
-
-      yield* ctx.triggerRef.set(button);
-
-      return button;
     }),
 );
 
@@ -276,7 +343,7 @@ const Content = component(
         () =>
           Portal(() =>
             Effect.gen(function* () {
-              const triggerEl = yield* ctx.triggerRef.get;
+              const triggerEl = ctx.triggerRef.current;
 
               let positionStyle: Record<string, string> = {
                 position: "fixed",
@@ -304,61 +371,26 @@ const Content = component(
 
               const handleKeyDown = (event: KeyboardEvent) =>
                 Effect.gen(function* () {
-                  const contentEl = document.getElementById(ctx.contentId);
-                  if (!contentEl) return;
+                  const state = getMenuNavigationState(ctx.contentId, loop);
 
-                  const items = Array.from(
-                    contentEl.querySelectorAll(
-                      "[data-menu-item]:not([data-disabled])",
-                    ),
-                  ) as HTMLElement[];
-
-                  if (items.length === 0 && event.key !== "Escape") return;
-
-                  const currentItem = items.find((item) =>
-                    item.contains(document.activeElement),
-                  );
-                  const index = currentItem ? items.indexOf(currentItem) : -1;
-
-                  const nextIndex = loop
-                    ? (index + 1) % items.length
-                    : Math.min(items.length - 1, index + 1);
-
-                  const prevIndex = loop
-                    ? (index - 1 + items.length) % items.length
-                    : Math.max(0, index - 1);
-
-                  const trigger = yield* ctx.triggerRef.get;
+                  // Handle arrow navigation
+                  if (handleMenuArrowNavigation(event, state)) {
+                    return;
+                  }
 
                   switch (event.key) {
-                    case "ArrowDown":
-                      event.preventDefault();
-                      items[nextIndex]?.focus();
-                      break;
-                    case "ArrowUp":
-                      event.preventDefault();
-                      items[prevIndex]?.focus();
-                      break;
-                    case "Home":
-                      event.preventDefault();
-                      items[0]?.focus();
-                      break;
-                    case "End":
-                      event.preventDefault();
-                      items[items.length - 1]?.focus();
-                      break;
                     case "Enter":
                     case " ":
                       event.preventDefault();
-                      if (currentItem) {
-                        currentItem.click();
+                      if (state.currentItem) {
+                        state.currentItem.click();
                       }
                       break;
                     case "Escape":
                       event.preventDefault();
                       event.stopPropagation();
                       yield* ctx.close();
-                      trigger?.focus();
+                      ctx.triggerRef.current?.focus();
                       break;
                     case "Tab":
                       // Close menu on Tab
@@ -455,8 +487,7 @@ const Item = component(
 
           // Close menu and return focus to trigger
           yield* ctx.close();
-          const trigger = yield* ctx.triggerRef.get;
-          trigger?.focus();
+          ctx.triggerRef.current?.focus();
         });
 
       return yield* $.div(
@@ -543,6 +574,343 @@ const Separator = component(
 );
 
 /**
+ * Wrapper for a submenu. Manages open/closed state for the submenu
+ * and provides context to SubTrigger and SubContent.
+ *
+ * @example
+ * ```ts
+ * DropdownMenu.Sub({}, [
+ *   DropdownMenu.SubTrigger({}, "More Options"),
+ *   DropdownMenu.SubContent({}, [
+ *     DropdownMenu.Item({}, "Sub Option 1"),
+ *     DropdownMenu.Item({}, "Sub Option 2"),
+ *   ]),
+ * ])
+ * ```
+ */
+const Sub = (
+  props: DropdownMenuSubProps,
+  children:
+    | Element<never, DropdownMenuCtx | DropdownMenuSubCtx>
+    | Element<never, DropdownMenuCtx | DropdownMenuSubCtx>[],
+): Element<never, DropdownMenuCtx> =>
+  Effect.gen(function* () {
+    const isOpen: Signal<boolean> = props.open
+      ? props.open
+      : yield* Signal.make(props.defaultOpen ?? false);
+
+    const triggerRef = yield* Ref.make<HTMLElement>();
+    const contentId = yield* UniqueId.make("submenu-content");
+    const triggerId = yield* UniqueId.make("submenu-trigger");
+
+    // Shared close timeout - managed at Sub level so both SubTrigger and SubContent can access it
+    let closeTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const cancelClose = () => {
+      if (closeTimeout) {
+        clearTimeout(closeTimeout);
+        closeTimeout = null;
+      }
+    };
+
+    const scheduleClose = () => {
+      cancelClose();
+      closeTimeout = setTimeout(() => {
+        Effect.runSync(isOpen.set(false));
+        if (props.onOpenChange) {
+          Effect.runSync(props.onOpenChange(false));
+        }
+      }, 100);
+    };
+
+    const setOpenState = (newValue: boolean) =>
+      Effect.gen(function* () {
+        if (newValue) {
+          cancelClose(); // Cancel any pending close when opening
+        }
+        yield* isOpen.set(newValue);
+        if (props.onOpenChange) {
+          yield* props.onOpenChange(newValue);
+        }
+      });
+
+    const subCtx: DropdownMenuSubContext = {
+      isOpen,
+      open: () => setOpenState(true),
+      close: () => setOpenState(false),
+      cancelClose,
+      scheduleClose,
+      triggerRef,
+      contentId,
+      triggerId,
+    };
+
+    return yield* $.div(
+      { style: { display: "contents" } },
+      provide(DropdownMenuSubCtx, subCtx, children),
+    );
+  });
+
+/**
+ * Trigger for a submenu. Opens the submenu on hover or ArrowRight key.
+ *
+ * @example
+ * ```ts
+ * DropdownMenu.SubTrigger({}, "More Options →")
+ * ```
+ */
+const SubTrigger = component(
+  "DropdownMenuSubTrigger",
+  (props: DropdownMenuSubTriggerProps, children) =>
+    Effect.gen(function* () {
+      const subCtx = yield* DropdownMenuSubCtx;
+
+      const dataState = subCtx.isOpen.map((open) => (open ? "open" : "closed"));
+
+      let hoverTimeout: ReturnType<typeof setTimeout> | null = null;
+
+      const handleMouseEnter = () =>
+        Effect.sync(() => {
+          subCtx.cancelClose(); // Cancel any pending close from context
+          hoverTimeout = setTimeout(() => {
+            Effect.runSync(subCtx.open());
+          }, 100);
+        });
+
+      const handleMouseLeave = () =>
+        Effect.sync(() => {
+          if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+          }
+          subCtx.scheduleClose(); // Use shared close timeout
+        });
+
+      const handleKeyDown = (event: KeyboardEvent) =>
+        Effect.gen(function* () {
+          if (props.disabled) return;
+
+          if (event.key === "ArrowRight" || event.key === "Enter") {
+            event.preventDefault();
+            event.stopPropagation();
+            yield* subCtx.open();
+            // Focus first item in submenu
+            setTimeout(() => {
+              const content = document.getElementById(subCtx.contentId);
+              const firstItem = content?.querySelector(
+                "[data-menu-item]:not([data-disabled])",
+              ) as HTMLElement;
+              firstItem?.focus();
+            }, 0);
+          }
+        });
+
+      const handleClick = () =>
+        Effect.gen(function* () {
+          if (props.disabled) return;
+          yield* subCtx.open();
+        });
+
+      // Cleanup timeout on unmount
+      yield* Effect.addFinalizer(() =>
+        Effect.sync(() => {
+          if (hoverTimeout) clearTimeout(hoverTimeout);
+        }),
+      );
+
+      return yield* $.div(
+        {
+          ref: subCtx.triggerRef,
+          id: subCtx.triggerId,
+          class: props.class,
+          role: "menuitem",
+          "aria-haspopup": "menu",
+          "aria-expanded": subCtx.isOpen.map((open) =>
+            open ? "true" : "false",
+          ),
+          "aria-controls": subCtx.contentId,
+          "data-state": dataState,
+          "data-disabled": props.disabled ? "" : undefined,
+          "data-menu-item": "",
+          "data-menu-subtrigger": "",
+          tabIndex: props.disabled ? undefined : 0,
+          onMouseEnter: handleMouseEnter,
+          onMouseLeave: handleMouseLeave,
+          onKeyDown: handleKeyDown,
+          onClick: handleClick,
+        },
+        children ?? [],
+      );
+    }),
+);
+
+/**
+ * Content area for a submenu. Positioned to the right of SubTrigger.
+ *
+ * @example
+ * ```ts
+ * DropdownMenu.SubContent({}, [
+ *   DropdownMenu.Item({}, "Sub Option 1"),
+ *   DropdownMenu.Item({}, "Sub Option 2"),
+ * ])
+ * ```
+ */
+const SubContent = component(
+  "DropdownMenuSubContent",
+  (props: DropdownMenuSubContentProps, children) =>
+    Effect.gen(function* () {
+      const rootCtx = yield* DropdownMenuCtx;
+      const subCtx = yield* DropdownMenuSubCtx;
+
+      const sideOffset = props.sideOffset ?? 0;
+      const loop = props.loop ?? true;
+
+      const dataState = subCtx.isOpen.map((open) => (open ? "open" : "closed"));
+
+      return yield* when(
+        subCtx.isOpen,
+        () =>
+          Portal(() =>
+            Effect.gen(function* () {
+              const triggerEl = subCtx.triggerRef.current;
+
+              let positionStyle: Record<string, string> = {
+                position: "fixed",
+              };
+
+              if (triggerEl) {
+                const rect = triggerEl.getBoundingClientRect();
+                // Position to the right of the trigger
+                const { top, left } = calculatePosition(
+                  rect,
+                  "right",
+                  "start",
+                  sideOffset,
+                  0,
+                );
+                const transform = getTransform("right", "start");
+
+                positionStyle = {
+                  position: "fixed",
+                  top: `${top}px`,
+                  left: `${left}px`,
+                  transform,
+                };
+              }
+
+              const handleMouseEnter = () =>
+                Effect.sync(() => {
+                  subCtx.cancelClose(); // Cancel shared close timeout
+                });
+
+              const handleMouseLeave = (event: MouseEvent) =>
+                Effect.sync(() => {
+                  const contentEl = document.getElementById(subCtx.contentId);
+                  const relatedTarget = event.relatedTarget;
+
+                  // Don't schedule close if moving to a child element
+                  if (
+                    contentEl &&
+                    relatedTarget instanceof Node &&
+                    contentEl.contains(relatedTarget)
+                  ) {
+                    return;
+                  }
+
+                  // Don't schedule close if moving to a nested submenu content (rendered via Portal)
+                  if (
+                    relatedTarget instanceof HTMLElement &&
+                    (relatedTarget.hasAttribute("data-menu-subcontent") ||
+                      relatedTarget.closest("[data-menu-subcontent]"))
+                  ) {
+                    return;
+                  }
+
+                  subCtx.scheduleClose(); // Use shared close timeout
+                });
+
+              const handleKeyDown = (event: KeyboardEvent) =>
+                Effect.gen(function* () {
+                  const state = getMenuNavigationState(subCtx.contentId, loop);
+
+                  // Handle arrow navigation (except ArrowLeft which closes submenu)
+                  if (
+                    event.key !== "ArrowLeft" &&
+                    handleMenuArrowNavigation(event, state)
+                  ) {
+                    return;
+                  }
+
+                  switch (event.key) {
+                    case "ArrowLeft":
+                      // Close submenu and return focus to SubTrigger
+                      event.preventDefault();
+                      event.stopPropagation();
+                      yield* subCtx.close();
+                      subCtx.triggerRef.current?.focus();
+                      break;
+                    case "Enter":
+                    case " ":
+                      event.preventDefault();
+                      if (
+                        state.currentItem &&
+                        !state.currentItem.hasAttribute("data-menu-subtrigger")
+                      ) {
+                        state.currentItem.click();
+                      }
+                      break;
+                    case "Escape":
+                      event.preventDefault();
+                      event.stopPropagation();
+                      yield* subCtx.close();
+                      subCtx.triggerRef.current?.focus();
+                      break;
+                    case "Tab":
+                      // Close entire menu tree on Tab
+                      yield* subCtx.close();
+                      yield* rootCtx.close();
+                      break;
+                  }
+                });
+
+              const contentEl = yield* $.div(
+                {
+                  id: subCtx.contentId,
+                  class: props.class,
+                  role: "menu",
+                  "aria-labelledby": subCtx.triggerId,
+                  "data-state": dataState,
+                  "data-side": "right",
+                  "data-menu-content": "",
+                  "data-menu-subcontent": "",
+                  tabIndex: -1,
+                  style: positionStyle,
+                  onMouseEnter: handleMouseEnter,
+                  onMouseLeave: handleMouseLeave,
+                  onKeyDown: handleKeyDown,
+                },
+                children ?? [],
+              );
+
+              // Focus first item on open
+              const firstItem = contentEl.querySelector(
+                "[data-menu-item]:not([data-disabled])",
+              ) as HTMLElement;
+              if (firstItem) {
+                firstItem.focus();
+              } else {
+                contentEl.focus();
+              }
+
+              return contentEl;
+            }),
+          ),
+        () => $.div({ style: { display: "none" } }),
+      );
+    }),
+);
+
+/**
  * Headless DropdownMenu primitive for building accessible action menus.
  *
  * Features:
@@ -597,4 +965,7 @@ export const DropdownMenu = {
   Group,
   Label,
   Separator,
+  Sub,
+  SubTrigger,
+  SubContent,
 } as const;

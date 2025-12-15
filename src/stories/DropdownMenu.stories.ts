@@ -316,3 +316,72 @@ export const DangerousActions: Story = {
     return container;
   },
 };
+
+export const WithSubmenus: Story = {
+  render: () => {
+    const element = Effect.gen(function* () {
+      return yield* DropdownMenu.Root({}, [
+        DropdownMenu.Trigger({}, "File"),
+        DropdownMenu.Content({}, [
+          DropdownMenu.Item({ onSelect: () => Effect.log("New") }, "New"),
+          DropdownMenu.Item({ onSelect: () => Effect.log("Open") }, "Open"),
+          DropdownMenu.Separator({}),
+          DropdownMenu.Sub({}, [
+            DropdownMenu.SubTrigger({}, "Share →"),
+            DropdownMenu.SubContent({}, [
+              DropdownMenu.Item(
+                { onSelect: () => Effect.log("Email") },
+                "Email",
+              ),
+              DropdownMenu.Item(
+                { onSelect: () => Effect.log("Slack") },
+                "Slack",
+              ),
+              DropdownMenu.Item(
+                { onSelect: () => Effect.log("Copy Link") },
+                "Copy Link",
+              ),
+            ]),
+          ]),
+          DropdownMenu.Sub({}, [
+            DropdownMenu.SubTrigger({}, "Export →"),
+            DropdownMenu.SubContent({}, [
+              DropdownMenu.Item({ onSelect: () => Effect.log("PDF") }, "PDF"),
+              DropdownMenu.Item({ onSelect: () => Effect.log("PNG") }, "PNG"),
+              DropdownMenu.Item({ onSelect: () => Effect.log("SVG") }, "SVG"),
+              DropdownMenu.Separator({}),
+              DropdownMenu.Sub({}, [
+                DropdownMenu.SubTrigger({}, "More Formats →"),
+                DropdownMenu.SubContent({}, [
+                  DropdownMenu.Item(
+                    { onSelect: () => Effect.log("JPEG") },
+                    "JPEG",
+                  ),
+                  DropdownMenu.Item(
+                    { onSelect: () => Effect.log("WebP") },
+                    "WebP",
+                  ),
+                  DropdownMenu.Item(
+                    { onSelect: () => Effect.log("TIFF") },
+                    "TIFF",
+                  ),
+                ]),
+              ]),
+            ]),
+          ]),
+          DropdownMenu.Separator({}),
+          DropdownMenu.Item({ onSelect: () => Effect.log("Print") }, "Print"),
+        ]),
+      ]);
+    });
+
+    const container = document.createElement("div");
+    container.className = "menu-story-container";
+
+    renderEffectAsync(element).then((el) => {
+      container.appendChild(el);
+    });
+
+    return container;
+  },
+};

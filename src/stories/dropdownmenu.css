@@ -122,6 +122,43 @@
   margin: 4px 8px;
 }
 
+/* Submenu Trigger */
+[data-menu-subtrigger] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #374151;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 100ms ease;
+}
+
+[data-menu-subtrigger]:hover,
+[data-menu-subtrigger]:focus,
+[data-menu-subtrigger][data-state="open"] {
+  background: #f3f4f6;
+}
+
+[data-menu-subtrigger][data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Submenu Content */
+[data-menu-subcontent] {
+  background: white;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0 10px 20px -15px rgba(22, 23, 24, 0.2);
+  z-index: 51;
+  animation: menu-in 150ms ease-out;
+  min-width: 160px;
+}
+
 /* Story container */
 .menu-story-container {
   padding: 40px 20px;
