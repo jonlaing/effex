@@ -7,7 +7,7 @@ import { component } from "@dom/Component";
 import { UniqueId } from "@dom/UniqueId";
 import { Portal } from "@dom/Portal";
 import type { Element } from "@dom/Element";
-import { calculatePosition, getTransform } from "./helpers";
+import { calculatePosition, getTransform } from "../helpers";
 
 /**
  * Context shared between Popover parts.

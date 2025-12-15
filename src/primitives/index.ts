@@ -76,3 +76,31 @@ export {
   type PopoverContentProps,
   type PopoverCloseProps,
 } from "./Popover/index.js";
+
+// Tooltip
+export {
+  Tooltip,
+  TooltipCtx,
+  type TooltipContext,
+  type TooltipRootProps,
+  type TooltipTriggerProps,
+  type TooltipContentProps,
+} from "./Tooltip/index.js";
+
+// Select
+export {
+  Select,
+  SelectCtx,
+  SelectItemCtx,
+  type SelectContext,
+  type SelectItemContext,
+  type SelectRootProps,
+  type SelectTriggerProps,
+  type SelectValueProps,
+  type SelectContentProps,
+  type SelectItemProps,
+  type SelectItemTextProps,
+  type SelectGroupProps,
+  type SelectLabelProps,
+  type SelectSeparatorProps,
+} from "./Select/index.js";
