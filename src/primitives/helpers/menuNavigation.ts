@@ -1,9 +1,11 @@
 // ============================================================================
-// Keyboard Navigation Helpers
+// Menu Keyboard Navigation Helpers
+// Shared between DropdownMenu, ContextMenu, and other menu components
 // ============================================================================
 
 /**
  * Get all focusable menu items within a container.
+ * Uses the [data-menu-item] data attribute to find items.
  */
 export const getMenuItems = (contentId: string): HTMLElement[] => {
   const contentEl = document.getElementById(contentId);
@@ -26,6 +28,8 @@ export interface MenuNavigationState {
 
 /**
  * Get current navigation state for menu items.
+ * @param contentId - The ID of the menu content element
+ * @param loop - Whether navigation should loop around
  */
 export const getMenuNavigationState = (
   contentId: string,
@@ -57,6 +61,12 @@ export const getMenuNavigationState = (
 /**
  * Handle arrow key navigation within a menu.
  * Returns true if the event was handled.
+ *
+ * Supports:
+ * - ArrowDown: Focus next item
+ * - ArrowUp: Focus previous item
+ * - Home: Focus first item
+ * - End: Focus last item
  */
 export const handleMenuArrowNavigation = (
   event: KeyboardEvent,

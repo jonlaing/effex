@@ -132,3 +132,27 @@ export {
   type DropdownMenuSubTriggerProps,
   type DropdownMenuSubContentProps,
 } from "./DropdownMenu/index.js";
+
+// ContextMenu
+export {
+  ContextMenu,
+  ContextMenuCtx,
+  ContextMenuSubCtx,
+  ContextMenuRadioGroupCtx,
+  type ContextMenuContext,
+  type ContextMenuSubContext,
+  type ContextMenuRadioGroupContext,
+  type ContextMenuRootProps,
+  type ContextMenuTriggerProps,
+  type ContextMenuContentProps,
+  type ContextMenuItemProps,
+  type ContextMenuGroupProps,
+  type ContextMenuLabelProps,
+  type ContextMenuSeparatorProps,
+  type ContextMenuCheckboxItemProps,
+  type ContextMenuRadioGroupProps,
+  type ContextMenuRadioItemProps,
+  type ContextMenuSubProps,
+  type ContextMenuSubTriggerProps,
+  type ContextMenuSubContentProps,
+} from "./ContextMenu/index.js";

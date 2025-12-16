@@ -189,6 +189,7 @@ export interface EventAttributes {
   readonly onBlur?: EventHandler<FocusEvent>;
   readonly onMouseEnter?: EventHandler<MouseEvent>;
   readonly onMouseLeave?: EventHandler<MouseEvent>;
+  readonly onContextMenu?: EventHandler<MouseEvent>;
 }
 
 /** Keys to exclude from the mapped element attributes (handled by BaseAttributes/EventAttributes) */
@@ -208,7 +209,8 @@ type ExcludedKeys =
   | "onfocus"
   | "onblur"
   | "onmouseenter"
-  | "onmouseleave";
+  | "onmouseleave"
+  | "oncontextmenu";
 
 /**
  * Helper type to extract only non-function property keys from a type.

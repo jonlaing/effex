@@ -6,11 +6,8 @@ import { provide, when } from "@dom/Control";
 import { component } from "@dom/Component";
 import { UniqueId } from "@dom/UniqueId";
 import { Portal } from "@dom/Portal";
-import { Ref } from "@dom/Ref";
 import type { Element } from "@dom/Element";
 import {
-  calculatePosition,
-  getTransform,
   getMenuNavigationState,
   handleMenuArrowNavigation,
 } from "../helpers";
@@ -20,19 +17,17 @@ import {
 // ============================================================================
 
 /**
- * Context shared between DropdownMenu parts.
+ * Context shared between ContextMenu parts.
  */
-export interface DropdownMenuContext {
+export interface ContextMenuContext {
   /** Whether the menu is currently open */
   readonly isOpen: Readable.Readable<boolean>;
-  /** Open the menu */
-  readonly open: () => Effect.Effect<void>;
+  /** Open the menu at specific coordinates */
+  readonly openAt: (x: number, y: number) => Effect.Effect<void>;
   /** Close the menu */
   readonly close: () => Effect.Effect<void>;
-  /** Toggle the menu open state */
-  readonly toggle: () => Effect.Effect<void>;
-  /** Reference to the trigger element */
-  readonly triggerRef: Ref<HTMLElement>;
+  /** Current cursor position when menu was opened */
+  readonly position: Signal<{ x: number; y: number }>;
   /** Unique ID for the content */
   readonly contentId: string;
   /** Unique ID for the trigger */
@@ -40,21 +35,19 @@ export interface DropdownMenuContext {
 }
 
 /**
- * Props for DropdownMenu.Root
+ * Props for ContextMenu.Root
  */
-export interface DropdownMenuRootProps {
+export interface ContextMenuRootProps {
   /** Controlled open state */
   readonly open?: Signal<boolean>;
-  /** Default open state */
-  readonly defaultOpen?: boolean;
   /** Callback when open state changes */
   readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
 }
 
 /**
- * Props for DropdownMenu.Trigger
+ * Props for ContextMenu.Trigger
  */
-export interface DropdownMenuTriggerProps {
+export interface ContextMenuTriggerProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
   /** Whether the trigger is disabled */
@@ -62,25 +55,19 @@ export interface DropdownMenuTriggerProps {
 }
 
 /**
- * Props for DropdownMenu.Content
+ * Props for ContextMenu.Content
  */
-export interface DropdownMenuContentProps {
+export interface ContextMenuContentProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
-  /** Positioning side relative to trigger (default: "bottom") */
-  readonly side?: "top" | "bottom" | "left" | "right";
-  /** Alignment along the side axis (default: "start") */
-  readonly align?: "start" | "center" | "end";
-  /** Gap between trigger and content in pixels (default: 4) */
-  readonly sideOffset?: number;
   /** Whether keyboard navigation loops (default: true) */
   readonly loop?: boolean;
 }
 
 /**
- * Props for DropdownMenu.Item
+ * Props for ContextMenu.Item
  */
-export interface DropdownMenuItemProps {
+export interface ContextMenuItemProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
   /** Whether this item is disabled */
@@ -90,89 +77,33 @@ export interface DropdownMenuItemProps {
 }
 
 /**
- * Props for DropdownMenu.Group
+ * Props for ContextMenu.Group
  */
-export interface DropdownMenuGroupProps {
+export interface ContextMenuGroupProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
 }
 
 /**
- * Props for DropdownMenu.Label
+ * Props for ContextMenu.Label
  */
-export interface DropdownMenuLabelProps {
+export interface ContextMenuLabelProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
 }
 
 /**
- * Props for DropdownMenu.Separator
+ * Props for ContextMenu.Separator
  */
-export interface DropdownMenuSeparatorProps {
+export interface ContextMenuSeparatorProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
 }
 
 /**
- * Context for DropdownMenu.Sub
+ * Props for ContextMenu.CheckboxItem
  */
-export interface DropdownMenuSubContext {
-  /** Whether the submenu is currently open */
-  readonly isOpen: Readable.Readable<boolean>;
-  /** Open the submenu */
-  readonly open: () => Effect.Effect<void>;
-  /** Close the submenu */
-  readonly close: () => Effect.Effect<void>;
-  /** Cancel any pending close timeout */
-  readonly cancelClose: () => void;
-  /** Schedule a close with delay */
-  readonly scheduleClose: () => void;
-  /** Reference to the SubTrigger element */
-  readonly triggerRef: Ref<HTMLElement>;
-  /** Unique ID for the submenu content */
-  readonly contentId: string;
-  /** Unique ID for the SubTrigger */
-  readonly triggerId: string;
-}
-
-/**
- * Props for DropdownMenu.Sub
- */
-export interface DropdownMenuSubProps {
-  /** Controlled open state */
-  readonly open?: Signal<boolean>;
-  /** Default open state */
-  readonly defaultOpen?: boolean;
-  /** Callback when open state changes */
-  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
-}
-
-/**
- * Props for DropdownMenu.SubTrigger
- */
-export interface DropdownMenuSubTriggerProps {
-  /** Additional class names */
-  readonly class?: string | Readable.Readable<string>;
-  /** Whether this trigger is disabled */
-  readonly disabled?: boolean;
-}
-
-/**
- * Props for DropdownMenu.SubContent
- */
-export interface DropdownMenuSubContentProps {
-  /** Additional class names */
-  readonly class?: string | Readable.Readable<string>;
-  /** Gap between trigger and content in pixels (default: 0) */
-  readonly sideOffset?: number;
-  /** Whether keyboard navigation loops (default: true) */
-  readonly loop?: boolean;
-}
-
-/**
- * Props for DropdownMenu.CheckboxItem
- */
-export interface DropdownMenuCheckboxItemProps {
+export interface ContextMenuCheckboxItemProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
   /** Whether this item is disabled */
@@ -186,9 +117,9 @@ export interface DropdownMenuCheckboxItemProps {
 }
 
 /**
- * Context for DropdownMenu.RadioGroup
+ * Context for ContextMenu.RadioGroup
  */
-export interface DropdownMenuRadioGroupContext {
+export interface ContextMenuRadioGroupContext {
   /** Current selected value */
   readonly value: Readable.Readable<string>;
   /** Set the selected value */
@@ -196,9 +127,9 @@ export interface DropdownMenuRadioGroupContext {
 }
 
 /**
- * Props for DropdownMenu.RadioGroup
+ * Props for ContextMenu.RadioGroup
  */
-export interface DropdownMenuRadioGroupProps {
+export interface ContextMenuRadioGroupProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
   /** Controlled value */
@@ -210,9 +141,9 @@ export interface DropdownMenuRadioGroupProps {
 }
 
 /**
- * Props for DropdownMenu.RadioItem
+ * Props for ContextMenu.RadioItem
  */
-export interface DropdownMenuRadioItemProps {
+export interface ContextMenuRadioItemProps {
   /** Additional class names */
   readonly class?: string | Readable.Readable<string>;
   /** The value for this radio item */
@@ -222,55 +153,113 @@ export interface DropdownMenuRadioItemProps {
 }
 
 /**
- * Effect Context for DropdownMenu state sharing between parts.
+ * Context for ContextMenu.Sub
  */
-export class DropdownMenuCtx extends Context.Tag("DropdownMenuContext")<
-  DropdownMenuCtx,
-  DropdownMenuContext
+export interface ContextMenuSubContext {
+  /** Whether the submenu is currently open */
+  readonly isOpen: Readable.Readable<boolean>;
+  /** Open the submenu */
+  readonly open: () => Effect.Effect<void>;
+  /** Close the submenu */
+  readonly close: () => Effect.Effect<void>;
+  /** Cancel any pending close timeout */
+  readonly cancelClose: () => void;
+  /** Schedule a close with delay */
+  readonly scheduleClose: () => void;
+  /** Reference to the SubTrigger element */
+  readonly triggerEl: Signal<HTMLElement | null>;
+  /** Unique ID for the submenu content */
+  readonly contentId: string;
+  /** Unique ID for the SubTrigger */
+  readonly triggerId: string;
+}
+
+/**
+ * Props for ContextMenu.Sub
+ */
+export interface ContextMenuSubProps {
+  /** Controlled open state */
+  readonly open?: Signal<boolean>;
+  /** Default open state */
+  readonly defaultOpen?: boolean;
+  /** Callback when open state changes */
+  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
+}
+
+/**
+ * Props for ContextMenu.SubTrigger
+ */
+export interface ContextMenuSubTriggerProps {
+  /** Additional class names */
+  readonly class?: string | Readable.Readable<string>;
+  /** Whether this trigger is disabled */
+  readonly disabled?: boolean;
+}
+
+/**
+ * Props for ContextMenu.SubContent
+ */
+export interface ContextMenuSubContentProps {
+  /** Additional class names */
+  readonly class?: string | Readable.Readable<string>;
+  /** Gap between trigger and content in pixels (default: 0) */
+  readonly sideOffset?: number;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+}
+
+/**
+ * Effect Context for ContextMenu state sharing between parts.
+ */
+export class ContextMenuCtx extends Context.Tag("ContextMenuContext")<
+  ContextMenuCtx,
+  ContextMenuContext
 >() {}
 
 /**
- * Effect Context for DropdownMenu.Sub state sharing.
+ * Effect Context for ContextMenu.Sub state sharing.
  */
-export class DropdownMenuSubCtx extends Context.Tag("DropdownMenuSubContext")<
-  DropdownMenuSubCtx,
-  DropdownMenuSubContext
+export class ContextMenuSubCtx extends Context.Tag("ContextMenuSubContext")<
+  ContextMenuSubCtx,
+  ContextMenuSubContext
 >() {}
 
 /**
- * Effect Context for DropdownMenu.RadioGroup state sharing.
+ * Effect Context for ContextMenu.RadioGroup state sharing.
  */
-export class DropdownMenuRadioGroupCtx extends Context.Tag(
-  "DropdownMenuRadioGroupContext",
-)<DropdownMenuRadioGroupCtx, DropdownMenuRadioGroupContext>() {}
+export class ContextMenuRadioGroupCtx extends Context.Tag(
+  "ContextMenuRadioGroupContext",
+)<ContextMenuRadioGroupCtx, ContextMenuRadioGroupContext>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
 
 /**
- * Root container for a DropdownMenu. Manages open/closed state
+ * Root container for a ContextMenu. Manages open/closed state
  * and provides context to child components.
  *
  * @example
  * ```ts
- * DropdownMenu.Root({}, [
- *   DropdownMenu.Trigger({}, "Actions"),
- *   DropdownMenu.Content({}, [
- *     DropdownMenu.Item({ onSelect: () => Effect.log("Edit") }, "Edit"),
- *     DropdownMenu.Item({ onSelect: () => Effect.log("Delete") }, "Delete"),
+ * ContextMenu.Root({}, [
+ *   ContextMenu.Trigger({}, div({ class: "right-click-area" }, "Right click here")),
+ *   ContextMenu.Content({}, [
+ *     ContextMenu.Item({ onSelect: () => Effect.log("Copy") }, "Copy"),
+ *     ContextMenu.Item({ onSelect: () => Effect.log("Paste") }, "Paste"),
  *   ]),
  * ])
  * ```
  */
 const Root = (
-  props: DropdownMenuRootProps,
-  children: Element<never, DropdownMenuCtx> | Element<never, DropdownMenuCtx>[],
+  props: ContextMenuRootProps,
+  children: Element<never, ContextMenuCtx> | Element<never, ContextMenuCtx>[],
 ): Element =>
   Effect.gen(function* () {
-    const isOpen: Signal<boolean> = props.open
-      ? props.open
-      : yield* Signal.make(props.defaultOpen ?? false);
+    const isOpen: Signal<boolean> = props.open ?? (yield* Signal.make(false));
+    const position = yield* Signal.make({ x: 0, y: 0 });
 
-    const triggerRef = yield* Ref.make<HTMLElement>();
-    const contentId = yield* UniqueId.make("menu-content");
-    const triggerId = yield* UniqueId.make("menu-trigger");
+    const contentId = yield* UniqueId.make("context-menu-content");
+    const triggerId = yield* UniqueId.make("context-menu-trigger");
 
     const setOpenState = (newValue: boolean) =>
       Effect.gen(function* () {
@@ -280,96 +269,55 @@ const Root = (
         }
       });
 
-    const ctx: DropdownMenuContext = {
+    const ctx: ContextMenuContext = {
       isOpen,
-      open: () => setOpenState(true),
-      close: () => setOpenState(false),
-      toggle: () =>
+      openAt: (x: number, y: number) =>
         Effect.gen(function* () {
-          const current = yield* isOpen.get;
-          yield* setOpenState(!current);
+          yield* position.set({ x, y });
+          yield* setOpenState(true);
         }),
-      triggerRef,
+      close: () => setOpenState(false),
+      position,
       contentId,
       triggerId,
     };
 
     return yield* $.div(
       { style: { display: "contents" } },
-      provide(DropdownMenuCtx, ctx, children),
+      provide(ContextMenuCtx, ctx, children),
     );
   });
 
 /**
- * Button that opens/closes the DropdownMenu.
+ * The area that responds to right-click to open the context menu.
  *
  * @example
  * ```ts
- * DropdownMenu.Trigger({ class: "menu-trigger" }, "Open Menu")
+ * ContextMenu.Trigger({}, div({ class: "file-item" }, "document.pdf"))
  * ```
  */
 const Trigger = component(
-  "DropdownMenuTrigger",
-  (props: DropdownMenuTriggerProps, children) =>
+  "ContextMenuTrigger",
+  (props: ContextMenuTriggerProps, children) =>
     Effect.gen(function* () {
-      const ctx = yield* DropdownMenuCtx;
+      const ctx = yield* ContextMenuCtx;
 
-      const dataState = ctx.isOpen.map((open) => (open ? "open" : "closed"));
-      const ariaExpanded = ctx.isOpen.map((open) => (open ? "true" : "false"));
-
-      const handleKeyDown = (event: KeyboardEvent) =>
+      const handleContextMenu = (event: MouseEvent) =>
         Effect.gen(function* () {
           if (props.disabled) return;
 
-          switch (event.key) {
-            case "Enter":
-            case " ":
-              event.preventDefault();
-              yield* ctx.toggle();
-              break;
-            case "ArrowDown":
-              event.preventDefault();
-              yield* ctx.open();
-              // Focus first item after menu opens
-              setTimeout(() => {
-                const content = document.getElementById(ctx.contentId);
-                const firstItem = content?.querySelector(
-                  "[data-menu-item]:not([data-disabled])",
-                ) as HTMLElement;
-                firstItem?.focus();
-              }, 0);
-              break;
-            case "ArrowUp":
-              event.preventDefault();
-              yield* ctx.open();
-              // Focus last item after menu opens
-              setTimeout(() => {
-                const content = document.getElementById(ctx.contentId);
-                const items = content?.querySelectorAll(
-                  "[data-menu-item]:not([data-disabled])",
-                );
-                const lastItem = items?.[items.length - 1] as HTMLElement;
-                lastItem?.focus();
-              }, 0);
-              break;
-          }
+          event.preventDefault();
+          yield* ctx.openAt(event.clientX, event.clientY);
         });
 
-      return yield* $.button(
+      return yield* $.div(
         {
-          ref: ctx.triggerRef,
           id: ctx.triggerId,
           class: props.class,
-          type: "button",
-          "aria-haspopup": "menu",
-          "aria-expanded": ariaExpanded,
-          "aria-controls": ctx.contentId,
-          "data-state": dataState,
           "data-disabled": props.disabled ? "" : undefined,
-          "data-menu-trigger": "",
-          disabled: props.disabled,
-          onClick: ctx.toggle,
-          onKeyDown: handleKeyDown,
+          "data-context-menu-trigger": "",
+          onContextMenu: handleContextMenu,
+
         },
         children ?? [],
       );
@@ -377,26 +325,23 @@ const Trigger = component(
 );
 
 /**
- * Content area for the DropdownMenu.
- * Renders in a Portal and is positioned relative to the trigger.
+ * Content area for the ContextMenu.
+ * Renders in a Portal and is positioned at the cursor location.
  *
  * @example
  * ```ts
- * DropdownMenu.Content({ side: "bottom", align: "start" }, [
- *   DropdownMenu.Item({}, "Option 1"),
- *   DropdownMenu.Item({}, "Option 2"),
+ * ContextMenu.Content({}, [
+ *   ContextMenu.Item({}, "Option 1"),
+ *   ContextMenu.Item({}, "Option 2"),
  * ])
  * ```
  */
 const Content = component(
-  "DropdownMenuContent",
-  (props: DropdownMenuContentProps, children) =>
+  "ContextMenuContent",
+  (props: ContextMenuContentProps, children) =>
     Effect.gen(function* () {
-      const ctx = yield* DropdownMenuCtx;
+      const ctx = yield* ContextMenuCtx;
 
-      const side = props.side ?? "bottom";
-      const align = props.align ?? "start";
-      const sideOffset = props.sideOffset ?? 4;
       const loop = props.loop ?? true;
 
       const dataState = ctx.isOpen.map((open) => (open ? "open" : "closed"));
@@ -406,31 +351,13 @@ const Content = component(
         () =>
           Portal(() =>
             Effect.gen(function* () {
-              const triggerEl = ctx.triggerRef.current;
+              const pos = yield* ctx.position.get;
 
-              let positionStyle: Record<string, string> = {
+              const positionStyle: Record<string, string> = {
                 position: "fixed",
+                top: `${pos.y}px`,
+                left: `${pos.x}px`,
               };
-
-              if (triggerEl) {
-                const rect = triggerEl.getBoundingClientRect();
-                const { top, left } = calculatePosition(
-                  rect,
-                  side,
-                  align,
-                  sideOffset,
-                  0,
-                );
-                const transform = getTransform(side, align);
-
-                positionStyle = {
-                  position: "fixed",
-                  top: `${top}px`,
-                  left: `${left}px`,
-                  transform,
-                  minWidth: `${rect.width}px`,
-                };
-              }
 
               const handleKeyDown = (event: KeyboardEvent) =>
                 Effect.gen(function* () {
@@ -453,7 +380,6 @@ const Content = component(
                       event.preventDefault();
                       event.stopPropagation();
                       yield* ctx.close();
-                      ctx.triggerRef.current?.focus();
                       break;
                     case "Tab":
                       // Close menu on Tab
@@ -469,9 +395,8 @@ const Content = component(
                   role: "menu",
                   "aria-labelledby": ctx.triggerId,
                   "data-state": dataState,
-                  "data-side": side,
-                  "data-align": align,
                   "data-menu-content": "",
+                  "data-context-menu-content": "",
                   tabIndex: -1,
                   style: positionStyle,
                   onKeyDown: handleKeyDown,
@@ -481,28 +406,35 @@ const Content = component(
 
               // Click outside handler
               const handleDocumentClick = (e: MouseEvent) => {
-                const triggerEl = ctx.triggerRef as unknown as {
-                  _value: HTMLElement | null;
-                };
-                const trigger = triggerEl._value;
+                if (contentEl && !contentEl.contains(e.target as Node)) {
+                  Effect.runSync(ctx.close());
+                }
+              };
 
-                if (
-                  contentEl &&
-                  !contentEl.contains(e.target as Node) &&
-                  trigger &&
-                  !trigger.contains(e.target as Node)
-                ) {
+              // Also close on right-click outside
+              const handleDocumentContextMenu = (e: MouseEvent) => {
+                if (contentEl && !contentEl.contains(e.target as Node)) {
                   Effect.runSync(ctx.close());
                 }
               };
 
               document.addEventListener("click", handleDocumentClick, true);
+              document.addEventListener(
+                "contextmenu",
+                handleDocumentContextMenu,
+                true,
+              );
 
               yield* Effect.addFinalizer(() =>
                 Effect.sync(() => {
                   document.removeEventListener(
                     "click",
                     handleDocumentClick,
+                    true,
+                  );
+                  document.removeEventListener(
+                    "contextmenu",
+                    handleDocumentContextMenu,
                     true,
                   );
                 }),
@@ -527,18 +459,18 @@ const Content = component(
 );
 
 /**
- * A clickable item within the DropdownMenu.
+ * A clickable item within the ContextMenu.
  *
  * @example
  * ```ts
- * DropdownMenu.Item({ onSelect: () => Effect.log("Clicked!") }, "Edit")
+ * ContextMenu.Item({ onSelect: () => Effect.log("Clicked!") }, "Copy")
  * ```
  */
 const Item = component(
-  "DropdownMenuItem",
-  (props: DropdownMenuItemProps, children) =>
+  "ContextMenuItem",
+  (props: ContextMenuItemProps, children) =>
     Effect.gen(function* () {
-      const ctx = yield* DropdownMenuCtx;
+      const ctx = yield* ContextMenuCtx;
 
       const handleClick = () =>
         Effect.gen(function* () {
@@ -548,9 +480,8 @@ const Item = component(
             yield* props.onSelect();
           }
 
-          // Close menu and return focus to trigger
+          // Close menu
           yield* ctx.close();
-          ctx.triggerRef.current?.focus();
         });
 
       return yield* $.div(
@@ -572,16 +503,16 @@ const Item = component(
  *
  * @example
  * ```ts
- * DropdownMenu.Group({}, [
- *   DropdownMenu.Label({}, "Actions"),
- *   DropdownMenu.Item({}, "Edit"),
- *   DropdownMenu.Item({}, "Delete"),
+ * ContextMenu.Group({}, [
+ *   ContextMenu.Label({}, "Edit"),
+ *   ContextMenu.Item({}, "Cut"),
+ *   ContextMenu.Item({}, "Copy"),
  * ])
  * ```
  */
 const Group = component(
-  "DropdownMenuGroup",
-  (props: DropdownMenuGroupProps, children) =>
+  "ContextMenuGroup",
+  (props: ContextMenuGroupProps, children) =>
     Effect.gen(function* () {
       return yield* $.div(
         {
@@ -599,12 +530,12 @@ const Group = component(
  *
  * @example
  * ```ts
- * DropdownMenu.Label({}, "Section Title")
+ * ContextMenu.Label({}, "Section Title")
  * ```
  */
 const Label = component(
-  "DropdownMenuLabel",
-  (props: DropdownMenuLabelProps, children) =>
+  "ContextMenuLabel",
+  (props: ContextMenuLabelProps, children) =>
     Effect.gen(function* () {
       return yield* $.div(
         {
@@ -621,12 +552,12 @@ const Label = component(
  *
  * @example
  * ```ts
- * DropdownMenu.Separator({})
+ * ContextMenu.Separator({})
  * ```
  */
 const Separator = component(
-  "DropdownMenuSeparator",
-  (props: DropdownMenuSeparatorProps) =>
+  "ContextMenuSeparator",
+  (props: ContextMenuSeparatorProps) =>
     Effect.gen(function* () {
       return yield* $.div({
         class: props.class,
@@ -641,15 +572,15 @@ const Separator = component(
  *
  * @example
  * ```ts
- * const showGrid = yield* Signal.make(true);
- * DropdownMenu.CheckboxItem({ checked: showGrid }, "Show Grid")
+ * const showHidden = yield* Signal.make(false);
+ * ContextMenu.CheckboxItem({ checked: showHidden }, "Show Hidden Files")
  * ```
  */
 const CheckboxItem = component(
-  "DropdownMenuCheckboxItem",
-  (props: DropdownMenuCheckboxItemProps, children) =>
+  "ContextMenuCheckboxItem",
+  (props: ContextMenuCheckboxItemProps, children) =>
     Effect.gen(function* () {
-      const ctx = yield* DropdownMenuCtx;
+      const ctx = yield* ContextMenuCtx;
 
       const checked: Signal<boolean> = props.checked
         ? props.checked
@@ -670,9 +601,8 @@ const CheckboxItem = component(
             yield* props.onCheckedChange(newValue);
           }
 
-          // Close menu and return focus to trigger
+          // Close menu
           yield* ctx.close();
-          ctx.triggerRef.current?.focus();
         });
 
       return yield* $.div(
@@ -697,20 +627,19 @@ const CheckboxItem = component(
  *
  * @example
  * ```ts
- * const sortBy = yield* Signal.make("name");
- * DropdownMenu.RadioGroup({ value: sortBy }, [
- *   DropdownMenu.RadioItem({ value: "name" }, "Name"),
- *   DropdownMenu.RadioItem({ value: "date" }, "Date"),
- *   DropdownMenu.RadioItem({ value: "size" }, "Size"),
+ * const viewMode = yield* Signal.make("list");
+ * ContextMenu.RadioGroup({ value: viewMode }, [
+ *   ContextMenu.RadioItem({ value: "list" }, "List"),
+ *   ContextMenu.RadioItem({ value: "grid" }, "Grid"),
  * ])
  * ```
  */
 const RadioGroup = (
-  props: DropdownMenuRadioGroupProps,
+  props: ContextMenuRadioGroupProps,
   children:
-    | Element<never, DropdownMenuCtx | DropdownMenuRadioGroupCtx>
-    | Element<never, DropdownMenuCtx | DropdownMenuRadioGroupCtx>[],
-): Element<never, DropdownMenuCtx> =>
+    | Element<never, ContextMenuCtx | ContextMenuRadioGroupCtx>
+    | Element<never, ContextMenuCtx | ContextMenuRadioGroupCtx>[],
+): Element<never, ContextMenuCtx> =>
   Effect.gen(function* () {
     const value: Signal<string> = props.value
       ? props.value
@@ -724,7 +653,7 @@ const RadioGroup = (
         }
       });
 
-    const radioCtx: DropdownMenuRadioGroupContext = {
+    const radioCtx: ContextMenuRadioGroupContext = {
       value,
       setValue,
     };
@@ -735,7 +664,7 @@ const RadioGroup = (
         role: "group",
         "data-menu-radio-group": "",
       },
-      provide(DropdownMenuRadioGroupCtx, radioCtx, children),
+      provide(ContextMenuRadioGroupCtx, radioCtx, children),
     );
   });
 
@@ -744,15 +673,15 @@ const RadioGroup = (
  *
  * @example
  * ```ts
- * DropdownMenu.RadioItem({ value: "option1" }, "Option 1")
+ * ContextMenu.RadioItem({ value: "list" }, "List View")
  * ```
  */
 const RadioItem = component(
-  "DropdownMenuRadioItem",
-  (props: DropdownMenuRadioItemProps, children) =>
+  "ContextMenuRadioItem",
+  (props: ContextMenuRadioItemProps, children) =>
     Effect.gen(function* () {
-      const ctx = yield* DropdownMenuCtx;
-      const radioCtx = yield* DropdownMenuRadioGroupCtx;
+      const ctx = yield* ContextMenuCtx;
+      const radioCtx = yield* ContextMenuRadioGroupCtx;
 
       const isChecked = radioCtx.value.map((v) => v === props.value);
       const dataState = isChecked.map((c) => (c ? "checked" : "unchecked"));
@@ -764,9 +693,8 @@ const RadioItem = component(
 
           yield* radioCtx.setValue(props.value);
 
-          // Close menu and return focus to trigger
+          // Close menu
           yield* ctx.close();
-          ctx.triggerRef.current?.focus();
         });
 
       return yield* $.div(
@@ -792,31 +720,31 @@ const RadioItem = component(
  *
  * @example
  * ```ts
- * DropdownMenu.Sub({}, [
- *   DropdownMenu.SubTrigger({}, "More Options"),
- *   DropdownMenu.SubContent({}, [
- *     DropdownMenu.Item({}, "Sub Option 1"),
- *     DropdownMenu.Item({}, "Sub Option 2"),
+ * ContextMenu.Sub({}, [
+ *   ContextMenu.SubTrigger({}, "More Options"),
+ *   ContextMenu.SubContent({}, [
+ *     ContextMenu.Item({}, "Sub Option 1"),
+ *     ContextMenu.Item({}, "Sub Option 2"),
  *   ]),
  * ])
  * ```
  */
 const Sub = (
-  props: DropdownMenuSubProps,
+  props: ContextMenuSubProps,
   children:
-    | Element<never, DropdownMenuCtx | DropdownMenuSubCtx>
-    | Element<never, DropdownMenuCtx | DropdownMenuSubCtx>[],
-): Element<never, DropdownMenuCtx> =>
+    | Element<never, ContextMenuCtx | ContextMenuSubCtx>
+    | Element<never, ContextMenuCtx | ContextMenuSubCtx>[],
+): Element<never, ContextMenuCtx> =>
   Effect.gen(function* () {
     const isOpen: Signal<boolean> = props.open
       ? props.open
       : yield* Signal.make(props.defaultOpen ?? false);
 
-    const triggerRef = yield* Ref.make<HTMLElement>();
-    const contentId = yield* UniqueId.make("submenu-content");
-    const triggerId = yield* UniqueId.make("submenu-trigger");
+    const triggerEl = yield* Signal.make<HTMLElement | null>(null);
+    const contentId = yield* UniqueId.make("context-submenu-content");
+    const triggerId = yield* UniqueId.make("context-submenu-trigger");
 
-    // Shared close timeout - managed at Sub level so both SubTrigger and SubContent can access it
+    // Shared close timeout
     let closeTimeout: ReturnType<typeof setTimeout> | null = null;
 
     const cancelClose = () => {
@@ -839,7 +767,7 @@ const Sub = (
     const setOpenState = (newValue: boolean) =>
       Effect.gen(function* () {
         if (newValue) {
-          cancelClose(); // Cancel any pending close when opening
+          cancelClose();
         }
         yield* isOpen.set(newValue);
         if (props.onOpenChange) {
@@ -847,20 +775,20 @@ const Sub = (
         }
       });
 
-    const subCtx: DropdownMenuSubContext = {
+    const subCtx: ContextMenuSubContext = {
       isOpen,
       open: () => setOpenState(true),
       close: () => setOpenState(false),
       cancelClose,
       scheduleClose,
-      triggerRef,
+      triggerEl,
       contentId,
       triggerId,
     };
 
     return yield* $.div(
       { style: { display: "contents" } },
-      provide(DropdownMenuSubCtx, subCtx, children),
+      provide(ContextMenuSubCtx, subCtx, children),
     );
   });
 
@@ -869,14 +797,14 @@ const Sub = (
  *
  * @example
  * ```ts
- * DropdownMenu.SubTrigger({}, "More Options →")
+ * ContextMenu.SubTrigger({}, "More Options →")
  * ```
  */
 const SubTrigger = component(
-  "DropdownMenuSubTrigger",
-  (props: DropdownMenuSubTriggerProps, children) =>
+  "ContextMenuSubTrigger",
+  (props: ContextMenuSubTriggerProps, children) =>
     Effect.gen(function* () {
-      const subCtx = yield* DropdownMenuSubCtx;
+      const subCtx = yield* ContextMenuSubCtx;
 
       const dataState = subCtx.isOpen.map((open) => (open ? "open" : "closed"));
 
@@ -884,7 +812,7 @@ const SubTrigger = component(
 
       const handleMouseEnter = () =>
         Effect.sync(() => {
-          subCtx.cancelClose(); // Cancel any pending close from context
+          subCtx.cancelClose();
           hoverTimeout = setTimeout(() => {
             Effect.runSync(subCtx.open());
           }, 100);
@@ -896,7 +824,7 @@ const SubTrigger = component(
             clearTimeout(hoverTimeout);
             hoverTimeout = null;
           }
-          subCtx.scheduleClose(); // Use shared close timeout
+          subCtx.scheduleClose();
         });
 
       const handleKeyDown = (event: KeyboardEvent) =>
@@ -931,9 +859,8 @@ const SubTrigger = component(
         }),
       );
 
-      return yield* $.div(
+      const el = yield* $.div(
         {
-          ref: subCtx.triggerRef,
           id: subCtx.triggerId,
           class: props.class,
           role: "menuitem",
@@ -954,6 +881,10 @@ const SubTrigger = component(
         },
         children ?? [],
       );
+
+      yield* subCtx.triggerEl.set(el);
+
+      return el;
     }),
 );
 
@@ -962,18 +893,18 @@ const SubTrigger = component(
  *
  * @example
  * ```ts
- * DropdownMenu.SubContent({}, [
- *   DropdownMenu.Item({}, "Sub Option 1"),
- *   DropdownMenu.Item({}, "Sub Option 2"),
+ * ContextMenu.SubContent({}, [
+ *   ContextMenu.Item({}, "Sub Option 1"),
+ *   ContextMenu.Item({}, "Sub Option 2"),
  * ])
  * ```
  */
 const SubContent = component(
-  "DropdownMenuSubContent",
-  (props: DropdownMenuSubContentProps, children) =>
+  "ContextMenuSubContent",
+  (props: ContextMenuSubContentProps, children) =>
     Effect.gen(function* () {
-      const rootCtx = yield* DropdownMenuCtx;
-      const subCtx = yield* DropdownMenuSubCtx;
+      const rootCtx = yield* ContextMenuCtx;
+      const subCtx = yield* ContextMenuSubCtx;
 
       const sideOffset = props.sideOffset ?? 0;
       const loop = props.loop ?? true;
@@ -985,7 +916,7 @@ const SubContent = component(
         () =>
           Portal(() =>
             Effect.gen(function* () {
-              const triggerEl = subCtx.triggerRef.current;
+              const triggerEl = yield* subCtx.triggerEl.get;
 
               let positionStyle: Record<string, string> = {
                 position: "fixed",
@@ -994,26 +925,16 @@ const SubContent = component(
               if (triggerEl) {
                 const rect = triggerEl.getBoundingClientRect();
                 // Position to the right of the trigger
-                const { top, left } = calculatePosition(
-                  rect,
-                  "right",
-                  "start",
-                  sideOffset,
-                  0,
-                );
-                const transform = getTransform("right", "start");
-
                 positionStyle = {
                   position: "fixed",
-                  top: `${top}px`,
-                  left: `${left}px`,
-                  transform,
+                  top: `${rect.top}px`,
+                  left: `${rect.right + sideOffset}px`,
                 };
               }
 
               const handleMouseEnter = () =>
                 Effect.sync(() => {
-                  subCtx.cancelClose(); // Cancel shared close timeout
+                  subCtx.cancelClose();
                 });
 
               const handleMouseLeave = (event: MouseEvent) =>
@@ -1030,7 +951,7 @@ const SubContent = component(
                     return;
                   }
 
-                  // Don't schedule close if moving to a nested submenu content (rendered via Portal)
+                  // Don't schedule close if moving to a nested submenu content
                   if (
                     relatedTarget instanceof HTMLElement &&
                     (relatedTarget.hasAttribute("data-menu-subcontent") ||
@@ -1039,7 +960,7 @@ const SubContent = component(
                     return;
                   }
 
-                  subCtx.scheduleClose(); // Use shared close timeout
+                  subCtx.scheduleClose();
                 });
 
               const handleKeyDown = (event: KeyboardEvent) =>
@@ -1060,7 +981,10 @@ const SubContent = component(
                       event.preventDefault();
                       event.stopPropagation();
                       yield* subCtx.close();
-                      subCtx.triggerRef.current?.focus();
+                      {
+                        const trigger = yield* subCtx.triggerEl.get;
+                        trigger?.focus();
+                      }
                       break;
                     case "Enter":
                     case " ":
@@ -1076,7 +1000,10 @@ const SubContent = component(
                       event.preventDefault();
                       event.stopPropagation();
                       yield* subCtx.close();
-                      subCtx.triggerRef.current?.focus();
+                      {
+                        const trigger = yield* subCtx.triggerEl.get;
+                        trigger?.focus();
+                      }
                       break;
                     case "Tab":
                       // Close entire menu tree on Tab
@@ -1124,11 +1051,11 @@ const SubContent = component(
 );
 
 /**
- * Headless DropdownMenu primitive for building accessible action menus.
+ * Headless ContextMenu primitive for building accessible context menus.
  *
  * Features:
+ * - Right-click to open at cursor position
  * - Controlled and uncontrolled modes
- * - Configurable positioning (side, align, offset)
  * - Click outside to close
  * - Escape key to close
  * - Full keyboard navigation (Arrow keys, Home, End)
@@ -1136,41 +1063,23 @@ const SubContent = component(
  * - ARIA attributes (menu, menuitem)
  * - Data attributes for styling
  * - Groups and labels
+ * - Checkbox and radio items
+ * - Nested submenus
  *
  * @example
  * ```ts
- * // Basic usage
- * DropdownMenu.Root({}, [
- *   DropdownMenu.Trigger({}, "Actions"),
- *   DropdownMenu.Content({}, [
- *     DropdownMenu.Item({ onSelect: () => Effect.log("Edit") }, "Edit"),
- *     DropdownMenu.Item({ onSelect: () => Effect.log("Duplicate") }, "Duplicate"),
- *     DropdownMenu.Separator({}),
- *     DropdownMenu.Item({ onSelect: () => Effect.log("Delete") }, "Delete"),
- *   ]),
- * ])
- *
- * // With groups
- * DropdownMenu.Root({}, [
- *   DropdownMenu.Trigger({}, "Options"),
- *   DropdownMenu.Content({}, [
- *     DropdownMenu.Group({}, [
- *       DropdownMenu.Label({}, "Edit"),
- *       DropdownMenu.Item({}, "Cut"),
- *       DropdownMenu.Item({}, "Copy"),
- *       DropdownMenu.Item({}, "Paste"),
- *     ]),
- *     DropdownMenu.Separator({}),
- *     DropdownMenu.Group({}, [
- *       DropdownMenu.Label({}, "View"),
- *       DropdownMenu.Item({}, "Zoom In"),
- *       DropdownMenu.Item({}, "Zoom Out"),
- *     ]),
+ * ContextMenu.Root({}, [
+ *   ContextMenu.Trigger({}, div({ class: "file-item" }, "document.pdf")),
+ *   ContextMenu.Content({}, [
+ *     ContextMenu.Item({ onSelect: () => Effect.log("Open") }, "Open"),
+ *     ContextMenu.Item({ onSelect: () => Effect.log("Copy") }, "Copy"),
+ *     ContextMenu.Separator({}),
+ *     ContextMenu.Item({ onSelect: () => Effect.log("Delete") }, "Delete"),
  *   ]),
  * ])
  * ```
  */
-export const DropdownMenu = {
+export const ContextMenu = {
   Root,
   Trigger,
   Content,
