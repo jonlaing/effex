@@ -276,7 +276,10 @@ export const WithRadioItems: Story = {
       const sortBy = yield* Signal.make("name");
 
       return yield* ContextMenu.Root({}, [
-        ContextMenu.Trigger({ class: "context-menu-area" }, "Right-click to sort"),
+        ContextMenu.Trigger(
+          { class: "context-menu-area" },
+          "Right-click to sort",
+        ),
         ContextMenu.Content({}, [
           ContextMenu.RadioGroup(
             {

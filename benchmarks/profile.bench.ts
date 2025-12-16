@@ -1,9 +1,6 @@
 import { bench, describe } from "vitest";
-import { Effect, ExecutionStrategy, Scope, Stream } from "effect";
+import { Effect, ExecutionStrategy, Scope } from "effect";
 import { Signal } from "@core/Signal";
-import { $ } from "@dom/Element/Element";
-import type { Readable } from "@core/Readable";
-import { map as mapReadable } from "@core/Readable";
 
 // Profile individual operations to find the bottleneck
 

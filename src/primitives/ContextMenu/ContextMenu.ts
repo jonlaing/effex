@@ -7,10 +7,7 @@ import { component } from "@dom/Component";
 import { UniqueId } from "@dom/UniqueId";
 import { Portal } from "@dom/Portal";
 import type { Element } from "@dom/Element";
-import {
-  getMenuNavigationState,
-  handleMenuArrowNavigation,
-} from "../helpers";
+import { getMenuNavigationState, handleMenuArrowNavigation } from "../helpers";
 
 // ============================================================================
 // Types & Interfaces
@@ -317,7 +314,6 @@ const Trigger = component(
           "data-disabled": props.disabled ? "" : undefined,
           "data-context-menu-trigger": "",
           onContextMenu: handleContextMenu,
-
         },
         children ?? [],
       );
@@ -490,6 +486,7 @@ const Item = component(
           role: "menuitem",
           "data-disabled": props.disabled ? "" : undefined,
           "data-menu-item": "",
+          "data-context-menu-item": "",
           tabIndex: props.disabled ? undefined : 0,
           onClick: handleClick,
         },
@@ -519,6 +516,7 @@ const Group = component(
           class: props.class,
           role: "group",
           "data-menu-group": "",
+          "data-context-menu-group": "",
         },
         children ?? [],
       );
@@ -541,6 +539,7 @@ const Label = component(
         {
           class: props.class,
           "data-menu-label": "",
+          "data-context-menu-label": "",
         },
         children ?? [],
       );
@@ -563,6 +562,7 @@ const Separator = component(
         class: props.class,
         role: "separator",
         "data-menu-separator": "",
+        "data-context-menu-separator": "",
       });
     }),
 );
@@ -614,6 +614,8 @@ const CheckboxItem = component(
           "data-disabled": props.disabled ? "" : undefined,
           "data-menu-item": "",
           "data-menu-checkbox-item": "",
+          "data-context-menu-item": "",
+          "data-context-menu-checkbox-item": "",
           tabIndex: props.disabled ? undefined : 0,
           onClick: handleClick,
         },
@@ -663,6 +665,7 @@ const RadioGroup = (
         class: props.class,
         role: "group",
         "data-menu-radio-group": "",
+        "data-context-menu-radio-group": "",
       },
       provide(ContextMenuRadioGroupCtx, radioCtx, children),
     );
@@ -706,6 +709,8 @@ const RadioItem = component(
           "data-disabled": props.disabled ? "" : undefined,
           "data-menu-item": "",
           "data-menu-radio-item": "",
+          "data-context-menu-item": "",
+          "data-context-menu-radio-item": "",
           tabIndex: props.disabled ? undefined : 0,
           onClick: handleClick,
         },
@@ -873,6 +878,8 @@ const SubTrigger = component(
           "data-disabled": props.disabled ? "" : undefined,
           "data-menu-item": "",
           "data-menu-subtrigger": "",
+          "data-context-menu-item": "",
+          "data-context-menu-subtrigger": "",
           tabIndex: props.disabled ? undefined : 0,
           onMouseEnter: handleMouseEnter,
           onMouseLeave: handleMouseLeave,
@@ -1023,6 +1030,8 @@ const SubContent = component(
                   "data-side": "right",
                   "data-menu-content": "",
                   "data-menu-subcontent": "",
+                  "data-context-menu-content": "",
+                  "data-context-menu-subcontent": "",
                   tabIndex: -1,
                   style: positionStyle,
                   onMouseEnter: handleMouseEnter,
