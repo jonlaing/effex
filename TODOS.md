@@ -124,7 +124,7 @@
     - [x] Switch
     - [x] Radio Group
     - [x] Checkbox
-    - [ ] Slider
+    - [x] Slider
     - [ ] Toast / Notifications
     - [ ] Alert Dialog
     - [x] Context Menu
