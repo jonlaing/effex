@@ -15,14 +15,14 @@ describe("Ref", () => {
     );
   });
 
-  it("should update current when _set is called", async () => {
+  it("should update current when set is called", async () => {
     await Effect.runPromise(
       Effect.scoped(
         Effect.gen(function* () {
           const ref = yield* Ref.make<HTMLDivElement>();
           const div = document.createElement("div");
 
-          ref._set(div);
+          ref.set(div);
 
           expect(ref.current).toBe(div);
         }),
@@ -30,7 +30,7 @@ describe("Ref", () => {
     );
   });
 
-  it("should resolve element Effect when _set is called", async () => {
+  it("should resolve value Effect when set is called", async () => {
     await Effect.runPromise(
       Effect.scoped(
         Effect.gen(function* () {
@@ -38,10 +38,10 @@ describe("Ref", () => {
           const div = document.createElement("div");
 
           // Set the element
-          ref._set(div);
+          ref.set(div);
 
-          // Now element should resolve immediately
-          const element = yield* ref.element;
+          // Now value should resolve immediately
+          const element = yield* ref.value;
 
           expect(element).toBe(div);
         }),
@@ -49,7 +49,7 @@ describe("Ref", () => {
     );
   });
 
-  it("should wait for element when accessed before _set", async () => {
+  it("should wait for value when accessed before set", async () => {
     await Effect.runPromise(
       Effect.scoped(
         Effect.gen(function* () {
@@ -58,9 +58,9 @@ describe("Ref", () => {
 
           let resolved = false;
 
-          // Start waiting for element in background
+          // Start waiting for value in background
           const fiber = yield* Effect.fork(
-            ref.element.pipe(
+            ref.value.pipe(
               Effect.tap(() =>
                 Effect.sync(() => {
                   resolved = true;
@@ -73,7 +73,7 @@ describe("Ref", () => {
           expect(resolved).toBe(false);
 
           // Set the element
-          ref._set(input);
+          ref.set(input);
 
           // Wait for the fiber to complete
           const element = yield* Fiber.join(fiber);
@@ -95,14 +95,14 @@ describe("Ref", () => {
           const input = document.createElement("input");
           const button = document.createElement("button");
 
-          inputRef._set(input);
-          buttonRef._set(button);
+          inputRef.set(input);
+          buttonRef.set(button);
 
           expect(inputRef.current).toBe(input);
           expect(buttonRef.current).toBe(button);
 
-          const inputEl = yield* inputRef.element;
-          const buttonEl = yield* buttonRef.element;
+          const inputEl = yield* inputRef.value;
+          const buttonEl = yield* buttonRef.value;
 
           expect(inputEl.tagName).toBe("INPUT");
           expect(buttonEl.tagName).toBe("BUTTON");

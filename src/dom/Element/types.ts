@@ -109,13 +109,15 @@ export interface DataAttributes {
   readonly [key: `data-${string}`]: DataAttributeValue;
 }
 
-/** ARIA attribute value: string, boolean, or reactive versions */
+/** ARIA attribute value: string, boolean, number, or reactive versions */
 export type AriaAttributeValue =
   | string
   | boolean
+  | number
   | undefined
   | Readable<string>
   | Readable<boolean>
+  | Readable<number>
   | Readable<string | undefined>;
 
 /** ARIA attributes interface allowing any aria-* attribute */
@@ -191,6 +193,9 @@ export interface EventAttributes {
   readonly onMouseEnter?: EventHandler<MouseEvent>;
   readonly onMouseLeave?: EventHandler<MouseEvent>;
   readonly onContextMenu?: EventHandler<MouseEvent>;
+  readonly onPointerDown?: EventHandler<PointerEvent>;
+  readonly onPointerUp?: EventHandler<PointerEvent>;
+  readonly onPointerMove?: EventHandler<PointerEvent>;
 }
 
 /** Keys to exclude from the mapped element attributes (handled by BaseAttributes/EventAttributes) */
@@ -211,7 +216,10 @@ type ExcludedKeys =
   | "onblur"
   | "onmouseenter"
   | "onmouseleave"
-  | "oncontextmenu";
+  | "oncontextmenu"
+  | "onpointerdown"
+  | "onpointerup"
+  | "onpointermove";
 
 /**
  * Helper type to extract only non-function property keys from a type.

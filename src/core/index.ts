@@ -23,3 +23,7 @@ export { Derived } from "./Derived";
 
 // Reaction
 export { Reaction } from "./Reaction";
+
+// Ref
+export type { Ref as RefType } from "./Ref";
+export { Ref } from "./Ref";

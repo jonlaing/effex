@@ -115,7 +115,7 @@
     - [x] Dialog / Modal
     - [x] Dropdown Menu
     - [x] Select
-    - [ ] Combobox / Autocomplete
+    - [x] Combobox / Autocomplete
     - [x] Popover
     - [x] Tooltip
     - [x] Tabs
@@ -127,7 +127,7 @@
     - [ ] Slider
     - [ ] Toast / Notifications
     - [ ] Alert Dialog
-    - [ ] Context Menu
+    - [x] Context Menu
     - [ ] Navigation Menu
     - [x] Collapsible
     - [ ] Scroll Area

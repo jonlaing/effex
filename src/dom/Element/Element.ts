@@ -25,7 +25,7 @@ const applyRef = <K extends keyof HTMLElementTagNameMap>(
   element: HTMLElementTagNameMap[K],
   ref: Ref<HTMLElementTagNameMap[K]>,
 ): void => {
-  ref._set(element);
+  ref.set(element);
 };
 
 const applyAttributes = <K extends keyof HTMLElementTagNameMap>(

@@ -290,4 +290,13 @@ export {
   type ComboboxLabelProps,
   type ComboboxEmptyProps,
   type ComboboxLoadingProps,
+  Slider,
+  SliderCtx,
+  isRangeValue,
+  type SliderValue,
+  type SliderContext,
+  type SliderRootProps,
+  type SliderTrackProps,
+  type SliderRangeProps,
+  type SliderThumbProps,
 } from "./primitives";
