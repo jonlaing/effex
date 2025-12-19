@@ -1,4 +1,4 @@
-import { Effect, Stream } from "effect";
+import { Effect, Option, Stream } from "effect";
 
 /**
  * A reactive value that can be read and observed for changes.
@@ -142,6 +142,193 @@ export const fromStream = <A>(
 };
 
 /**
+ * Gets the current values from all Readables as a tuple.
+ */
+const getCurrentValues = <T extends readonly Readable<unknown>[]>(
+  readables: T,
+): Effect.Effect<{ [K in keyof T]: T[K] extends Readable<infer A> ? A : never }> =>
+  Effect.all(readables.map((r) => r.get)) as Effect.Effect<{
+    [K in keyof T]: T[K] extends Readable<infer A> ? A : never;
+  }>;
+
+/**
+ * Combines multiple Readables into a single stream of value tuples.
+ * Emits whenever any dependency changes, fetching current values from ALL
+ * dependencies to ensure consistency.
+ *
+ * This is an internal helper that returns a Stream including initial values.
+ */
+const combineReadablesStream = <T extends readonly Readable<unknown>[]>(
+  readables: T,
+): Stream.Stream<{ [K in keyof T]: T[K] extends Readable<infer A> ? A : never }> => {
+  type Result = { [K in keyof T]: T[K] extends Readable<infer A> ? A : never };
+
+  if (readables.length === 0) {
+    return Stream.make([] as unknown as Result);
+  }
+
+  if (readables.length === 1) {
+    return Stream.map(readables[0].values, (a) => [a] as unknown as Result);
+  }
+
+  // Emit initial values once, then re-fetch all values whenever any changes
+  const initialStream = Stream.fromEffect(getCurrentValues(readables));
+  const changesStream = readables
+    .map((r) => r.changes)
+    .reduce(
+      (acc, stream) => Stream.merge(acc, stream),
+      Stream.never as Stream.Stream<unknown>,
+    )
+    .pipe(Stream.mapEffect(() => getCurrentValues(readables)));
+
+  return Stream.concat(initialStream, changesStream);
+};
+
+/**
+ * Combine multiple Readables into a single Readable of a tuple.
+ * The combined Readable updates whenever any input changes.
+ *
+ * When any dependency changes, ALL current values are re-fetched to ensure
+ * consistency and avoid stale values.
+ *
+ * @example
+ * ```ts
+ * const firstName = yield* Signal.make("John");
+ * const lastName = yield* Signal.make("Doe");
+ *
+ * const combined = Readable.combine([firstName, lastName]);
+ * // combined: Readable<[string, string]>
+ *
+ * const fullName = combined.map(([first, last]) => `${first} ${last}`);
+ * ```
+ */
+export const combine = <T extends readonly Readable<unknown>[]>(
+  readables: T,
+): Readable<{ [K in keyof T]: T[K] extends Readable<infer A> ? A : never }> => {
+  type Result = { [K in keyof T]: T[K] extends Readable<infer A> ? A : never };
+
+  if (readables.length === 0) {
+    return make(Effect.succeed([] as unknown as Result), () => Stream.empty);
+  }
+
+  // Track the last emitted value to filter duplicates (for any number of readables)
+  let lastEmitted: Result | undefined;
+
+  // Get fetches current values from all readables and tracks them
+  const get = Effect.gen(function* () {
+    const values = yield* getCurrentValues(readables);
+    lastEmitted = values;
+    return values;
+  });
+
+  // Changes stream: subscribe to all changes and emit when values actually change
+  const getChanges = (): Stream.Stream<Result> => {
+    // Merge all changes streams - when any emits, fetch ALL current values
+    const mergedChanges = readables
+      .map((r) => r.changes)
+      .reduce(
+        (acc, stream) => Stream.merge(acc, stream),
+        Stream.never as Stream.Stream<unknown>,
+      );
+
+    return mergedChanges.pipe(
+      Stream.mapEffect(() => getCurrentValues(readables)),
+      // Filter out emissions where the values haven't actually changed
+      Stream.filterMap((values) => {
+        // Check if values are the same as last emitted
+        if (lastEmitted !== undefined) {
+          const same = values.every((v, i) => v === lastEmitted![i]);
+          if (same) {
+            return Option.none();
+          }
+        }
+        lastEmitted = values;
+        return Option.some(values);
+      }),
+    );
+  };
+
+  return make(get, getChanges);
+};
+
+/**
+ * Lift a function that takes an object as its argument to work with
+ * potentially reactive properties. Properties can be either static values
+ * or Readables, and the result is a Readable that updates when any
+ * reactive property changes.
+ *
+ * This is particularly useful for integrating with libraries like
+ * class-variance-authority (CVA) or clsx.
+ *
+ * @example
+ * ```ts
+ * import { cva } from "class-variance-authority";
+ *
+ * const buttonCva = cva("btn font-medium", {
+ *   variants: {
+ *     variant: { primary: "bg-blue-500", secondary: "bg-gray-200" },
+ *     size: { sm: "px-2 py-1", md: "px-4 py-2" },
+ *   },
+ * });
+ *
+ * // Lift the CVA function
+ * const buttonStyles = Readable.lift(buttonCva);
+ *
+ * // Now it accepts Readables and returns a Readable<string>
+ * const variant = yield* Signal.make<"primary" | "secondary">("primary");
+ * const className = buttonStyles({ variant, size: "md" });
+ * // className: Readable<string> - updates when variant changes
+ *
+ * // Use in an element
+ * yield* $.button({ class: className }, "Click me");
+ * ```
+ */
+export const lift = <T extends Record<string, unknown>, R>(
+  fn: (props: T) => R,
+): ((props: { [K in keyof T]: T[K] | Readable<T[K]> }) => Readable<R>) => {
+  return (props) => {
+    const keys = Object.keys(props) as (keyof T)[];
+    const readableEntries: { key: keyof T; readable: Readable<unknown> }[] = [];
+    const staticEntries: { key: keyof T; value: unknown }[] = [];
+
+    // Partition into reactive vs static
+    for (const key of keys) {
+      const value = props[key];
+      if (isReadable(value)) {
+        readableEntries.push({ key, readable: value as Readable<unknown> });
+      } else {
+        staticEntries.push({ key, value });
+      }
+    }
+
+    // All static - return constant Readable
+    if (readableEntries.length === 0) {
+      return make(Effect.succeed(fn(props as T)), () => Stream.empty);
+    }
+
+    // Build static props object
+    const staticProps: Partial<T> = {};
+    for (const { key, value } of staticEntries) {
+      staticProps[key] = value as T[keyof T];
+    }
+
+    // Combine reactive values and call fn when any change
+    const readables = readableEntries.map((e) => e.readable);
+    const readableKeys = readableEntries.map((e) => e.key);
+
+    const combined = combine(readables);
+
+    return combined.map((values) => {
+      const resolved = { ...staticProps } as T;
+      for (let i = 0; i < readableKeys.length; i++) {
+        resolved[readableKeys[i]] = values[i] as T[keyof T];
+      }
+      return fn(resolved);
+    });
+  };
+};
+
+/**
  * Readable namespace containing factory functions and type utilities.
  */
 export const Readable = {
@@ -150,4 +337,6 @@ export const Readable = {
   make,
   map,
   fromStream,
+  combine,
+  lift,
 };

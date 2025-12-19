@@ -7,6 +7,8 @@ export {
   make as makeReadable,
   map as mapReadable,
   fromStream,
+  combine,
+  lift,
 } from "./Readable";
 
 // Signal - exports both the interface type and namespace (declaration merging)

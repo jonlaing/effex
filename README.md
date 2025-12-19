@@ -10,6 +10,7 @@ A reactive UI framework built on [Effect](https://effect.website/). Effex provid
 - [Core Concepts](#core-concepts)
   - [Signals](#signals)
   - [Derived Values](#derived-values)
+  - [Lifting Functions (CVA, clsx)](#lifting-functions-cva-clsx)
   - [Reactive Props](#reactive-props)
   - [Custom Equality](#custom-equality)
   - [Template Strings](#template-strings)
@@ -210,6 +211,65 @@ const fullName = yield* Derived.sync(
   [firstName, lastName],
   ([first, last]) => `${first} ${last}`,
 );
+```
+
+### Lifting Functions (CVA, clsx)
+
+When using utility libraries like [class-variance-authority (CVA)](https://cva.style/docs) or [clsx](https://github.com/lukeed/clsx), use `Readable.lift` to make them reactive-aware. The lifted function accepts either static values or `Readable` values for any property, and returns a `Readable` that updates when any reactive input changes.
+
+```ts
+import { cva } from "class-variance-authority";
+import { $, Signal, Readable, component } from "@effex/dom";
+import { Effect } from "effect";
+
+// Define your CVA function as usual
+const buttonStyles = cva("btn font-medium rounded", {
+  variants: {
+    variant: {
+      primary: "bg-blue-500 text-white",
+      secondary: "bg-gray-200 text-gray-800",
+    },
+    size: {
+      sm: "px-2 py-1 text-sm",
+      md: "px-4 py-2",
+      lg: "px-6 py-3 text-lg",
+    },
+  },
+  defaultVariants: {
+    variant: "primary",
+    size: "md",
+  },
+});
+
+// Lift it to accept Readables
+const reactiveButtonStyles = Readable.lift(buttonStyles);
+
+// Now use it with reactive or static values
+const Button = component("Button", () =>
+  Effect.gen(function* () {
+    const variant = yield* Signal.make<"primary" | "secondary">("primary");
+
+    // className is Readable<string> - updates when variant changes
+    const className = reactiveButtonStyles({ variant, size: "md" });
+
+    return yield* $.div([
+      $.button({ class: className }, "Styled Button"),
+      $.button({ onClick: () => variant.set("secondary") }, "Make Secondary"),
+    ]);
+  }),
+);
+```
+
+This works with any function that takes an object as its argument:
+
+```ts
+import { clsx } from "clsx";
+
+const reactiveClsx = Readable.lift(clsx);
+
+// Mix static and reactive values
+const isActive = yield* Signal.make(false);
+const className = reactiveClsx({ btn: true, "btn-active": isActive });
 ```
 
 ### Reactive Props
