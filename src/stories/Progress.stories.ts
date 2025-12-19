@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { Progress } from "../primitives/Progress";
+import { Progress } from "@effect-ui/primitives";
 import { Signal } from "@core/Signal";
 import { $ } from "@dom/Element/Element";
 import { renderEffectAsync } from "./helpers";

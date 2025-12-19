@@ -1,0 +1,44 @@
+{
+  "name": "@effect-ui/router",
+  "version": "0.0.1",
+  "description": "Router for Effect UI applications",
+  "type": "module",
+  "license": "MIT",
+  "author": "Jon Laing",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonlaing/effect-ui.git",
+    "directory": "packages/router"
+  },
+  "keywords": [
+    "effect",
+    "effect-ts",
+    "router",
+    "routing",
+    "spa"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "effect-ui": "workspace:*"
+  },
+  "peerDependencies": {
+    "effect": "^3.0.0"
+  }
+}

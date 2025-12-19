@@ -1,6 +1,7 @@
 {
-  "name": "@jonlaing/effect-ui",
+  "name": "effect-ui-monorepo",
   "version": "0.0.1",
+  "private": true,
   "description": "A reactive UI framework built on Effect.ts primitives",
   "type": "module",
   "packageManager": "pnpm@10.14.0",
@@ -10,40 +11,15 @@
     "type": "git",
     "url": "https://github.com/jonlaing/effect-ui.git"
   },
-  "keywords": [
-    "effect",
-    "effect-ts",
-    "ui",
-    "reactive",
-    "signals",
-    "frontend",
-    "framework"
-  ],
-  "main": "./dist/effect-ui.umd.cjs",
-  "module": "./dist/effect-ui.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/effect-ui.js",
-      "require": "./dist/effect-ui.umd.cjs"
-    }
-  },
-  "files": [
-    "dist",
-    "llms.txt"
-  ],
-  "sideEffects": false,
   "scripts": {
     "dev": "vite",
-    "build": "rm -rf dist && tsc -p tsconfig.build.json && vite build",
+    "build": "pnpm -r build",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "bench": "vitest bench",
-    "docs:gen": "rm -rf docs && pnpm typedoc && cp REACT-MIGRATION.md VUE-MIGRATION.md SVELTE-MIGRATION.md docs/",
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -71,14 +47,12 @@
     "playwright": "^1.57.0",
     "prettier": "^3.7.4",
     "storybook": "^10.1.8",
+    "tsup": "^8.0.0",
     "typedoc": "^0.28.15",
     "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.1",
     "vite": "^7.2.4",
     "vitest": "^4.0.15"
-  },
-  "peerDependencies": {
-    "effect": "^3.0.0"
   }
 }

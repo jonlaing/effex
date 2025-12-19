@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { NavigationMenu } from "../primitives/NavigationMenu";
+import { NavigationMenu } from "@effect-ui/primitives";
 import { $ } from "@dom/Element/Element";
 import { Signal } from "@core/Signal";
 import { renderEffectAsync } from "./helpers";

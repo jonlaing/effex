@@ -15,6 +15,7 @@ A reactive UI framework built on [Effect](https://effect.website/). Effect UI pr
   - [Template Strings](#template-strings)
   - [Elements](#elements)
   - [Control Flow](#control-flow)
+  - [Context](#context)
 - [Router](#router)
 - [Async Data Loading](#async-data-loading)
 - [Forms](#forms)
@@ -38,7 +39,7 @@ mount(UserProfile(), document.body); // Type error!
 
 // Handle the error first
 mount(
-  ErrorBoundary(
+  Boundary.error(
     () => UserProfile(),
     (error) => $.div(`Failed to load: ${error.message}`),
   ),
@@ -92,7 +93,7 @@ Effect UI gives you access to Effect's entire ecosystem:
 Loading states, errors, and success rendering in one place:
 
 ```ts
-Suspense({
+Boundary.suspense({
   render: () =>
     Effect.gen(function* () {
       const user = yield* fetchUser(id);
@@ -368,6 +369,50 @@ each(
 );
 ```
 
+### Context
+
+Effect UI uses Effect's Context system for dependency injection. Define a service with `Context.Tag`, then use `provide` to make it available to child components:
+
+```ts
+import { Context, Effect } from "effect";
+import { $, component, provide } from "@jonlaing/effect-ui";
+
+// Define a theme context
+interface Theme {
+  primary: string;
+  secondary: string;
+}
+
+class ThemeContext extends Context.Tag("ThemeContext")<ThemeContext, Theme>() {}
+
+// Component that consumes the context
+const ThemedButton = component("ThemedButton", (props: { label: string }) =>
+  Effect.gen(function* () {
+    const theme = yield* ThemeContext;
+    return yield* $.button(
+      { style: { backgroundColor: theme.primary, color: "white" } },
+      props.label,
+    );
+  }),
+);
+
+// Provide the context to children
+const App = component("App", () =>
+  Effect.gen(function* () {
+    const theme: Theme = { primary: "#007bff", secondary: "#6c757d" };
+
+    return yield* $.div(
+      provide(ThemeContext, theme, [
+        ThemedButton({ label: "Click me" }),
+        ThemedButton({ label: "Another button" }),
+      ]),
+    );
+  }),
+);
+```
+
+The `provide` helper wraps children with `Effect.provideService`, making the context available to all descendants. Components that `yield*` the context tag will receive the provided value.
+
 ### Router
 
 Effect UI includes a typed router with Effect Schema validation for route params.
@@ -433,10 +478,10 @@ The `Link` component uses `RouterContext` internally for navigation. Use `makeTy
 
 ### Async Data Loading
 
-Use `Suspense` for async rendering with loading states. It accepts an options object:
+Use `Boundary.suspense` for async rendering with loading states. It accepts an options object:
 
 ```ts
-import { match, Suspense } from "@jonlaing/effect-ui";
+import { match, Boundary } from "@jonlaing/effect-ui";
 
 // Simulate API call
 const fetchUser = (id: string) =>
@@ -456,7 +501,7 @@ match(router.currentRoute, [
   {
     pattern: "user",
     render: () =>
-      Suspense({
+      Boundary.suspense({
         render: () =>
           Effect.gen(function* () {
             const params = yield* router.routes.user.params.get;
@@ -471,7 +516,7 @@ match(router.currentRoute, [
 ]);
 ```
 
-Suspense options:
+`Boundary.suspense` options:
 
 - `render`: Async Effect that returns the element
 - `fallback`: Element to show while loading

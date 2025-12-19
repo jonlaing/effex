@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { Toast, ToastCtx, type ToastPosition } from "../primitives/Toast";
+import { Toast, ToastCtx, type ToastPosition } from "@effect-ui/primitives";
 import { button } from "@dom/Element/Element";
 import { renderEffectAsync } from "./helpers";
 

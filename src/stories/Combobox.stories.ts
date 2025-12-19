@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { Combobox } from "../primitives/Combobox";
+import { Combobox } from "@effect-ui/primitives";
 import { Signal } from "@core/Signal";
 import { renderEffectAsync } from "./helpers";
 

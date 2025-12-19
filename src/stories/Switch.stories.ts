@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { Switch } from "../primitives/Switch";
+import { Switch } from "@effect-ui/primitives";
 import { $ } from "@dom/Element/Element";
 import { Signal } from "@core/Signal";
 import { renderEffectAsync } from "./helpers";

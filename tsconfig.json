@@ -1,32 +1,17 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
     "noEmit": true,
-
-    /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@dom/*": ["src/dom/*"]
-    },
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+      "@core/*": ["packages/effect-ui/src/core/*"],
+      "@dom/*": ["packages/effect-ui/src/dom/*"],
+      "effect-ui": ["packages/effect-ui/src/index.ts"],
+      "@effect-ui/router": ["packages/router/src/index.ts"],
+      "@effect-ui/form": ["packages/form/src/index.ts"],
+      "@effect-ui/primitives": ["packages/primitives/src/index.ts"]
+    }
   },
-  "include": ["src"]
+  "include": ["packages/*/src", "src"]
 }

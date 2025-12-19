@@ -3,22 +3,24 @@ import {
   $,
   Signal,
   Derived,
-  Form,
   component,
   mount,
   runApp,
   when,
   each,
   match,
-  Suspense,
+  Boundary,
+  t,
+  stagger,
+} from "effect-ui";
+import {
   Route,
   Router,
   Link,
   makeTypedRouterLayer,
-  t,
-  stagger,
   type RouterInfer,
-} from "../index.js";
+} from "@effect-ui/router";
+import { Form } from "@effect-ui/form";
 import "./style.css";
 
 interface Todo {
@@ -301,7 +303,7 @@ const App = component("App", () =>
             {
               pattern: "user" as const,
               render: () =>
-                Suspense({
+                Boundary.suspense({
                   render: () =>
                     Effect.gen(function* () {
                       // router.routes.user.params is typed as Readable<{ id: string } | null>

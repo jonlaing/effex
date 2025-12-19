@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { Slider, type SliderValue } from "../primitives/Slider";
+import { Slider, type SliderValue } from "@effect-ui/primitives";
 import { Signal } from "@core/Signal";
 import { span } from "@dom/Element/Element";
 import { renderEffectAsync } from "./helpers";
