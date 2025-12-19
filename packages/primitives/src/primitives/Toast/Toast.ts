@@ -1,13 +1,13 @@
 import { Context, Effect, MutableRef } from "effect";
-import { Signal } from "effect-ui";
-import { Readable } from "effect-ui";
-import { Ref } from "effect-ui";
-import { $, ol, li, button } from "effect-ui";
-import { provide } from "effect-ui";
-import { each } from "effect-ui";
-import { component } from "effect-ui";
-import { Portal } from "effect-ui";
-import type { Element } from "effect-ui";
+import { Signal } from "@effex/dom";
+import { Readable } from "@effex/dom";
+import { Ref } from "@effex/dom";
+import { $, ol, li, button } from "@effex/dom";
+import { provide } from "@effex/dom";
+import { each } from "@effex/dom";
+import { component } from "@effex/dom";
+import { Portal } from "@effex/dom";
+import type { Element } from "@effex/dom";
 import {
   type ToastPosition,
   type ToastType,

@@ -1,12 +1,12 @@
 import { Context, Effect, MutableRef } from "effect";
-import { Signal } from "effect-ui";
-import { Derived } from "effect-ui";
-import { Readable } from "effect-ui";
-import { Ref } from "effect-ui";
-import { $ } from "effect-ui";
-import { provide } from "effect-ui";
-import { component } from "effect-ui";
-import type { Element, Child } from "effect-ui";
+import { Signal } from "@effex/dom";
+import { Derived } from "@effex/dom";
+import { Readable } from "@effex/dom";
+import { Ref } from "@effex/dom";
+import { $ } from "@effex/dom";
+import { provide } from "@effex/dom";
+import { component } from "@effex/dom";
+import type { Element, Child } from "@effex/dom";
 
 // ============================================================================
 // Types

@@ -4,8 +4,8 @@ import {
   Derived,
   defaultEquals,
   type AsyncState,
-  type ReadableInterface as Readable,
-} from "effect-ui";
+  Readable,
+} from "@effex/dom";
 import type { Field as FieldType, FieldArray, ValidationTiming } from "./types";
 
 /**
@@ -80,8 +80,8 @@ export const makeField = <A>(
     );
 
     // Combine validation errors with manual errors
-    // validationErrors is Readable<AsyncState<readonly string[], never>>
-    const errors: Readable<readonly string[]> = yield* Derived.sync(
+    // validationErrors is Readable.Readable<AsyncState<readonly string[], never>>
+    const errors: Readable.Readable<readonly string[]> = yield* Derived.sync(
       [validationErrors, manualErrors],
       (values) => {
         const validation = values[0] as AsyncState<readonly string[], never>;
@@ -167,7 +167,7 @@ export const makeFieldArray = <A>(
       yield* Signal.make<readonly FieldType<A>[]>(initialFields);
 
     // Cast to satisfy the interface - items should be Readable
-    const items: Readable<readonly FieldType<A>[]> = fieldsSignal;
+    const items: Readable.Readable<readonly FieldType<A>[]> = fieldsSignal;
 
     const fieldArray: FieldArray<A> = {
       items,

@@ -9,15 +9,15 @@ import {
   makeRouterLayer,
 } from "./RouterContext";
 import type { BaseRouter } from "./types";
-import type { ReadableInterface as Readable } from "effect-ui";
+import type { Readable } from "@effex/dom";
 
 // Create a simple readable for testing
-const makeTestReadable = <A>(value: A): Readable<A> => {
-  const readable: Readable<A> = {
+const makeTestReadable = <A>(value: A): Readable.Readable<A> => {
+  const readable: Readable.Readable<A> = {
     get: Effect.sync(() => value),
     changes: Stream.empty,
     values: Stream.make(value),
-    map: <B>(f: (a: A) => B): Readable<B> => makeTestReadable(f(value)),
+    map: <B>(f: (a: A) => B): Readable.Readable<B> => makeTestReadable(f(value)),
   };
   return readable;
 };

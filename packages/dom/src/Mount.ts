@@ -1,5 +1,5 @@
 import { Effect, Layer, Scope } from "effect";
-import { SignalRegistry } from "@core/Signal";
+import { SignalRegistry } from "@effex/core";
 import type { Element } from "./Element";
 
 /**

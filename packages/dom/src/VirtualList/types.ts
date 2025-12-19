@@ -1,5 +1,5 @@
 import type { Deferred, Effect, Scope } from "effect";
-import type { Readable } from "@core/Readable";
+import type { Readable } from "@effex/core";
 import type { Element } from "../Element";
 import type { ListAnimationOptions } from "../Animation";
 

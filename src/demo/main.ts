@@ -12,15 +12,15 @@ import {
   Boundary,
   t,
   stagger,
-} from "effect-ui";
+} from "@effex/dom";
 import {
   Route,
   Router,
   Link,
   makeTypedRouterLayer,
   type RouterInfer,
-} from "@effect-ui/router";
-import { Form } from "@effect-ui/form";
+} from "@effex/router";
+import { Form } from "@effex/form";
 import "./style.css";
 
 interface Todo {

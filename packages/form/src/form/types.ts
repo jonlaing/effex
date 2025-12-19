@@ -1,5 +1,5 @@
 import type { Effect, Schema } from "effect";
-import type { ReadableInterface as Readable, SignalType as Signal } from "effect-ui";
+import type { Readable, Signal } from "@effex/dom";
 
 /**
  * Validation timing strategy for form fields.
@@ -16,13 +16,13 @@ export type ValidationTiming = "hybrid" | "blur" | "change" | "submit";
  */
 export interface Field<A> {
   /** The field's current value (writable) */
-  readonly value: Signal<A>;
+  readonly value: Signal.Signal<A>;
   /** Validation errors for this field */
-  readonly errors: Readable<readonly string[]>;
+  readonly errors: Readable.Readable<readonly string[]>;
   /** Whether the field has been touched (blurred) */
-  readonly touched: Readable<boolean>;
+  readonly touched: Readable.Readable<boolean>;
   /** Whether the field value has changed from initial */
-  readonly dirty: Readable<boolean>;
+  readonly dirty: Readable.Readable<boolean>;
   /** Mark the field as touched */
   readonly touch: () => Effect.Effect<void>;
   /** Reset the field to its initial value */
@@ -39,7 +39,7 @@ export interface Field<A> {
  */
 export interface FieldArray<A> {
   /** The array of field items */
-  readonly items: Readable<readonly Field<A>[]>;
+  readonly items: Readable.Readable<readonly Field<A>[]>;
   /** Add a new item to the end */
   readonly append: (value: A) => Effect.Effect<void>;
   /** Add a new item at the beginning */
@@ -127,15 +127,15 @@ export interface Form<
   /** Individual field accessors */
   readonly fields: FormFields<Schema.Schema.Type<S>>;
   /** Whether the entire form is valid */
-  readonly isValid: Readable<boolean>;
+  readonly isValid: Readable.Readable<boolean>;
   /** Whether the form is currently submitting */
-  readonly isSubmitting: Readable<boolean>;
+  readonly isSubmitting: Readable.Readable<boolean>;
   /** Whether any field has been touched */
-  readonly isTouched: Readable<boolean>;
+  readonly isTouched: Readable.Readable<boolean>;
   /** Whether any field has changed from initial */
-  readonly isDirty: Readable<boolean>;
+  readonly isDirty: Readable.Readable<boolean>;
   /** All form errors by field name */
-  readonly errors: Readable<Record<string, readonly string[]>>;
+  readonly errors: Readable.Readable<Record<string, readonly string[]>>;
   /** Submit the form with a handler */
   readonly submit: <SE, SR>(
     handler: SubmitHandler<Schema.Schema.Type<S>, SE, SR>,

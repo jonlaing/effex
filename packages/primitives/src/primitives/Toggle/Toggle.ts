@@ -1,8 +1,8 @@
 import { Effect } from "effect";
-import { Signal } from "effect-ui";
-import { Readable } from "effect-ui";
-import { component } from "effect-ui";
-import { $ } from "effect-ui";
+import { Signal } from "@effex/dom";
+import { Readable } from "@effex/dom";
+import { component } from "@effex/dom";
+import { $ } from "@effex/dom";
 
 /**
  * Props for Toggle.Root component.

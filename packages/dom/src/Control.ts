@@ -1,6 +1,6 @@
 import { Effect, Exit, Scope, Stream } from "effect";
-import type { Readable } from "@core/Readable";
-import { map as mapReadable } from "@core/Readable";
+import type { Readable } from "@effex/core";
+import { mapReadable } from "@effex/core";
 import type { Element } from "./Element";
 import type {
   ControlAnimationOptions,

@@ -1,6 +1,6 @@
 import { bench, describe } from "vitest";
 import { Effect } from "effect";
-import { Signal } from "@core/Signal";
+import { Signal } from "@effex/core/Signal";
 import { $ } from "@dom/Element/Element";
 import { when, match } from "@dom/Control";
 import { component } from "@dom/Component";

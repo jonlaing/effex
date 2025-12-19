@@ -1,4 +1,4 @@
-# Effect UI - TODO List
+# Effex - TODO List
 
 ## High Priority
 
@@ -33,9 +33,11 @@
   - [x] Create Collapsible stories (Default, Animated, Controlled, Nested, etc.)
   - [x] Added storysource addon for viewing Effect-UI code in stories
   - [ ] Create stories for other built-in components as they're developed
-  - [ ] Custom Storybook addon to show clean Effect-UI code snippets (instead of full story source)
+  - [ ] Custom Storybook addon to show clean Effex code snippets (instead of full story source)
 
 - [x] **Clean up unused imports** - Fixed build warnings (ParseResult type-only import)
+
+- [x] **Rename to Effex** - Renamed from effect-ui to @effex/* namespace
 
 - [ ] **Improve error messages** - Better developer experience when things go wrong
 
@@ -86,7 +88,7 @@
 
 - [ ] **Documentation site** - Full documentation with examples (TypeDoc is set up)
 
-- [ ] **Architecture/internals documentation** - For contributors and those who want to understand how Effect-UI works under the hood
+- [ ] **Architecture/internals documentation** - For contributors and those who want to understand how Effex works under the hood
   - [ ] Reactivity system: How Streams power the reactive graph (Readable, Signal, Derived)
   - [ ] How `combineReadables` merges dependency changes and ensures consistency
   - [ ] DOM subscription lifecycle: `subscribeToReadable`, scopes, and automatic cleanup
@@ -94,7 +96,9 @@
   - [ ] Control flow internals (`when`, `match`, `each`)
   - [ ] How headless primitives use Context for part communication
 
-- [ ] **Full-fledged demo application** - Comprehensive showcase app demonstrating all Effect-UI features together (may be a separate project). Should include: headless primitives, forms, routing, animations, streaming data, etc.
+- [ ] **Rename project directory** - Rename /Users/jon/projects/effect-ui to /Users/jon/projects/effex
+
+- [ ] **Full-fledged demo application** - Comprehensive showcase app demonstrating all Effex features together (may be a separate project). Should include: headless primitives, forms, routing, animations, streaming data, etc.
 
 - [x] **Migration guides** - Help developers coming from other frameworks
   - [x] React migration guide (REACT-MIGRATION.md)
@@ -487,3 +491,14 @@ div({ class: ["btn", variant.map((v) => `btn-${v}`)] }); // mixed with reactives
 ## Development Guidelines
 
 - **NEVER disable TypeScript or ESLint** - If types are difficult to get right, stop and ask for help rather than using `// @ts-ignore`, `// eslint-disable`, or `any` types. Proper typing is essential for this library.
+
+## Package Structure
+
+```
+packages/
+├── core/        → @effex/core (platform-agnostic reactivity primitives)
+├── dom/         → @effex/dom (DOM rendering, depends on core)
+├── router/      → @effex/router (routing, depends on dom)
+├── form/        → @effex/form (form handling, depends on dom)
+└── primitives/  → @effex/primitives (UI primitives, depends on dom)
+```

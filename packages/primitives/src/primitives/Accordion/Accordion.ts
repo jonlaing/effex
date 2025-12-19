@@ -1,11 +1,11 @@
 import { Context, Effect } from "effect";
-import { Signal } from "effect-ui";
-import { Readable } from "effect-ui";
-import { $ } from "effect-ui";
-import { provide } from "effect-ui";
-import { component } from "effect-ui";
-import { UniqueId } from "effect-ui";
-import type { Element } from "effect-ui";
+import { Signal } from "@effex/dom";
+import { Readable } from "@effex/dom";
+import { $ } from "@effex/dom";
+import { provide } from "@effex/dom";
+import { component } from "@effex/dom";
+import { UniqueId } from "@effex/dom";
+import type { Element } from "@effex/dom";
 
 /**
  * Context shared between Accordion parts.

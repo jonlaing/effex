@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { Effect } from "effect";
-import { Signal } from "@core/Signal";
+import { Signal } from "@effex/core";
 import {
   isReadable,
   isElement,

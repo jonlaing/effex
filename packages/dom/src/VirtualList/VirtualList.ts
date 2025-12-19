@@ -1,9 +1,9 @@
 import { Deferred, Effect, Exit, Scope, Stream } from "effect";
-import { map as mapReadable } from "@core/Readable";
-import type { Readable } from "@core/Readable";
+import { mapReadable } from "@effex/core";
+import type { Readable } from "@effex/core";
 import type { Element } from "../Element";
-import { Signal } from "@core/Signal";
-import { Derived } from "@core/Derived";
+import { Signal } from "@effex/core";
+import { Derived } from "@effex/core";
 import type {
   VirtualEachOptions,
   VirtualItemEntry,

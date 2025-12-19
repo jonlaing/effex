@@ -4,12 +4,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "declaration": true,
-    "declarationMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "@core/*": ["src/core/*"],
-      "@dom/*": ["src/dom/*"]
-    }
+    "declarationMap": true
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.test.ts"]

@@ -1,7 +1,7 @@
 import { Effect, Scope } from "effect";
 import type { Schema } from "effect";
-import { Signal } from "effect-ui";
-import { Derived } from "effect-ui";
+import { Signal } from "@effex/dom";
+import { Derived } from "@effex/dom";
 import type {
   Route,
   Router as RouterType,

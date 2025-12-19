@@ -96,38 +96,47 @@ importers:
         specifier: ^4.0.15
         version: 4.0.15(@types/node@24.10.1)(@vitest/browser-playwright@4.0.15)(jiti@2.6.1)(jsdom@27.2.0)(yaml@2.8.2)
 
-  packages/effect-ui:
+  packages/core:
     dependencies:
+      effect:
+        specifier: ^3.0.0
+        version: 3.19.9
+
+  packages/dom:
+    dependencies:
+      '@effex/core':
+        specifier: workspace:*
+        version: link:../core
       effect:
         specifier: ^3.0.0
         version: 3.19.9
 
   packages/form:
     dependencies:
+      '@effex/dom':
+        specifier: workspace:*
+        version: link:../dom
       effect:
         specifier: ^3.0.0
         version: 3.19.9
-      effect-ui:
-        specifier: workspace:*
-        version: link:../effect-ui
 
   packages/primitives:
     dependencies:
+      '@effex/dom':
+        specifier: workspace:*
+        version: link:../dom
       effect:
         specifier: ^3.0.0
         version: 3.19.9
-      effect-ui:
-        specifier: workspace:*
-        version: link:../effect-ui
 
   packages/router:
     dependencies:
+      '@effex/dom':
+        specifier: workspace:*
+        version: link:../dom
       effect:
         specifier: ^3.0.0
         version: 3.19.9
-      effect-ui:
-        specifier: workspace:*
-        version: link:../effect-ui
 
 packages:
 

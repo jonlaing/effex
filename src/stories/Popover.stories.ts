@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { Popover } from "@effect-ui/primitives";
-import { $ } from "@dom/Element/Element";
-import { Signal } from "@core/Signal";
+import { Popover } from "@effex/primitives";
+import { $ } from "@effex/dom";
+import { Signal } from "@effex/dom";
 import { renderEffectAsync } from "./helpers";
 
 import "./popover.css";

@@ -1,5 +1,5 @@
 import { Array, Effect, Scope } from "effect";
-import type { Readable } from "@core/Readable";
+import type { Readable } from "@effex/core";
 import {
   applyClass,
   applyEventHandler,
@@ -19,7 +19,7 @@ import type {
   HTMLAttributes,
   StyleValue,
 } from "./types";
-import type { Ref } from "@dom/Ref";
+import type { Ref } from "@effex/core";
 
 const applyRef = <K extends keyof HTMLElementTagNameMap>(
   element: HTMLElementTagNameMap[K],

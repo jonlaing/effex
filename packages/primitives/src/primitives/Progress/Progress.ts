@@ -1,10 +1,10 @@
 import { Context, Effect } from "effect";
-import { Readable } from "effect-ui";
-import { Derived } from "effect-ui";
-import { $ } from "effect-ui";
-import { provide } from "effect-ui";
-import { component } from "effect-ui";
-import type { Element, Child } from "effect-ui";
+import { Readable } from "@effex/dom";
+import { Derived } from "@effex/dom";
+import { $ } from "@effex/dom";
+import { provide } from "@effex/dom";
+import { component } from "@effex/dom";
+import type { Element, Child } from "@effex/dom";
 
 // ============================================================================
 // Types

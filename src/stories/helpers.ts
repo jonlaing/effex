@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import type { Element } from "@dom/Element";
+import type { Element } from "@effex/dom";
 
 /**
  * Render an Effect UI component for Storybook.

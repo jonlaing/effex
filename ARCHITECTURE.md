@@ -1,26 +1,32 @@
-# Effect-UI Architecture
+# Effex Architecture
 
-This document describes the internal architecture of Effect-UI, a reactive UI framework built on Effect.ts.
+This document describes the internal architecture of Effex, a reactive UI framework built on Effect.ts.
 
 ## Overview
 
-Effect-UI is organized into two main modules:
+Effex is organized into two main modules:
 
 ```
-src/
-├── core/          # Reactive primitives (framework-agnostic)
-│   ├── Readable   # Base reactive interface
-│   ├── Signal     # Read/write reactive state
-│   ├── Derived    # Computed values
-│   └── Reaction   # Side effects on value changes
+packages/
+├── core/          # @effex/core - Reactive primitives (framework-agnostic)
+│   └── src/
+│       ├── Readable   # Base reactive interface
+│       ├── Signal     # Read/write reactive state
+│       ├── Derived    # Computed values
+│       ├── Reaction   # Side effects on value changes
+│       └── Ref        # Element references
 │
-└── dom/           # DOM rendering
-    ├── Element    # DOM element creation
-    ├── Control    # Control flow (when, match, each)
-    ├── Component  # Named components
-    ├── Mount      # Mounting to DOM
-    ├── Ref        # Element references
-    └── Template   # Tagged template literals
+├── dom/           # @effex/dom - DOM rendering
+│   └── src/
+│       ├── Element    # DOM element creation
+│       ├── Control    # Control flow (when, match, each)
+│       ├── Component  # Named components
+│       ├── Mount      # Mounting to DOM
+│       └── Template   # Tagged template literals
+│
+├── router/        # @effex/router - Routing
+├── form/          # @effex/form - Form handling
+└── primitives/    # @effex/primitives - Headless UI components
 ```
 
 ## Core Module
@@ -185,7 +191,7 @@ The `_tag` enables debugging and potential future devtools integration.
 
 ## Scope and Lifecycle
 
-Effect-UI relies heavily on Effect's `Scope` for lifecycle management:
+Effex relies heavily on Effect's `Scope` for lifecycle management:
 
 1. **Element creation** runs in a scope
 2. **Reactive subscriptions** are forked into that scope
@@ -218,10 +224,10 @@ All updates flow through Effect's Stream, which ensures proper ordering and back
 
 Internal imports use path aliases for cleaner code:
 
-- `@core/*` → `src/core/*`
-- `@dom/*` → `src/dom/*`
+- `@effex/core` → `packages/core/src`
+- `@effex/dom` → `packages/dom/src`
 
-Configured in `tsconfig.json` and `vite.config.ts`.
+Configured in `tsconfig.json` and `vitest.config.ts`.
 
 ## Design Principles
 

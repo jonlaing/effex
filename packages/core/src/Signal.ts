@@ -1,7 +1,7 @@
 import { Context, Effect, Layer, Scope, SubscriptionRef } from "effect";
 
 import type { Readable } from "./Readable.js";
-import { make as makeReadable } from "./Readable.js";
+import { Readable as ReadableNS } from "./Readable.js";
 import { defaultEquals } from "./Derived/helpers.js";
 
 /**
@@ -13,6 +13,31 @@ export interface Signal<A> extends Readable<A> {
   readonly set: (a: A) => Effect.Effect<void>;
   /** Update the signal value using a function */
   readonly update: (f: (a: A) => A) => Effect.Effect<void>;
+}
+
+/**
+ * @category models
+ */
+export declare namespace Signal {
+  /**
+   * A mutable reactive value that extends Readable with write capabilities.
+   * @template A - The type of the value
+   */
+  export interface Signal<A> extends Readable<A> {
+    /** Set the signal to a new value */
+    readonly set: (a: A) => Effect.Effect<void>;
+    /** Update the signal value using a function */
+    readonly update: (f: (a: A) => A) => Effect.Effect<void>;
+  }
+
+  /**
+   * Options for creating a Signal.
+   * @template A - The type of the value
+   */
+  export interface Options<A> {
+    /** Custom equality function to determine if the value has changed */
+    readonly equals?: (a: A, b: A) => boolean;
+  }
 }
 
 /**
@@ -41,7 +66,7 @@ export const make = <A>(
     // Use ref.changes to get a stream that receives all future updates
     const getChanges = () => ref.changes;
 
-    const readable = makeReadable(SubscriptionRef.get(ref), getChanges);
+    const readable = ReadableNS.make(SubscriptionRef.get(ref), getChanges);
 
     const signal: Signal<A> = {
       ...readable,
@@ -88,7 +113,7 @@ export class SignalRegistry extends Context.Tag("effect-ui/SignalRegistry")<
 }
 
 /**
- * Signal module namespace containing factory functions.
+ * Signal namespace containing factory functions.
  */
 export const Signal = {
   make,

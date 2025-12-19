@@ -16,22 +16,48 @@ export interface Readable<A> {
 }
 
 /**
+ * @category models
+ */
+export declare namespace Readable {
+  /**
+   * A reactive value that can be read and observed for changes.
+   * @template A - The type of the value
+   */
+  export interface Readable<A> {
+    /** Get the current value */
+    readonly get: Effect.Effect<A>;
+    /** Stream of value changes (does not include current value) */
+    readonly changes: Stream.Stream<A>;
+    /** Stream of all values (current value followed by changes) */
+    readonly values: Stream.Stream<A>;
+    /** Transform the readable value */
+    readonly map: <B>(f: (a: A) => B) => Readable<B>;
+  }
+
+  /**
+   * A value that can be either static or reactive.
+   * Use `Readable.of()` to normalize to a `Readable<T>`.
+   *
+   * @example
+   * ```ts
+   * interface ButtonProps {
+   *   disabled?: Readable.Reactive<boolean>;
+   *   class?: Readable.Reactive<string>;
+   * }
+   *
+   * const Button = (props: ButtonProps) =>
+   *   Effect.gen(function* () {
+   *     const disabled = Readable.of(props.disabled ?? false);
+   *     // Now disabled is Readable<boolean>
+   *   });
+   * ```
+   */
+  export type Reactive<T> = T | Readable<T>;
+}
+
+/**
  * A value that can be either static or reactive.
  * Use `Readable.of()` to normalize to a `Readable<T>`.
- *
- * @example
- * ```ts
- * interface ButtonProps {
- *   disabled?: Readable.Reactive<boolean>;
- *   class?: Readable.Reactive<string>;
- * }
- *
- * const Button = (props: ButtonProps) =>
- *   Effect.gen(function* () {
- *     const disabled = Readable.of(props.disabled ?? false);
- *     // Now disabled is Readable<boolean>
- *   });
- * ```
  */
 export type Reactive<T> = T | Readable<T>;
 
@@ -113,4 +139,15 @@ export const fromStream = <A>(
     Effect.sync(() => current),
     () => tracked,
   );
+};
+
+/**
+ * Readable namespace containing factory functions and type utilities.
+ */
+export const Readable = {
+  isReadable,
+  of,
+  make,
+  map,
+  fromStream,
 };

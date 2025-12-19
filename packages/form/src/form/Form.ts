@@ -1,9 +1,5 @@
 import { Effect, Schema, Scope } from "effect";
-import {
-  Signal,
-  Derived,
-  type ReadableInterface as Readable,
-} from "effect-ui";
+import { Signal, Derived, Readable } from "@effex/dom";
 import type {
   Field,
   FieldArray,
@@ -70,12 +66,12 @@ export const make = <
     >;
 
     // Get error readables from all fields
-    const errorReadables: Readable<readonly string[]>[] = allFields.map(
+    const errorReadables: Readable.Readable<readonly string[]>[] = allFields.map(
       (f) => (f as Field<unknown>).errors,
     );
 
     // Derive form-level errors (aggregate from all fields)
-    const errors: Readable<Record<string, readonly string[]>> =
+    const errors: Readable.Readable<Record<string, readonly string[]>> =
       yield* Derived.sync(errorReadables, (allErrors) =>
         fieldNames.reduce(
           (acc, key, idx) => ({
@@ -87,28 +83,28 @@ export const make = <
       );
 
     // Derive isValid from errors
-    const isValid: Readable<boolean> = yield* Derived.sync([errors], ([errs]) =>
+    const isValid: Readable.Readable<boolean> = yield* Derived.sync([errors], ([errs]) =>
       hasNoErrors(errs),
     );
 
     // Get touched readables from all fields
-    const touchedReadables: Readable<boolean>[] = allFields.map(
+    const touchedReadables: Readable.Readable<boolean>[] = allFields.map(
       (f) => (f as Field<unknown>).touched,
     );
 
     // Derive isTouched from all fields
-    const isTouched: Readable<boolean> = yield* Derived.sync(
+    const isTouched: Readable.Readable<boolean> = yield* Derived.sync(
       touchedReadables,
       (touchedStates) => touchedStates.some((t) => t),
     );
 
     // Get dirty readables from all fields
-    const dirtyReadables: Readable<boolean>[] = allFields.map(
+    const dirtyReadables: Readable.Readable<boolean>[] = allFields.map(
       (f) => (f as Field<unknown>).dirty,
     );
 
     // Derive isDirty from all fields
-    const isDirty: Readable<boolean> = yield* Derived.sync(
+    const isDirty: Readable.Readable<boolean> = yield* Derived.sync(
       dirtyReadables,
       (dirtyStates) => dirtyStates.some((d) => d),
     );

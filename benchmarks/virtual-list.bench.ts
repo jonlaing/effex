@@ -1,6 +1,6 @@
 import { bench, describe } from "vitest";
 import { Effect } from "effect";
-import { Signal } from "@core/Signal";
+import { Signal } from "@effex/core/Signal";
 import { virtualEach } from "@dom/VirtualList";
 import { each } from "@dom/Control";
 import { $ } from "@dom/Element/Element";

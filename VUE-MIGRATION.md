@@ -1,16 +1,16 @@
 # Coming from Vue
 
-A guide for Vue developers learning Effect UI. This covers the key differences, concept mapping, and side-by-side examples to help you transition.
+A guide for Vue developers learning Effex. This covers the key differences, concept mapping, and side-by-side examples to help you transition.
 
 ## Why Switch?
 
-If you're already using [Effect](https://effect.website/) in your application, Effect UI lets you use the same patterns and mental model across your entire stack. No more context-switching between Vue's reactivity model and Effect's compositional approach.
+If you're already using [Effect](https://effect.website/) in your application, Effex lets you use the same patterns and mental model across your entire stack. No more context-switching between Vue's reactivity model and Effect's compositional approach.
 
 ### Typed Error Handling
 
 In Vue, component errors are runtime surprises. You catch them with `errorCaptured` hooks or global error handlers, but there's no compile-time visibility into what can fail.
 
-In Effect UI, every element has type `Element<E>` where `E` is the error channel. Errors propagate through the component tree, and you **must** handle them before mounting:
+In Effex, every element has type `Element<E>` where `E` is the error channel. Errors propagate through the component tree, and you **must** handle them before mounting:
 
 ```ts
 // This won't compile - UserProfile might fail with ApiError
@@ -30,10 +30,10 @@ TypeScript tells you at build time which components can fail and forces you to h
 
 ### Similar Reactivity, Different Execution
 
-Vue's Composition API and Effect UI share similar reactive concepts - both have signals (refs) and derived values (computed). The key difference is *when* things run:
+Vue's Composition API and Effex share similar reactive concepts - both have signals (refs) and derived values (computed). The key difference is *when* things run:
 
 - Vue: Template re-renders when refs change, computed values update lazily
-- Effect UI: DOM nodes subscribe directly to signals, updates are synchronous and targeted
+- Effex: DOM nodes subscribe directly to signals, updates are synchronous and targeted
 
 ```ts
 // Vue: Computed re-evaluates, template re-renders
@@ -41,7 +41,7 @@ const count = ref(0)
 const doubled = computed(() => count.value * 2)
 // Template: {{ doubled }} - entire template function runs
 
-// Effect UI: Only the text node updates
+// Effex: Only the text node updates
 const count = yield* Signal.make(0)
 const doubled = yield* Derived.sync([count], ([c]) => c * 2)
 // $.span(doubled) - only this span's text updates
@@ -49,7 +49,7 @@ const doubled = yield* Derived.sync([count], ([c]) => c * 2)
 
 ### No Template Compilation
 
-Vue uses a custom template syntax that compiles to render functions. Effect UI uses plain TypeScript function calls:
+Vue uses a custom template syntax that compiles to render functions. Effex uses plain TypeScript function calls:
 
 ```ts
 // Vue template
@@ -60,7 +60,7 @@ Vue uses a custom template syntax that compiles to render functions. Effect UI u
   </div>
 </template>
 
-// Effect UI
+// Effex
 $.div({ class: "card" }, [
   $.h1(title),
   $.button({ onClick: handleClick }, "Submit"),
@@ -75,7 +75,7 @@ Benefits:
 
 ### Automatic Resource Cleanup
 
-Vue's `onUnmounted` and `watchEffect` cleanup are manual. Effect UI uses Effect's scope system - resources are automatically cleaned up when components unmount:
+Vue's `onUnmounted` and `watchEffect` cleanup are manual. Effex uses Effect's scope system - resources are automatically cleaned up when components unmount:
 
 ```ts
 // Vue: Manual cleanup registration
@@ -84,7 +84,7 @@ onMounted(() => {
   onUnmounted(() => subscription.unsubscribe())
 })
 
-// Effect UI: Automatic cleanup via scope
+// Effex: Automatic cleanup via scope
 yield* eventSource.pipe(
   Stream.runForEach(handler),
   Effect.forkIn(scope), // Cleaned up when scope closes
@@ -93,7 +93,7 @@ yield* eventSource.pipe(
 
 ### Better Async Integration
 
-Vue's `<Suspense>` is limited and doesn't integrate well with error handling. Effect UI unifies loading and error states:
+Vue's `<Suspense>` is limited and doesn't integrate well with error handling. Effex unifies loading and error states:
 
 ```ts
 Suspense({
@@ -110,7 +110,7 @@ Suspense({
 
 ## Concept Mapping
 
-| Vue (Composition API)      | Effect UI                          | Notes                        |
+| Vue (Composition API)      | Effex                              | Notes                        |
 | -------------------------- | ---------------------------------- | ---------------------------- |
 | `ref(initial)`             | `Signal.make(initial)`             | Must `yield*` to create      |
 | `reactive(obj)`            | `Signal.make(obj)`                 | Same as ref for objects      |
@@ -147,7 +147,7 @@ const count = ref(0)
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Counter = component("Counter", () =>
   Effect.gen(function* () {
     const count = yield* Signal.make(0);
@@ -178,7 +178,7 @@ const total = computed(() =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Cart = component("Cart", (props: { items: Readable<Item[]> }) =>
   Effect.gen(function* () {
     const total = yield* Derived.sync([props.items], ([items]) =>
@@ -205,7 +205,7 @@ const isLoggedIn = ref(false)
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Auth = component("Auth", (props: { isLoggedIn: Readable<boolean> }) =>
   when(
     props.isLoggedIn,
@@ -234,7 +234,7 @@ const todos = ref([])
 ```
 
 ```ts
-// Effect UI
+// Effex
 const TodoList = component("TodoList", (props: { todos: Readable<Todo[]> }) =>
   $.ul([
     each(
@@ -263,7 +263,7 @@ watch(searchQuery, async (newQuery) => {
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Search = component("Search", () =>
   Effect.gen(function* () {
     const query = yield* Signal.make("");
@@ -303,7 +303,7 @@ const theme = inject('theme')
 ```
 
 ```ts
-// Effect UI
+// Effex
 class ThemeService extends Context.Tag("Theme")<ThemeService, string>() {}
 
 const Page = component("Page", () =>
@@ -332,7 +332,7 @@ const text = ref('')
 ```
 
 ```ts
-// Effect UI
+// Effex
 const TextInput = component("TextInput", () =>
   Effect.gen(function* () {
     const text = yield* Signal.make("");
@@ -359,7 +359,7 @@ const TextInput = component("TextInput", () =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Modal = component("Modal", () =>
   Portal(
     { target: document.body },
@@ -372,7 +372,7 @@ const Modal = component("Modal", () =>
 
 1. **No template syntax** - Everything is TypeScript. `v-if` becomes `when()`, `v-for` becomes `each()`, `@click` becomes `onClick`.
 
-2. **Explicit dependencies** - Vue's reactivity auto-tracks. Effect UI's `Derived.sync` requires explicit dependency arrays (but they're type-checked).
+2. **Explicit dependencies** - Vue's reactivity auto-tracks. Effex's `Derived.sync` requires explicit dependency arrays (but they're type-checked).
 
 3. **Errors are values** - Instead of `errorCaptured` hooks, errors flow through the type system. Handle them explicitly with `ErrorBoundary`.
 
@@ -386,7 +386,7 @@ const Modal = component("Modal", () =>
 
 In Vue, `watch` and `computed` use reference equality by default. You can pass `{ deep: true }` for deep comparison, but there's no custom equality.
 
-In Effect UI, equality is a first-class option on every reactive primitive:
+In Effex, equality is a first-class option on every reactive primitive:
 
 ```ts
 // Only trigger updates when the user ID changes, ignoring lastSeen timestamps

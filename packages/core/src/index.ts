@@ -1,17 +1,21 @@
-// Readable - export as namespace for Readable.Reactive<T> pattern
-export * as Readable from "./Readable";
-// Readable - individual exports (kept for backward compatibility)
-export type { Readable as ReadableInterface, Reactive } from "./Readable";
+// Readable - exports both the interface type and namespace (declaration merging)
 export {
-  of as readableOf,
+  Readable,
+  type Reactive,
+  isReadable,
+  of,
   make as makeReadable,
   map as mapReadable,
   fromStream,
 } from "./Readable";
 
-// Signal
-export type { Signal as SignalType, SignalOptions } from "./Signal";
-export { Signal, SignalRegistry } from "./Signal";
+// Signal - exports both the interface type and namespace (declaration merging)
+export {
+  Signal,
+  type SignalOptions,
+  SignalRegistry,
+  make as makeSignal,
+} from "./Signal";
 
 // Derived
 export type {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Effect } from "effect";
-import { Reaction } from "effect-ui";
+import { Reaction } from "@effex/dom";
 import { Field, makeField, makeFieldArray } from "./Field";
 
 describe("Field", () => {

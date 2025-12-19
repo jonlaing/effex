@@ -1,22 +1,24 @@
 {
-  "name": "@effex/primitives",
+  "name": "@effex/dom",
   "version": "0.0.1",
-  "description": "Headless UI primitives for Effex applications",
+  "description": "DOM rendering for Effex - a reactive UI framework built on Effect.ts",
   "type": "module",
   "license": "MIT",
   "author": "Jon Laing",
   "repository": {
     "type": "git",
     "url": "https://github.com/jonlaing/effex.git",
-    "directory": "packages/primitives"
+    "directory": "packages/dom"
   },
   "keywords": [
     "effect",
     "effect-ts",
     "ui",
-    "headless",
-    "primitives",
-    "accessible"
+    "reactive",
+    "signals",
+    "frontend",
+    "framework",
+    "dom"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -36,7 +38,7 @@
     "build": "tsup"
   },
   "dependencies": {
-    "@effex/dom": "workspace:*"
+    "@effex/core": "workspace:*"
   },
   "peerDependencies": {
     "effect": "^3.0.0"

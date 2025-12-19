@@ -1,23 +1,21 @@
 {
-  "name": "effect-ui",
+  "name": "@effex/core",
   "version": "0.0.1",
-  "description": "A reactive UI framework built on Effect.ts primitives",
+  "description": "Platform-agnostic reactivity primitives for Effex",
   "type": "module",
   "license": "MIT",
   "author": "Jon Laing",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jonlaing/effect-ui.git",
-    "directory": "packages/effect-ui"
+    "url": "https://github.com/jonlaing/effex.git",
+    "directory": "packages/core"
   },
   "keywords": [
     "effect",
     "effect-ts",
-    "ui",
     "reactive",
     "signals",
-    "frontend",
-    "framework"
+    "reactivity"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -34,8 +32,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
-    "typecheck": "tsc --noEmit"
+    "build": "tsup"
   },
   "peerDependencies": {
     "effect": "^3.0.0"

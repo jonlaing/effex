@@ -1,5 +1,5 @@
 import { Array, Effect, Scope, Stream } from "effect";
-import type { Readable } from "@core/Readable";
+import type { Readable } from "@effex/core";
 import type {
   Child,
   ClassItem,

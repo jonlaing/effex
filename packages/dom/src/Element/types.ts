@@ -1,6 +1,6 @@
 import type { Effect, Scope } from "effect";
-import type { Readable } from "@core/Readable";
-import type { Ref } from "@dom/Ref";
+import type { Readable } from "@effex/core";
+import type { Ref } from "@effex/core";
 
 /**
  * A DOM element wrapped in an Effect with scope management.

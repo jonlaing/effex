@@ -1,13 +1,13 @@
 {
-  "name": "@effect-ui/form",
+  "name": "@effex/form",
   "version": "0.0.1",
-  "description": "Form handling with Effect Schema validation for Effect UI",
+  "description": "Form handling for Effex applications",
   "type": "module",
   "license": "MIT",
   "author": "Jon Laing",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jonlaing/effect-ui.git",
+    "url": "https://github.com/jonlaing/effex.git",
     "directory": "packages/form"
   },
   "keywords": [
@@ -15,7 +15,7 @@
     "effect-ts",
     "form",
     "validation",
-    "schema"
+    "reactive"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -32,11 +32,10 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
-    "typecheck": "tsc --noEmit"
+    "build": "tsup"
   },
   "dependencies": {
-    "effect-ui": "workspace:*"
+    "@effex/dom": "workspace:*"
   },
   "peerDependencies": {
     "effect": "^3.0.0"

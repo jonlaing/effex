@@ -1,3 +1,28 @@
+// Re-export everything from core so users can import from @effex/dom
+export {
+  Readable,
+  type Reactive,
+  isReadable,
+  of,
+  makeReadable,
+  mapReadable,
+  fromStream,
+  Signal,
+  type SignalOptions,
+  SignalRegistry,
+  makeSignal,
+  type DerivedOptions,
+  type AsyncState,
+  type AsyncStrategy,
+  type AsyncDerivedOptions,
+  type AsyncDerived,
+  Derived,
+  defaultEquals,
+  Reaction,
+  type RefType,
+  Ref,
+} from "@effex/core";
+
 // Element
 export type {
   Element,
@@ -83,10 +108,6 @@ export {
 // Components
 export type { Component, Children } from "./Component";
 export { component } from "./Component";
-
-// Refs
-export type { Ref as RefType } from "./Ref";
-export { Ref } from "./Ref";
 
 // Mounting
 export { mount, runApp } from "./Mount";

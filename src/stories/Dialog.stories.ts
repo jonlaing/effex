@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { Dialog } from "@effect-ui/primitives";
-import { $ } from "@dom/Element/Element";
-import { Signal } from "@core/Signal";
+import { Dialog } from "@effex/primitives";
+import { $ } from "@effex/dom";
+import { Signal } from "@effex/dom";
 import { renderEffectAsync } from "./helpers";
 
 import "./dialog.css";

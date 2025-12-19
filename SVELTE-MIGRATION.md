@@ -1,18 +1,18 @@
 # Coming from Svelte
 
-A guide for Svelte developers learning Effect UI. This covers the key differences, concept mapping, and side-by-side examples to help you transition.
+A guide for Svelte developers learning Effex. This covers the key differences, concept mapping, and side-by-side examples to help you transition.
 
 This guide covers both Svelte 4 (reactive statements, stores) and Svelte 5 (runes).
 
 ## Why Switch?
 
-If you're already using [Effect](https://effect.website/) in your application, Effect UI lets you use the same patterns and mental model across your entire stack. No more context-switching between Svelte's compiler magic and Effect's compositional approach.
+If you're already using [Effect](https://effect.website/) in your application, Effex lets you use the same patterns and mental model across your entire stack. No more context-switching between Svelte's compiler magic and Effect's compositional approach.
 
 ### Typed Error Handling
 
 In Svelte, component errors are runtime surprises. There's no built-in error boundary mechanism, and you typically rely on try/catch in event handlers or global error handling.
 
-In Effect UI, every element has type `Element<E>` where `E` is the error channel. Errors propagate through the component tree, and you **must** handle them before mounting:
+In Effex, every element has type `Element<E>` where `E` is the error channel. Errors propagate through the component tree, and you **must** handle them before mounting:
 
 ```ts
 // This won't compile - UserProfile might fail with ApiError
@@ -48,10 +48,10 @@ Svelte's power comes from its compiler - `$:` reactive statements, automatic sub
 </script>
 ```
 
-Effect UI is explicit - what you write is what runs:
+Effex is explicit - what you write is what runs:
 
 ```ts
-// Effect UI: No transformation
+// Effex: No transformation
 const count = yield* Signal.make(0);
 const doubled = yield* Derived.sync([count], ([c]) => c * 2);
 ```
@@ -64,9 +64,9 @@ Benefits:
 
 ### Similar Reactivity Model
 
-Both Svelte and Effect UI use fine-grained reactivity (not virtual DOM diffing). The concepts map fairly directly:
+Both Svelte and Effex use fine-grained reactivity (not virtual DOM diffing). The concepts map fairly directly:
 
-| Svelte 5 Rune | Svelte 4          | Effect UI                |
+| Svelte 5 Rune | Svelte 4          | Effex                    |
 | ------------- | ----------------- | ------------------------ |
 | `$state()`    | `let x = ...`     | `Signal.make()`          |
 | `$derived()`  | `$: x = ...`      | `Derived.sync()`         |
@@ -75,7 +75,7 @@ Both Svelte and Effect UI use fine-grained reactivity (not virtual DOM diffing).
 
 ### Better Async Story
 
-Svelte's `{#await}` block is nice but separate from error handling. Effect UI unifies them:
+Svelte's `{#await}` block is nice but separate from error handling. Effex unifies them:
 
 ```svelte
 <!-- Svelte -->
@@ -89,7 +89,7 @@ Svelte's `{#await}` block is nice but separate from error handling. Effect UI un
 ```
 
 ```ts
-// Effect UI
+// Effex
 Suspense({
   render: () =>
     Effect.gen(function* () {
@@ -106,7 +106,7 @@ The `delay` option prevents flash of loading state for fast responses - somethin
 
 ### Automatic Resource Cleanup
 
-Svelte's `onDestroy` requires manual cleanup registration. Effect UI uses Effect's scope system:
+Svelte's `onDestroy` requires manual cleanup registration. Effex uses Effect's scope system:
 
 ```svelte
 <!-- Svelte -->
@@ -119,7 +119,7 @@ Svelte's `onDestroy` requires manual cleanup registration. Effect UI uses Effect
 ```
 
 ```ts
-// Effect UI: Automatic cleanup via scope
+// Effex: Automatic cleanup via scope
 yield* eventSource.pipe(
   Stream.runForEach(handler),
   Effect.forkIn(scope), // Cleaned up when scope closes
@@ -128,7 +128,7 @@ yield* eventSource.pipe(
 
 ## Concept Mapping
 
-| Svelte 5                   | Svelte 4                   | Effect UI                          | Notes                     |
+| Svelte 5                   | Svelte 4                   | Effex                              | Notes                     |
 | -------------------------- | -------------------------- | ---------------------------------- | ------------------------- |
 | `$state(initial)`          | `let x = initial`          | `Signal.make(initial)`             | Must `yield*` to create   |
 | `$derived(expr)`           | `$: x = expr`              | `Derived.sync([deps], fn)`         | Explicit dependencies     |
@@ -167,7 +167,7 @@ yield* eventSource.pipe(
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Counter = component("Counter", () =>
   Effect.gen(function* () {
     const count = yield* Signal.make(0);
@@ -200,7 +200,7 @@ const Counter = component("Counter", () =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Cart = component("Cart", (props: { items: Readable<Item[]> }) =>
   Effect.gen(function* () {
     const total = yield* Derived.sync([props.items], ([items]) =>
@@ -227,7 +227,7 @@ const Cart = component("Cart", (props: { items: Readable<Item[]> }) =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Auth = component("Auth", (props: { isLoggedIn: Readable<boolean> }) =>
   when(
     props.isLoggedIn,
@@ -253,7 +253,7 @@ const Auth = component("Auth", (props: { isLoggedIn: Readable<boolean> }) =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 const TodoList = component("TodoList", (props: { todos: Readable<Todo[]> }) =>
   $.ul([
     each(
@@ -293,7 +293,7 @@ const TodoList = component("TodoList", (props: { todos: Readable<Todo[]> }) =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Search = component("Search", () =>
   Effect.gen(function* () {
     const query = yield* Signal.make("");
@@ -330,7 +330,7 @@ const Search = component("Search", () =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 class ThemeService extends Context.Tag("Theme")<ThemeService, string>() {}
 
 const Page = component("Page", () =>
@@ -356,7 +356,7 @@ runApp(mount(Page().pipe(Effect.provideService(ThemeService, "dark")), root));
 ```
 
 ```ts
-// Effect UI
+// Effex
 const TextInput = component("TextInput", () =>
   Effect.gen(function* () {
     const text = yield* Signal.make("");
@@ -387,7 +387,7 @@ const TextInput = component("TextInput", () =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 const Counter = component("Counter", () =>
   Effect.gen(function* () {
     const count = yield* Signal.make(0);
@@ -418,7 +418,7 @@ const Counter = component("Counter", () =>
 ```
 
 ```ts
-// Effect UI
+// Effex
 interface CardProps {
   header?: Element;
   children: Element;
@@ -452,7 +452,7 @@ Card({
 ```
 
 ```ts
-// Effect UI
+// Effex
 Suspense({
   render: () =>
     Effect.gen(function* () {
@@ -466,9 +466,9 @@ Suspense({
 
 ## Key Mindset Shifts
 
-1. **No compiler magic** - Svelte's `$:`, `$state`, `$derived` are compiler transforms. Effect UI is plain TypeScript - what you write is what runs.
+1. **No compiler magic** - Svelte's `$:`, `$state`, `$derived` are compiler transforms. Effex is plain TypeScript - what you write is what runs.
 
-2. **Explicit dependencies** - Svelte auto-tracks dependencies through compilation. Effect UI's `Derived.sync` requires explicit dependency arrays (but they're type-checked).
+2. **Explicit dependencies** - Svelte auto-tracks dependencies through compilation. Effex's `Derived.sync` requires explicit dependency arrays (but they're type-checked).
 
 3. **No special file format** - No `.svelte` files with `<script>`, `<style>`, and template sections. Just TypeScript.
 
@@ -484,7 +484,7 @@ Suspense({
 
 In Svelte, reactivity is based on assignment. For objects, you often need to reassign to trigger updates, and there's no way to customize equality checking.
 
-In Effect UI, equality is a first-class option on every reactive primitive:
+In Effex, equality is a first-class option on every reactive primitive:
 
 ```ts
 // Only trigger updates when the user ID changes, ignoring lastSeen timestamps
@@ -502,7 +502,7 @@ This gives you fine-grained control over when the UI updates, which is particula
 
 ## Transitions and Animations
 
-Svelte has built-in transition directives. Effect UI uses CSS-first animations:
+Svelte has built-in transition directives. Effex uses CSS-first animations:
 
 ```svelte
 <!-- Svelte -->
@@ -516,7 +516,7 @@ Svelte has built-in transition directives. Effect UI uses CSS-first animations:
 ```
 
 ```ts
-// Effect UI
+// Effex
 when(
   visible,
   () => $.div("Fading content"),
@@ -530,7 +530,7 @@ when(
 )
 ```
 
-Effect UI's approach:
+Effex's approach:
 - Uses standard CSS animations (better performance, GPU-accelerated)
 - Works with any CSS framework (Tailwind, etc.)
 - Supports staggered list animations

@@ -5,12 +5,11 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["packages/effect-ui/src/core/*"],
-      "@dom/*": ["packages/effect-ui/src/dom/*"],
-      "effect-ui": ["packages/effect-ui/src/index.ts"],
-      "@effect-ui/router": ["packages/router/src/index.ts"],
-      "@effect-ui/form": ["packages/form/src/index.ts"],
-      "@effect-ui/primitives": ["packages/primitives/src/index.ts"]
+      "@effex/core": ["packages/core/src/index.ts"],
+      "@effex/dom": ["packages/dom/src/index.ts"],
+      "@effex/router": ["packages/router/src/index.ts"],
+      "@effex/form": ["packages/form/src/index.ts"],
+      "@effex/primitives": ["packages/primitives/src/index.ts"]
     }
   },
   "include": ["packages/*/src", "src"]

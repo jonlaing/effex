@@ -1,6 +1,6 @@
 import { Effect, Stream } from "effect";
-import type { Readable } from "@core/Readable";
-import { map as mapReadable } from "@core/Readable";
+import type { Readable } from "@effex/core";
+import { mapReadable } from "@effex/core";
 
 const isReadable = (value: unknown): value is Readable<unknown> =>
   value !== null &&

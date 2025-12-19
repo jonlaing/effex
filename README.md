@@ -1,10 +1,10 @@
-# Effect UI
+# Effex
 
-A reactive UI framework built on [Effect](https://effect.website/). Effect UI provides a declarative way to build web interfaces with fine-grained reactivity, automatic cleanup, and full type safety.
+A reactive UI framework built on [Effect](https://effect.website/). Effex provides a declarative way to build web interfaces with fine-grained reactivity, automatic cleanup, and full type safety.
 
 ## Table of Contents
 
-- [Why Effect UI?](#why-effect-ui)
+- [Why Effex?](#why-effex)
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Core Concepts](#core-concepts)
@@ -25,9 +25,9 @@ A reactive UI framework built on [Effect](https://effect.website/). Effect UI pr
 - [API Documentation](#api-documentation)
 - [Acknowledgments](#acknowledgments)
 
-## Why Effect UI?
+## Why Effex?
 
-Effect UI brings the power of [Effect](https://effect.website/) to frontend development. If you're building with Effect, this is a UI framework that speaks the same language.
+Effex brings the power of [Effect](https://effect.website/) to frontend development. If you're building with Effect, this is a UI framework that speaks the same language.
 
 ### Typed Error Handling
 
@@ -51,7 +51,7 @@ TypeScript tells you at build time which components can fail and forces you to h
 
 ### Fine-Grained Reactivity
 
-Effect UI uses signals for reactive state. When a signal updates, only the DOM nodes that actually depend on that signal update. No virtual DOM, no diffing, no wasted work:
+Effex uses signals for reactive state. When a signal updates, only the DOM nodes that actually depend on that signal update. No virtual DOM, no diffing, no wasted work:
 
 ```ts
 const Counter = component("Counter", () =>
@@ -67,7 +67,7 @@ Signal updates are surgical. A parent's state change doesn't affect unrelated ch
 
 ### Automatic Resource Cleanup
 
-Effect UI uses Effect's scope system. Subscriptions, timers, and other resources are automatically cleaned up when components unmount:
+Effex uses Effect's scope system. Subscriptions, timers, and other resources are automatically cleaned up when components unmount:
 
 ```ts
 yield* eventSource.pipe(
@@ -80,7 +80,7 @@ No manual cleanup, no forgotten unsubscribes, no memory leaks.
 
 ### The Effect Ecosystem
 
-Effect UI gives you access to Effect's entire ecosystem:
+Effex gives you access to Effect's entire ecosystem:
 
 - **Schema**: Runtime validation with static types
 - **Streams**: Reactive data flows
@@ -118,7 +118,7 @@ We have migration guides with concept mapping and side-by-side examples:
 ## Installation
 
 ```bash
-pnpm add @jonlaing/effect-ui effect
+pnpm add @effex/dom effect
 ```
 
 ## Basic Usage
@@ -128,7 +128,7 @@ pnpm add @jonlaing/effect-ui effect
 For components that just render static or prop-based content, return the element directly:
 
 ```ts
-import { $, component } from "@jonlaing/effect-ui";
+import { $, component } from "@effex/dom";
 
 const Greeting = component("Greeting", (props: { name: string }) =>
   $.div({ class: "greeting" }, [
@@ -144,7 +144,7 @@ Use `Effect.gen` when your component needs to create signals, derived values, or
 
 ```ts
 import { Effect } from "effect";
-import { $, Signal, component } from "@jonlaing/effect-ui";
+import { $, Signal, component } from "@effex/dom";
 
 const Counter = component("Counter", () =>
   Effect.gen(function* () {
@@ -166,7 +166,7 @@ Use `runApp` to mount your application. It handles scoping, the SignalRegistry, 
 
 ```ts
 import { Effect } from "effect";
-import { mount, runApp } from "@jonlaing/effect-ui";
+import { mount, runApp } from "@effex/dom";
 
 runApp(
   Effect.gen(function* () {
@@ -178,7 +178,7 @@ runApp(
 The `$` namespace contains all HTML element factories (`$.div`, `$.span`, `$.button`, etc.). You can also import elements individually if you prefer:
 
 ```ts
-import { div, span, button } from "@jonlaing/effect-ui";
+import { div, span, button } from "@effex/dom";
 ```
 
 ## Core Concepts
@@ -217,7 +217,7 @@ const fullName = yield* Derived.sync(
 Many components accept props that can be either static values or reactive `Readable` values. This is expressed using the `Readable.Reactive<T>` type:
 
 ```ts
-import { Readable } from "@jonlaing/effect-ui";
+import { Readable } from "@effex/dom";
 
 // Reactive<T> means: T | Readable<T>
 interface ButtonProps {
@@ -310,7 +310,7 @@ This is particularly useful for:
 The `t` tagged template literal creates reactive strings that update when any interpolated Signal changes:
 
 ```ts
-import { t } from "@jonlaing/effect-ui";
+import { t } from "@effex/dom";
 
 const name = yield* Signal.make("World");
 const count = yield* Signal.make(0);
@@ -371,11 +371,11 @@ each(
 
 ### Context
 
-Effect UI uses Effect's Context system for dependency injection. Define a service with `Context.Tag`, then use `provide` to make it available to child components:
+Effex uses Effect's Context system for dependency injection. Define a service with `Context.Tag`, then use `provide` to make it available to child components:
 
 ```ts
 import { Context, Effect } from "effect";
-import { $, component, provide } from "@jonlaing/effect-ui";
+import { $, component, provide } from "@effex/dom";
 
 // Define a theme context
 interface Theme {
@@ -415,7 +415,7 @@ The `provide` helper wraps children with `Effect.provideService`, making the con
 
 ### Router
 
-Effect UI includes a typed router with Effect Schema validation for route params.
+Effex includes a typed router with Effect Schema validation for route params.
 
 ```ts
 import { Context, Effect, Schema } from "effect";
@@ -429,7 +429,7 @@ import {
   Link,
   makeTypedRouterLayer,
   type RouterInfer,
-} from "@jonlaing/effect-ui";
+} from "@effex/dom";
 
 // Define routes with typed params
 const routes = {
@@ -481,7 +481,7 @@ The `Link` component uses `RouterContext` internally for navigation. Use `makeTy
 Use `Boundary.suspense` for async rendering with loading states. It accepts an options object:
 
 ```ts
-import { match, Boundary } from "@jonlaing/effect-ui";
+import { match, Boundary } from "@effex/dom";
 
 // Simulate API call
 const fetchUser = (id: string) =>
@@ -525,11 +525,11 @@ match(router.currentRoute, [
 
 ### Forms
 
-Effect UI includes a form system with Effect Schema validation:
+Effex includes a form system with Effect Schema validation:
 
 ```ts
 import { Effect, Schema } from "effect";
-import { $, Form, component, when } from "@jonlaing/effect-ui";
+import { $, Form, component, when } from "@effex/dom";
 
 // Define a schema for validation
 const LoginSchema = Schema.Struct({
@@ -623,10 +623,10 @@ Form features:
 
 ### Animation
 
-Effect UI provides CSS-based animation primitives for `when`, `match`, and `each` components. Animations are CSS-first - you provide class names, and the library manages the lifecycle and timing.
+Effex provides CSS-based animation primitives for `when`, `match`, and `each` components. Animations are CSS-first - you provide class names, and the library manages the lifecycle and timing.
 
 ```ts
-import { when, each, match, stagger } from "@jonlaing/effect-ui";
+import { when, each, match, stagger } from "@effex/dom";
 
 // Simple enter/exit animations
 when(
@@ -699,7 +699,7 @@ interface AnimationOptions {
 **Stagger Utilities:**
 
 ```ts
-import { stagger, staggerFromCenter, staggerEased } from "@jonlaing/effect-ui";
+import { stagger, staggerFromCenter, staggerEased } from "@effex/dom";
 
 stagger(50); // Linear: 0ms, 50ms, 100ms...
 staggerFromCenter(30); // Center-out: middle items animate first
@@ -709,7 +709,7 @@ staggerEased(500, easeOut); // Apply easing curve to stagger timing
 **Timing Utilities:**
 
 ```ts
-import { delay, sequence, parallel } from "@jonlaing/effect-ui";
+import { delay, sequence, parallel } from "@effex/dom";
 
 // Delay before animation
 yield* delay(200, runEnterAnimation(element, options));
@@ -753,7 +753,7 @@ Animation features:
 Portals render children into a different DOM node, outside the normal component hierarchy. This is useful for modals, dropdowns, and tooltips that need to escape parent `overflow: hidden` or `z-index` stacking contexts.
 
 ```ts
-import { Portal, $ } from "@jonlaing/effect-ui";
+import { Portal, $ } from "@effex/dom";
 
 // Render to document.body (default)
 Portal(() => Modal({ title: "Hello" }));
@@ -811,10 +811,10 @@ const Modal = component(
 
 ## Why No JSX?
 
-Effect UI uses function calls instead of JSX. This is a deliberate design choice:
+Effex uses function calls instead of JSX. This is a deliberate design choice:
 
 ```ts
-// Effect UI
+// Effex
 $.div({ class: "container" }, [
   $.h1("Hello"),
   $.p(["Count: ", count]),
@@ -847,11 +847,11 @@ See the [docs](./docs) folder for full API documentation.
 
 ## Acknowledgments
 
-Effect UI stands on the shoulders of giants. We're grateful to these projects for their inspiration:
+Effex stands on the shoulders of giants. We're grateful to these projects for their inspiration:
 
 - **[Effect](https://effect.website/)** - The foundation of everything. Effect's approach to typed errors, resource management, and structured concurrency inspired this entire project. If you haven't explored Effect yet, you're missing out on one of the most well-designed TypeScript libraries in existence.
 
-- **[React](https://react.dev/)** - The component model, hooks patterns, and overall developer experience of React heavily influenced Effect UI's API design. React proved that declarative UI is the way forward.
+- **[React](https://react.dev/)** - The component model, hooks patterns, and overall developer experience of React heavily influenced Effex's API design. React proved that declarative UI is the way forward.
 
 - **[Solid](https://www.solidjs.com/)** - Our fine-grained reactivity system (Signals, Derived values, subscriptions) draws direct inspiration from Solid's brilliant reactive primitives. Solid showed that you don't need a virtual DOM to build great UIs.
 

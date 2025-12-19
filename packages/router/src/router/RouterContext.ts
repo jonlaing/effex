@@ -1,6 +1,6 @@
 import { Context, Effect, Layer } from "effect";
-import { button } from "effect-ui";
-import { component } from "effect-ui";
+import { button } from "@effex/dom";
+import { component } from "@effex/dom";
 import type { BaseRouter } from "./types";
 
 /**

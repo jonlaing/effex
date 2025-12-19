@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 import { Effect } from "effect";
-import { ContextMenu } from "@effect-ui/primitives";
-import { Signal } from "@core/Signal";
+import { ContextMenu } from "@effex/primitives";
+import { Signal } from "@effex/dom";
 import { renderEffectAsync } from "./helpers";
 
 import "./contextmenu.css";

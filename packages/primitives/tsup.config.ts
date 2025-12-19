@@ -6,5 +6,5 @@ export default defineConfig({
   dts: true,
   clean: true,
   sourcemap: true,
-  external: ["effect", "effect-ui"],
+  external: ["effect", "@effex/dom", "@effex/core"],
 });

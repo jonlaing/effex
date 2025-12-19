@@ -1,5 +1,5 @@
 import type { Effect, Schema } from "effect";
-import type { ReadableInterface as Readable } from "effect-ui";
+import type { Readable } from "@effex/dom";
 
 /**
  * A path segment in a route pattern.
@@ -82,9 +82,9 @@ export interface MatchedRoute<P = unknown> {
  */
 export interface RouteState<P = unknown> {
   /** Whether this route is currently active */
-  readonly isActive: Readable<boolean>;
+  readonly isActive: Readable.Readable<boolean>;
   /** The current params (only meaningful when active) */
-  readonly params: Readable<P>;
+  readonly params: Readable.Readable<P>;
 }
 
 /**
@@ -103,11 +103,11 @@ export interface Router<
   Routes extends Record<string, Route<string, Schema.Schema.AnyNoContext>>,
 > {
   /** The current pathname */
-  readonly pathname: Readable<string>;
+  readonly pathname: Readable.Readable<string>;
   /** The current query params */
-  readonly searchParams: Readable<URLSearchParams>;
+  readonly searchParams: Readable.Readable<URLSearchParams>;
   /** The currently matched route name, or null if no match */
-  readonly currentRoute: Readable<keyof Routes | null>;
+  readonly currentRoute: Readable.Readable<keyof Routes | null>;
   /** Route-specific state for each defined route */
   readonly routes: {
     readonly [K in keyof Routes]: RouteState<
@@ -145,9 +145,9 @@ export interface RouterOptions {
  */
 export interface BaseRouter {
   /** The current pathname */
-  readonly pathname: Readable<string>;
+  readonly pathname: Readable.Readable<string>;
   /** The current query params */
-  readonly searchParams: Readable<URLSearchParams>;
+  readonly searchParams: Readable.Readable<URLSearchParams>;
   /** Navigate to a path */
   readonly push: (
     path: string,

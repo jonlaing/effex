@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { Effect } from "effect";
-import { Signal } from "@core/Signal";
+import { Signal } from "@effex/core";
 import { div, span, button, input, h1, p, ul, li } from "./Element";
 
 describe("Element", () => {

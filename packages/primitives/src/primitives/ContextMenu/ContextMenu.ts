@@ -1,13 +1,13 @@
 import { Context, Effect } from "effect";
-import { Signal } from "effect-ui";
-import { Readable } from "effect-ui";
-import { $ } from "effect-ui";
-import { provide } from "effect-ui";
-import { when } from "effect-ui";
-import { component } from "effect-ui";
-import { UniqueId } from "effect-ui";
-import { Portal } from "effect-ui";
-import type { Element, Child } from "effect-ui";
+import { Signal } from "@effex/dom";
+import { Readable } from "@effex/dom";
+import { $ } from "@effex/dom";
+import { provide } from "@effex/dom";
+import { when } from "@effex/dom";
+import { component } from "@effex/dom";
+import { UniqueId } from "@effex/dom";
+import { Portal } from "@effex/dom";
+import type { Element, Child } from "@effex/dom";
 import { getMenuNavigationState, handleMenuArrowNavigation } from "../helpers";
 
 // ============================================================================

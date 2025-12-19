@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { Effect } from "effect";
-import { Signal } from "effect-ui";
-import { $ } from "effect-ui";
+import { Signal } from "@effex/dom";
+import { $ } from "@effex/dom";
 import { Collapsible } from "./Collapsible";
 
 describe("Collapsible", () => {

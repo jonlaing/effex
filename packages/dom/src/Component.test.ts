@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { Context, Effect } from "effect";
-import { Signal } from "@core/Signal";
+import { Signal } from "@effex/core";
 import { component } from "./Component";
 import { div, button, span } from "./Element";
 import type { Element } from "./Element";

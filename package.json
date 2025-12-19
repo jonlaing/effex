@@ -1,5 +1,5 @@
 {
-  "name": "effect-ui-monorepo",
+  "name": "effex-monorepo",
   "version": "0.0.1",
   "private": true,
   "description": "A reactive UI framework built on Effect.ts primitives",
@@ -9,7 +9,7 @@
   "author": "Jon Laing",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jonlaing/effect-ui.git"
+    "url": "https://github.com/jonlaing/effex.git"
   },
   "scripts": {
     "dev": "vite",
