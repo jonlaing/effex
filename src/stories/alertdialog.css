@@ -199,7 +199,10 @@
 /* Story container */
 .alertdialog-story-container {
   padding: 20px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 /* External controls demo */

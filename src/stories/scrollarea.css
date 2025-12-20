@@ -52,12 +52,16 @@
 }
 
 /* Adjust for corner when both scrollbars present */
-[data-scrollarea-root]:has([data-scrollarea-scrollbar][data-orientation="horizontal"])
+[data-scrollarea-root]:has(
+    [data-scrollarea-scrollbar][data-orientation="horizontal"]
+  )
   [data-scrollarea-scrollbar][data-orientation="vertical"] {
   bottom: 18px;
 }
 
-[data-scrollarea-root]:has([data-scrollarea-scrollbar][data-orientation="vertical"])
+[data-scrollarea-root]:has(
+    [data-scrollarea-scrollbar][data-orientation="vertical"]
+  )
   [data-scrollarea-scrollbar][data-orientation="horizontal"] {
   right: 18px;
 }

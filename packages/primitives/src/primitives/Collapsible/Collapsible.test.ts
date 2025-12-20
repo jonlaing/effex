@@ -5,7 +5,9 @@ import { $ } from "@effex/dom";
 import { Collapsible } from "./Collapsible";
 
 const runTest = <A>(effect: Effect.Effect<A, never, any>) =>
-  Effect.runPromise(Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)));
+  Effect.runPromise(
+    Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)),
+  );
 
 describe("Collapsible", () => {
   beforeEach(() => {

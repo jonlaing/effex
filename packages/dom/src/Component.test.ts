@@ -7,7 +7,9 @@ import type { Element } from "./Element";
 import { DOMRendererLive } from "./DOMRenderer";
 
 const runTest = <A>(effect: Effect.Effect<A, never, any>) =>
-  Effect.runPromise(Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)));
+  Effect.runPromise(
+    Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)),
+  );
 
 describe("Component", () => {
   beforeEach(() => {

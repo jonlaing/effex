@@ -18,7 +18,8 @@ const makeTestReadable = <A>(value: A): Readable.Readable<A> => {
     get: Effect.sync(() => value),
     changes: Stream.empty,
     values: Stream.make(value),
-    map: <B>(f: (a: A) => B): Readable.Readable<B> => makeTestReadable(f(value)),
+    map: <B>(f: (a: A) => B): Readable.Readable<B> =>
+      makeTestReadable(f(value)),
   };
   return readable;
 };

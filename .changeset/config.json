@@ -4,7 +4,13 @@
   "commit": false,
   "fixed": [],
   "linked": [
-    ["@effex/core", "@effex/dom", "@effex/router", "@effex/form", "@effex/primitives"]
+    [
+      "@effex/core",
+      "@effex/dom",
+      "@effex/router",
+      "@effex/form",
+      "@effex/primitives"
+    ]
   ],
   "access": "public",
   "baseBranch": "main",

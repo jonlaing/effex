@@ -146,7 +146,9 @@ export const fromStream = <A>(
  */
 const getCurrentValues = <T extends readonly Readable<unknown>[]>(
   readables: T,
-): Effect.Effect<{ [K in keyof T]: T[K] extends Readable<infer A> ? A : never }> =>
+): Effect.Effect<{
+  [K in keyof T]: T[K] extends Readable<infer A> ? A : never;
+}> =>
   Effect.all(readables.map((r) => r.get)) as Effect.Effect<{
     [K in keyof T]: T[K] extends Readable<infer A> ? A : never;
   }>;

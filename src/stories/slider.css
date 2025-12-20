@@ -3,7 +3,10 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .slider-wrapper {
@@ -67,7 +70,9 @@
   cursor: grab;
   outline: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
 
 [data-slider-thumb]:hover {

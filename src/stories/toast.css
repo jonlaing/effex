@@ -64,7 +64,9 @@
   min-width: 300px;
   max-width: 400px;
   pointer-events: auto;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
   animation: toast-enter 0.3s ease-out;
 }
 
@@ -140,7 +142,9 @@
   border-radius: 4px;
   color: #9ca3af;
   cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
   font-size: 18px;
   line-height: 1;
 }
@@ -247,7 +251,10 @@
 /* Story Container */
 .toast-story-container {
   padding: 40px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   min-height: 400px;
 }
 

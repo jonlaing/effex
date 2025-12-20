@@ -1,9 +1,12 @@
 import type { Effect, Scope } from "effect";
 import type { Readable } from "@effex/core";
 import type { Ref } from "@effex/core";
+import type { Element as CoreElement } from "@effex/core";
 
 /**
  * A DOM element wrapped in an Effect with scope management.
+ * This is the DOM-specialized version that returns HTMLElement.
+ *
  * @template E - The error type (defaults to never for infallible elements)
  * @template R - The requirements/context type (defaults to never for no requirements)
  *
@@ -24,11 +27,7 @@ import type { Ref } from "@effex/core";
  * })
  * ```
  */
-export type Element<E = never, R = never> = Effect.Effect<
-  HTMLElement,
-  E,
-  Scope.Scope | R
->;
+export type Element<E = never, R = never> = CoreElement<HTMLElement, E, R>;
 
 /**
  * Valid child types for an element: strings, numbers, elements, reactive values, or arrays thereof.

@@ -6,7 +6,9 @@ import { div, li } from "./Element";
 import { DOMRendererLive } from "./DOMRenderer";
 
 const runTest = <A>(effect: Effect.Effect<A, never, any>) =>
-  Effect.runPromise(Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)));
+  Effect.runPromise(
+    Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)),
+  );
 
 describe("Control", () => {
   beforeEach(() => {
@@ -288,9 +290,7 @@ describe("Control", () => {
     it("should handle empty list", async () => {
       await runTest(
         Effect.gen(function* () {
-          const items = yield* Signal.make<{ id: string; name: string }[]>(
-            [],
-          );
+          const items = yield* Signal.make<{ id: string; name: string }[]>([]);
 
           const el = yield* each(
             items,

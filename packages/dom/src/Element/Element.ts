@@ -98,7 +98,7 @@ const appendChildren = <E, R>(
   renderer: RendererInterface<Node>,
   parent: Node,
   children: readonly Child<E, R>[],
-): Effect.Effect<void, E, Scope.Scope | R> =>
+): Effect.Effect<void, E, Scope.Scope | RendererContext | R> =>
   Effect.gen(function* () {
     const flattened = flattenChildren(children);
 
@@ -126,7 +126,11 @@ const createElement = <K extends keyof HTMLElementTagNameMap, E, R>(
   tagName: K,
   attrs: HTMLAttributes<K>,
   children: readonly Child<E, R>[],
-): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R | RendererContext> =>
+): Effect.Effect<
+  HTMLElementTagNameMap[K],
+  E,
+  Scope.Scope | R | RendererContext
+> =>
   Effect.gen(function* () {
     const renderer = (yield* RendererContext) as RendererInterface<Node>;
     const element = yield* renderer.createNode(tagName);

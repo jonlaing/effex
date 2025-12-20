@@ -1,8 +1,9 @@
-import { Duration, Effect, Scope } from "effect";
+import type { Duration, Effect, Scope } from "effect";
 import type { Element } from "./Element";
+import { suspense as coreSuspense, error as coreError } from "@effex/core";
 
 /**
- * Options for the suspense boundary.
+ * Options for the suspense boundary (DOM-specialized version).
  */
 export interface SuspenseOptions<E, R1, EF> {
   /**
@@ -91,223 +92,10 @@ export const suspense: {
 } = <E, R1 = never, EF = never>(
   options: SuspenseOptions<E, R1, EF>,
 ): Element<EF, R1> => {
-  const delayMs =
-    options.delay !== undefined ? Duration.toMillis(options.delay) : 0;
-  const hasCatch = options.catch !== undefined;
-  const hasDelay = delayMs > 0;
-
-  // Dispatch to the appropriate implementation
-  if (hasDelay && hasCatch) {
-    return suspenseWithDelayAndCatch(
-      options.render as () => Effect.Effect<HTMLElement, E, Scope.Scope | R1>,
-      options.fallback,
-      options.catch as (error: E) => Element<never, never>,
-      delayMs,
-    ) as Element<EF, R1>;
-  } else if (hasDelay) {
-    return suspenseWithDelay(
-      options.render as () => Effect.Effect<
-        HTMLElement,
-        never,
-        Scope.Scope | R1
-      >,
-      options.fallback,
-      delayMs,
-    ) as Element<EF, R1>;
-  } else if (hasCatch) {
-    return suspenseWithCatch(
-      options.render as () => Effect.Effect<HTMLElement, E, Scope.Scope | R1>,
-      options.fallback,
-      options.catch as (error: E) => Element<never, never>,
-    ) as Element<EF, R1>;
-  } else {
-    return suspenseSimple(
-      options.render as () => Effect.Effect<
-        HTMLElement,
-        never,
-        Scope.Scope | R1
-      >,
-      options.fallback,
-    ) as Element<EF, R1>;
-  }
+  // Cast to any to bypass the strict type checking on overloads
+  // The runtime behavior is correct because coreSuspense handles all cases
+  return (coreSuspense as any)(options) as Element<EF, R1>;
 };
-
-// Internal implementations
-
-const suspenseSimple = <R1 = never, EF = never>(
-  asyncRender: () => Effect.Effect<HTMLElement, never, Scope.Scope | R1>,
-  fallbackRender: () => Element<EF, never>,
-): Element<EF, R1> =>
-  Effect.gen(function* () {
-    const scope = yield* Effect.scope;
-    const container = document.createElement("div");
-    container.style.display = "contents";
-
-    const fallback = yield* fallbackRender();
-    container.appendChild(fallback);
-
-    yield* asyncRender().pipe(
-      Effect.tap((element) =>
-        Effect.sync(() => {
-          container.replaceChild(element, fallback);
-        }),
-      ),
-      Effect.forkIn(scope),
-    );
-
-    return container as HTMLElement;
-  });
-
-const suspenseWithCatch = <E, R1 = never, EF = never>(
-  asyncRender: () => Effect.Effect<HTMLElement, E, Scope.Scope | R1>,
-  fallbackRender: () => Element<EF, never>,
-  catchRender: (error: E) => Element<never, never>,
-): Element<EF, R1> =>
-  Effect.gen(function* () {
-    const scope = yield* Effect.scope;
-    const container = document.createElement("div");
-    container.style.display = "contents";
-
-    const fallback = yield* fallbackRender();
-    container.appendChild(fallback);
-
-    yield* asyncRender().pipe(
-      Effect.either,
-      Effect.tap((result) =>
-        Effect.gen(function* () {
-          if (result._tag === "Left") {
-            const errorElement = yield* catchRender(result.left);
-            container.replaceChild(errorElement, fallback);
-          } else {
-            container.replaceChild(result.right, fallback);
-          }
-        }),
-      ),
-      Effect.forkIn(scope),
-    );
-
-    return container as HTMLElement;
-  });
-
-const suspenseWithDelay = <R1 = never, EF = never>(
-  asyncRender: () => Effect.Effect<HTMLElement, never, Scope.Scope | R1>,
-  fallbackRender: () => Element<EF, never>,
-  delayMs: number,
-): Element<EF, R1> =>
-  Effect.gen(function* () {
-    const scope = yield* Effect.scope;
-    const container = document.createElement("div");
-    container.style.display = "contents";
-
-    let completed = false;
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let fallbackElement: HTMLElement | null = null;
-
-    timeoutId = setTimeout(() => {
-      if (!completed) {
-        Effect.runPromise(
-          Effect.gen(function* () {
-            fallbackElement = yield* Effect.scoped(fallbackRender());
-            if (!completed) {
-              container.appendChild(fallbackElement);
-            }
-          }),
-        );
-      }
-    }, delayMs);
-
-    yield* Effect.addFinalizer(() =>
-      Effect.sync(() => {
-        if (timeoutId !== null) {
-          clearTimeout(timeoutId);
-        }
-      }),
-    );
-
-    yield* asyncRender().pipe(
-      Effect.tap((element) =>
-        Effect.sync(() => {
-          completed = true;
-          if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-            timeoutId = null;
-          }
-          if (fallbackElement && container.contains(fallbackElement)) {
-            container.replaceChild(element, fallbackElement);
-          } else {
-            container.appendChild(element);
-          }
-        }),
-      ),
-      Effect.forkIn(scope),
-    );
-
-    return container as HTMLElement;
-  });
-
-const suspenseWithDelayAndCatch = <E, R1 = never, EF = never>(
-  asyncRender: () => Effect.Effect<HTMLElement, E, Scope.Scope | R1>,
-  fallbackRender: () => Element<EF, never>,
-  catchRender: (error: E) => Element<never, never>,
-  delayMs: number,
-): Element<EF, R1> =>
-  Effect.gen(function* () {
-    const scope = yield* Effect.scope;
-    const container = document.createElement("div");
-    container.style.display = "contents";
-
-    let completed = false;
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let fallbackElement: HTMLElement | null = null;
-
-    timeoutId = setTimeout(() => {
-      if (!completed) {
-        Effect.runPromise(
-          Effect.gen(function* () {
-            fallbackElement = yield* Effect.scoped(fallbackRender());
-            if (!completed) {
-              container.appendChild(fallbackElement);
-            }
-          }),
-        );
-      }
-    }, delayMs);
-
-    yield* Effect.addFinalizer(() =>
-      Effect.sync(() => {
-        if (timeoutId !== null) {
-          clearTimeout(timeoutId);
-        }
-      }),
-    );
-
-    yield* asyncRender().pipe(
-      Effect.either,
-      Effect.tap((result) =>
-        Effect.gen(function* () {
-          completed = true;
-          if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-            timeoutId = null;
-          }
-
-          const newElement =
-            result._tag === "Left"
-              ? yield* catchRender(result.left)
-              : result.right;
-
-          if (fallbackElement && container.contains(fallbackElement)) {
-            container.replaceChild(newElement, fallbackElement);
-          } else {
-            container.appendChild(newElement);
-          }
-        }),
-      ),
-      Effect.forkIn(scope),
-    );
-
-    return container as HTMLElement;
-  });
 
 /**
  * Error boundary that catches errors from a render function and displays a fallback element.
@@ -326,16 +114,9 @@ const suspenseWithDelayAndCatch = <E, R1 = never, EF = never>(
 export const error = <E, R1 = never, E2 = never, R2 = never>(
   tryRender: () => Effect.Effect<HTMLElement, E, Scope.Scope | R1>,
   catchRender: (error: E) => Element<E2, R2>,
-): Element<E2, R1 | R2> =>
-  Effect.gen(function* () {
-    const result = yield* tryRender().pipe(Effect.either);
-
-    if (result._tag === "Left") {
-      return yield* catchRender(result.left);
-    }
-
-    return result.right;
-  });
+): Element<E2, R1 | R2> => {
+  return coreError(tryRender, catchRender) as Element<E2, R1 | R2>;
+};
 
 /**
  * Boundary namespace for error and async handling.

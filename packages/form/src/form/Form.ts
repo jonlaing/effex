@@ -66,9 +66,8 @@ export const make = <
     >;
 
     // Get error readables from all fields
-    const errorReadables: Readable.Readable<readonly string[]>[] = allFields.map(
-      (f) => (f as Field<unknown>).errors,
-    );
+    const errorReadables: Readable.Readable<readonly string[]>[] =
+      allFields.map((f) => (f as Field<unknown>).errors);
 
     // Derive form-level errors (aggregate from all fields)
     const errors: Readable.Readable<Record<string, readonly string[]>> =
@@ -83,8 +82,9 @@ export const make = <
       );
 
     // Derive isValid from errors
-    const isValid: Readable.Readable<boolean> = yield* Derived.sync([errors], ([errs]) =>
-      hasNoErrors(errs),
+    const isValid: Readable.Readable<boolean> = yield* Derived.sync(
+      [errors],
+      ([errs]) => hasNoErrors(errs),
     );
 
     // Get touched readables from all fields

@@ -1,5 +1,9 @@
 import { Effect, Layer, Scope } from "effect";
-import { RendererContext, SignalRegistry, type RendererInterface } from "@effex/core";
+import {
+  RendererContext,
+  SignalRegistry,
+  type RendererInterface,
+} from "@effex/core";
 import type { Element } from "./Element";
 import { DOMRenderer } from "./DOMRenderer";
 
@@ -65,7 +69,10 @@ export const mount = (
 ): Effect.Effect<void, never, Scope.Scope> =>
   Effect.gen(function* () {
     const el = yield* element.pipe(
-      Effect.provideService(RendererContext, DOMRenderer as RendererInterface<unknown>),
+      Effect.provideService(
+        RendererContext,
+        DOMRenderer as RendererInterface<unknown>,
+      ),
     );
     container.appendChild(el);
 

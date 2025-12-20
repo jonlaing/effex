@@ -39,3 +39,14 @@ export { Ref } from "./Ref";
 // Renderer
 export type { Renderer as RendererInterface } from "./Renderer";
 export { Renderer, RendererContext } from "./Renderer";
+
+// Element
+export type { Element, Child } from "./Element";
+
+// Control flow
+export type { MatchCase } from "./Control";
+export { when, match, each } from "./Control";
+
+// Boundary
+export type { SuspenseOptions, BoundarySuspenseOptions } from "./Boundary";
+export { Boundary, suspense, error } from "./Boundary";

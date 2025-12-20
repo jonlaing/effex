@@ -55,10 +55,7 @@ export const Default: Story = {
               $.div(
                 { class: "scrollarea-long-content" },
                 loremParagraphs.map((text, i) =>
-                  $.div({}, [
-                    $.h3(`Section ${i + 1}`),
-                    $.p(text),
-                  ]),
+                  $.div({}, [$.h3(`Section ${i + 1}`), $.p(text)]),
                 ),
               ),
             ]),
@@ -90,10 +87,7 @@ export const AlwaysVisible: Story = {
             $.div(
               { class: "scrollarea-long-content" },
               loremParagraphs.map((text, i) =>
-                $.div({}, [
-                  $.h3(`Section ${i + 1}`),
-                  $.p(text),
-                ]),
+                $.div({}, [$.h3(`Section ${i + 1}`), $.p(text)]),
               ),
             ),
           ]),
@@ -225,10 +219,7 @@ export const ScrollOnlyType: Story = {
               $.div(
                 { class: "scrollarea-long-content" },
                 loremParagraphs.map((text, i) =>
-                  $.div({}, [
-                    $.h3(`Section ${i + 1}`),
-                    $.p(text),
-                  ]),
+                  $.div({}, [$.h3(`Section ${i + 1}`), $.p(text)]),
                 ),
               ),
             ]),
@@ -271,10 +262,7 @@ export const AutoType: Story = {
               $.div(
                 { class: "scrollarea-long-content" },
                 loremParagraphs.map((text, i) =>
-                  $.div({}, [
-                    $.h3(`Section ${i + 1}`),
-                    $.p(text),
-                  ]),
+                  $.div({}, [$.h3(`Section ${i + 1}`), $.p(text)]),
                 ),
               ),
             ]),

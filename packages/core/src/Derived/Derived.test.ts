@@ -72,16 +72,14 @@ describe("Derived.sync", () => {
           // (duplicates can occur when changes propagate through multiple paths)
           const emissions: { a: number; d1: number; sum: number }[] = [];
           const seenKeys = new Set<string>();
-          yield* Stream.runForEach(
-            derived2.values,
-            (val) =>
-              Effect.sync(() => {
-                const key = `${val.a}:${val.d1}:${val.sum}`;
-                if (!seenKeys.has(key)) {
-                  seenKeys.add(key);
-                  emissions.push(val);
-                }
-              }),
+          yield* Stream.runForEach(derived2.values, (val) =>
+            Effect.sync(() => {
+              const key = `${val.a}:${val.d1}:${val.sum}`;
+              if (!seenKeys.has(key)) {
+                seenKeys.add(key);
+                emissions.push(val);
+              }
+            }),
           ).pipe(Effect.fork);
 
           yield* Effect.sleep("50 millis");

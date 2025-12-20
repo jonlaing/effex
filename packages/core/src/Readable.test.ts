@@ -138,7 +138,6 @@ describe("Readable", () => {
   });
 
   describe("combine", () => {
-
     it("should combine empty array into empty tuple", async () => {
       const combined = Readable.combine([]);
       const result = await Effect.runPromise(combined.get);

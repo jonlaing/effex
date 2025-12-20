@@ -1,5 +1,5 @@
 import { Deferred, Effect, Exit, Scope, Stream } from "effect";
-import { mapReadable } from "@effex/core";
+import { mapReadable, RendererContext } from "@effex/core";
 import type { Readable } from "@effex/core";
 import type { Element } from "../Element";
 import { Signal } from "@effex/core";
@@ -245,7 +245,7 @@ export const virtualEach = <A, E = never, R = never>(
     const updateVisibleItems = (
       currentItems: readonly A[],
       range: VisibleRange,
-    ): Effect.Effect<void, E, R> =>
+    ): Effect.Effect<void, E, RendererContext | R> =>
       Effect.gen(function* () {
         const currentKeys = new Set(itemMap.keys());
         const newKeys = new Set<string>();

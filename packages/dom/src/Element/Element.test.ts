@@ -5,7 +5,9 @@ import { div, span, button, input, h1, p, ul, li } from "./Element";
 import { DOMRendererLive } from "../DOMRenderer";
 
 const runTest = <A>(effect: Effect.Effect<A, never, any>) =>
-  Effect.runPromise(Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)));
+  Effect.runPromise(
+    Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)),
+  );
 
 describe("Element", () => {
   beforeEach(() => {
@@ -69,7 +71,9 @@ describe("Element", () => {
     });
 
     it("should apply attributes with children", async () => {
-      const element = await runTest(div({ class: "wrapper" }, [span("content")]));
+      const element = await runTest(
+        div({ class: "wrapper" }, [span("content")]),
+      );
       expect(element.className).toBe("wrapper");
       expect(element.children.length).toBe(1);
     });

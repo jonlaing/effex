@@ -185,11 +185,15 @@ export const CustomValueLabel: Story = {
       return yield* $.div({ class: "progress-story-container" }, [
         $.div({ class: "progress-demo" }, [
           $.div({ class: "progress-demo-label" }, "Steps completed"),
-          Progress.Root({
-            value: 3,
-            max: 5,
-            getValueLabel: (value, max) => `${value} of ${max} steps completed`,
-          }, [Progress.Indicator({})]),
+          Progress.Root(
+            {
+              value: 3,
+              max: 5,
+              getValueLabel: (value, max) =>
+                `${value} of ${max} steps completed`,
+            },
+            [Progress.Indicator({})],
+          ),
           $.div({ class: "progress-demo-value" }, "3 of 5 steps"),
         ]),
       ]);
