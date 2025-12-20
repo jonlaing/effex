@@ -6,9 +6,9 @@
 
 # Function: each()
 
-> **each**\<`A`, `E`, `R`\>(`items`, `keyFn`, `render`, `options?`): [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
+> **each**\<`A`, `E`, `R`\>(`items`, `config`): [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
 
-Defined in: [packages/dom/src/Control.ts:329](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/Control.ts#L329)
+Defined in: [packages/dom/src/Control.ts:421](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L421)
 
 Render a list of items with efficient updates using keys.
 
@@ -34,23 +34,11 @@ Render a list of items with efficient updates using keys.
 
 Reactive array of items
 
-### keyFn
+### config
 
-(`item`) => `string`
+[`EachConfig`](../interfaces/EachConfig.md)\<`A`, `E`, `R`\>
 
-Function to extract a unique key from each item
-
-### render
-
-(`item`) => [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
-
-Function to render each item (receives a Readable for the item)
-
-### options?
-
-[`ListControlAnimationOptions`](../interfaces/ListControlAnimationOptions.md)
-
-Optional animation configuration
+Configuration object with key, render, optional container and animate
 
 ## Returns
 
@@ -62,25 +50,23 @@ Optional animation configuration
 interface Todo { id: string; text: string }
 const todos = yield* Signal.make<Todo[]>([])
 
-each(
-  todos,
-  (todo) => todo.id,
-  (todo) => li([todo.map(t => t.text)])
-)
+each(todos, {
+  container: () => $.ul({ class: "todo-list" }),
+  key: (todo) => todo.id,
+  render: (todo) => $.li(todo.map(t => t.text))
+})
 ```
 
 ```ts
 // With staggered animations
-each(
-  items,
-  (item) => item.id,
-  (item) => ListItem(item),
-  {
-    animate: {
-      enter: "slide-in",
-      exit: "slide-out",
-      stagger: 50  // 50ms between items
-    }
+each(items, {
+  container: () => $.ul({ class: "animated-list" }),
+  key: (item) => item.id,
+  render: (item) => ListItem(item),
+  animate: {
+    enter: "slide-in",
+    exit: "slide-out",
+    stagger: 50  // 50ms between items
   }
-)
+})
 ```

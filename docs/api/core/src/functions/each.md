@@ -6,9 +6,9 @@
 
 # Function: each()
 
-> **each**\<`A`, `N`, `E`, `R`\>(`items`, `keyFn`, `render`): [`Element`](../type-aliases/Element.md)\<`N`, `E`, `R`\>
+> **each**\<`A`, `N`, `E`, `R`\>(`items`, `config`): [`Element`](../type-aliases/Element.md)\<`N`, `E`, `R`\>
 
-Defined in: [packages/core/src/Control.ts:222](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Control.ts#L222)
+Defined in: [packages/core/src/Control.ts:320](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Control.ts#L320)
 
 Render a list of items with efficient updates using keys.
 
@@ -38,17 +38,11 @@ Render a list of items with efficient updates using keys.
 
 Reactive array of items
 
-### keyFn
+### config
 
-(`item`) => `string`
+[`EachConfig`](../interfaces/EachConfig.md)\<`A`, `N`, `E`, `R`\>
 
-Function to extract a unique key from each item
-
-### render
-
-(`item`) => [`Element`](../type-aliases/Element.md)\<`N`, `E`, `R`\>
-
-Function to render each item (receives a Readable for the item)
+Configuration object with key, render, and optional container
 
 ## Returns
 
@@ -60,9 +54,9 @@ Function to render each item (receives a Readable for the item)
 interface Todo { id: string; text: string }
 const todos = yield* Signal.make<Todo[]>([])
 
-each(
-  todos,
-  (todo) => todo.id,
-  (todo) => li([todo.map(t => t.text)])
-)
+each(todos, {
+  container: () => $.ul({ class: "todo-list" }),
+  key: (todo) => todo.id,
+  render: (todo) => $.li(todo.map(t => t.text))
+})
 ```

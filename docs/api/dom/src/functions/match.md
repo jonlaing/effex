@@ -6,13 +6,11 @@
 
 # Function: match()
 
-> **match**\<`A`, `E`, `R`, `E2`, `R2`\>(`value`, `cases`, `fallback?`, `options?`): [`Element`](../type-aliases/Element.md)\<`E` \| `E2`, `R` \| `R2`\>
+> **match**\<`A`, `E`, `R`, `E2`, `R2`\>(`value`, `config`): [`Element`](../type-aliases/Element.md)\<`E` \| `E2`, `R` \| `R2`\>
 
-Defined in: [packages/dom/src/Control.ts:187](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/Control.ts#L187)
+Defined in: [packages/dom/src/Control.ts:279](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L279)
 
 Pattern match on a reactive value and render the corresponding element.
-For async data loading, use DeferredSuspense or DeferredSuspenseWithBoundary
-inside the render function.
 
 ## Type Parameters
 
@@ -44,23 +42,11 @@ inside the render function.
 
 Reactive value to match against
 
-### cases
+### config
 
-readonly [`MatchCase`](../interfaces/MatchCase.md)\<`A`, `E`, `R`\>[]
+[`MatchConfig`](../interfaces/MatchConfig.md)\<`A`, `E`, `R`, `E2`, `R2`\>
 
-Array of pattern-render pairs
-
-### fallback?
-
-() => [`Element`](../type-aliases/Element.md)\<`E2`, `R2`\>
-
-Optional fallback if no pattern matches
-
-### options?
-
-[`ControlAnimationOptions`](../interfaces/ControlAnimationOptions.md)
-
-Optional animation configuration
+Configuration object with cases, optional fallback, container and animate
 
 ## Returns
 
@@ -69,22 +55,26 @@ Optional animation configuration
 ## Examples
 
 ```ts
-// Simple matching
 type Status = "loading" | "success" | "error"
 const status = yield* Signal.make<Status>("loading")
 
-match(status, [
-  { pattern: "loading", render: () => div("Loading...") },
-  { pattern: "success", render: () => div("Done!") },
-  { pattern: "error", render: () => div("Failed") },
-])
+match(status, {
+  cases: [
+    { pattern: "loading", render: () => $.div("Loading...") },
+    { pattern: "success", render: () => $.div("Done!") },
+    { pattern: "error", render: () => $.div("Failed") },
+  ]
+})
 ```
 
 ```ts
-// With animations
-match(status, [
-  { pattern: "loading", render: () => Spinner() },
-  { pattern: "success", render: () => SuccessMessage() },
-  { pattern: "error", render: () => ErrorMessage() },
-], undefined, { animate: { enter: "fade-in", exit: "fade-out" } })
+// With fallback and animations
+match(status, {
+  cases: [
+    { pattern: "loading", render: () => Spinner() },
+    { pattern: "success", render: () => SuccessMessage() },
+  ],
+  fallback: () => $.div("Unknown status"),
+  animate: { enter: "fade-in", exit: "fade-out" }
+})
 ```

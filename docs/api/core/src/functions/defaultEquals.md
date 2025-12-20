@@ -8,7 +8,7 @@
 
 > **defaultEquals**\<`A`\>(`a`, `b`): `boolean`
 
-Defined in: [packages/core/src/Derived/helpers.ts:8](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Derived/helpers.ts#L8)
+Defined in: [packages/core/src/Derived/helpers.ts:8](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Derived/helpers.ts#L8)
 
 Default equality function using strict equality.
 

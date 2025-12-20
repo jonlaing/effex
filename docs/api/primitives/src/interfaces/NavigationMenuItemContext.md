@@ -6,7 +6,7 @@
 
 # Interface: NavigationMenuItemContext
 
-Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:49](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L49)
+Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:49](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L49)
 
 Context for individual navigation menu items.
 
@@ -16,7 +16,7 @@ Context for individual navigation menu items.
 
 > `readonly` **contentId**: `string`
 
-Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:57](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L57)
+Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:57](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L57)
 
 Content ID for ARIA
 
@@ -26,7 +26,7 @@ Content ID for ARIA
 
 > `readonly` **isActive**: [`Readable`](../../../core/src/namespaces/Readable/interfaces/Readable.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:53](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L53)
+Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:53](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L53)
 
 Whether this item is currently active
 
@@ -36,7 +36,7 @@ Whether this item is currently active
 
 > `readonly` **itemId**: `string`
 
-Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:51](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L51)
+Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:51](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L51)
 
 Unique ID for this item
 
@@ -46,6 +46,6 @@ Unique ID for this item
 
 > `readonly` **triggerRef**: [`RefType`](../../../core/src/type-aliases/RefType.md)\<`HTMLButtonElement`\>
 
-Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:55](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L55)
+Defined in: [packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts:55](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/NavigationMenu/NavigationMenu.ts#L55)
 
 Reference to the trigger button

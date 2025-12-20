@@ -6,7 +6,7 @@
 
 # Interface: ContextMenuRootProps
 
-Defined in: [packages/primitives/src/primitives/ContextMenu/ContextMenu.ts:38](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/ContextMenu/ContextMenu.ts#L38)
+Defined in: [packages/primitives/src/primitives/ContextMenu/ContextMenu.ts:38](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/ContextMenu/ContextMenu.ts#L38)
 
 Props for ContextMenu.Root
 
@@ -16,7 +16,7 @@ Props for ContextMenu.Root
 
 > `readonly` `optional` **onOpenChange**: (`open`) => `Effect`\<`void`\>
 
-Defined in: [packages/primitives/src/primitives/ContextMenu/ContextMenu.ts:42](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/ContextMenu/ContextMenu.ts#L42)
+Defined in: [packages/primitives/src/primitives/ContextMenu/ContextMenu.ts:42](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/ContextMenu/ContextMenu.ts#L42)
 
 Callback when open state changes
 
@@ -36,6 +36,6 @@ Callback when open state changes
 
 > `readonly` `optional` **open**: [`Signal`](../../../core/src/interfaces/Signal.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/ContextMenu/ContextMenu.ts:40](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/ContextMenu/ContextMenu.ts#L40)
+Defined in: [packages/primitives/src/primitives/ContextMenu/ContextMenu.ts:40](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/ContextMenu/ContextMenu.ts#L40)
 
 Controlled open state

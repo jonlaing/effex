@@ -6,9 +6,9 @@
 
 # Function: when()
 
-> **when**\<`E1`, `R1`, `E2`, `R2`\>(`condition`, `onTrue`, `onFalse`, `options?`): [`Element`](../type-aliases/Element.md)\<`E1` \| `E2`, `R1` \| `R2`\>
+> **when**\<`E1`, `R1`, `E2`, `R2`\>(`condition`, `config`): [`Element`](../type-aliases/Element.md)\<`E1` \| `E2`, `R1` \| `R2`\>
 
-Defined in: [packages/dom/src/Control.ts:62](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/Control.ts#L62)
+Defined in: [packages/dom/src/Control.ts:147](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L147)
 
 Conditionally render one of two elements based on a reactive boolean.
 
@@ -38,23 +38,11 @@ Conditionally render one of two elements based on a reactive boolean.
 
 Reactive boolean value
 
-### onTrue
+### config
 
-() => [`Element`](../type-aliases/Element.md)\<`E1`, `R1`\>
+[`WhenConfig`](../interfaces/WhenConfig.md)\<`E1`, `R1`, `E2`, `R2`\>
 
-Element to render when true
-
-### onFalse
-
-() => [`Element`](../type-aliases/Element.md)\<`E2`, `R2`\>
-
-Element to render when false
-
-### options?
-
-[`ControlAnimationOptions`](../interfaces/ControlAnimationOptions.md)
-
-Optional animation configuration
+Configuration object with onTrue, onFalse, optional container and animate
 
 ## Returns
 
@@ -64,19 +52,27 @@ Optional animation configuration
 
 ```ts
 const isLoggedIn = yield* Signal.make(false)
-when(
-  isLoggedIn,
-  () => div(["Welcome back!"]),
-  () => div(["Please log in"])
-)
+
+when(isLoggedIn, {
+  onTrue: () => $.div("Welcome back!"),
+  onFalse: () => $.div("Please log in")
+})
+```
+
+```ts
+// With custom container for valid HTML in tables
+when(hasData, {
+  container: () => $.tbody({ class: "data-rows" }),
+  onTrue: () => $.tr($.td("Data row")),
+  onFalse: () => $.tr($.td("No data"))
+})
 ```
 
 ```ts
 // With animations
-when(
-  isVisible,
-  () => Modal(),
-  () => div(),
-  { animate: { enter: "fade-in", exit: "fade-out" } }
-)
+when(isVisible, {
+  onTrue: () => Modal(),
+  onFalse: () => $.div(),
+  animate: { enter: "fade-in", exit: "fade-out" }
+})
 ```

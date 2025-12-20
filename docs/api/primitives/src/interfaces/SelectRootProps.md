@@ -6,7 +6,7 @@
 
 # Interface: SelectRootProps
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:67](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L67)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:67](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L67)
 
 Props for Select.Root
 
@@ -16,7 +16,7 @@ Props for Select.Root
 
 > `readonly` `optional` **defaultOpen**: `boolean`
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:75](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L75)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:75](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L75)
 
 Default open state
 
@@ -26,7 +26,7 @@ Default open state
 
 > `readonly` `optional` **defaultValue**: `string`
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:71](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L71)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:71](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L71)
 
 Default value for uncontrolled usage
 
@@ -36,7 +36,7 @@ Default value for uncontrolled usage
 
 > `readonly` `optional` **disabled**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:81](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L81)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:81](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L81)
 
 Whether the select is disabled
 
@@ -46,7 +46,7 @@ Whether the select is disabled
 
 > `readonly` `optional` **onOpenChange**: (`open`) => `Effect`\<`void`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:79](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L79)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:79](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L79)
 
 Callback when open state changes
 
@@ -66,7 +66,7 @@ Callback when open state changes
 
 > `readonly` `optional` **onValueChange**: (`value`) => `Effect`\<`void`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:77](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L77)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:77](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L77)
 
 Callback when value changes
 
@@ -86,7 +86,7 @@ Callback when value changes
 
 > `readonly` `optional` **open**: [`Signal`](../../../core/src/interfaces/Signal.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:73](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L73)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:73](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L73)
 
 Controlled open state
 
@@ -96,7 +96,7 @@ Controlled open state
 
 > `readonly` `optional` **placeholder**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`string`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:83](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L83)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:83](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L83)
 
 Placeholder text
 
@@ -106,6 +106,6 @@ Placeholder text
 
 > `readonly` `optional` **value**: [`Signal`](../../../core/src/interfaces/Signal.md)\<`string`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:69](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L69)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:69](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L69)
 
 Controlled value

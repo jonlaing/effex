@@ -6,7 +6,7 @@
 
 # Interface: ComboboxItemContext
 
-Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:104](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Combobox/Combobox.ts#L104)
+Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:104](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Combobox/Combobox.ts#L104)
 
 Context for Combobox.Item children.
 
@@ -16,7 +16,7 @@ Context for Combobox.Item children.
 
 > `readonly` **disabled**: [`Readable`](../../../core/src/namespaces/Readable/interfaces/Readable.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:112](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Combobox/Combobox.ts#L112)
+Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:112](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Combobox/Combobox.ts#L112)
 
 Whether this item is disabled
 
@@ -26,7 +26,7 @@ Whether this item is disabled
 
 > `readonly` **isHighlighted**: [`Readable`](../../../core/src/namespaces/Readable/interfaces/Readable.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:110](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Combobox/Combobox.ts#L110)
+Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:110](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Combobox/Combobox.ts#L110)
 
 Whether this item is highlighted
 
@@ -36,7 +36,7 @@ Whether this item is highlighted
 
 > `readonly` **isSelected**: [`Readable`](../../../core/src/namespaces/Readable/interfaces/Readable.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:108](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Combobox/Combobox.ts#L108)
+Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:108](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Combobox/Combobox.ts#L108)
 
 Whether this item is selected
 
@@ -46,7 +46,7 @@ Whether this item is selected
 
 > `readonly` **itemValue**: `string`
 
-Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:106](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Combobox/Combobox.ts#L106)
+Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:106](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Combobox/Combobox.ts#L106)
 
 The item's value
 
@@ -56,7 +56,7 @@ The item's value
 
 > `readonly` **setTextValue**: (`text`) => `Effect`\<`void`\>
 
-Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:114](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Combobox/Combobox.ts#L114)
+Defined in: [packages/primitives/src/primitives/Combobox/Combobox.ts:114](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Combobox/Combobox.ts#L114)
 
 Set the text value for this item
 

@@ -8,7 +8,7 @@
 
 > **Component**\<`Name`, `Props`, `E`, `R`\> = `object` & `IsEmptyProps`\<`Props`\> *extends* `true` ? \{(): [`Element`](Element.md)\<`E`, `R`\>; \<`CE`, `CR`\>(`children`): [`Element`](Element.md)\<`CE` \| `E`, `CR` \| `R`\>; (`props`): [`Element`](Element.md)\<`E`, `R`\>; \<`CE`, `CR`\>(`props`, `children`): [`Element`](Element.md)\<`CE` \| `E`, `CR` \| `R`\>; \} : \{(`props`): [`Element`](Element.md)\<`E`, `R`\>; \<`CE`, `CR`\>(`props`, `children`): [`Element`](Element.md)\<`E` \| `CE`, `R` \| `CR`\>; \}
 
-Defined in: [packages/dom/src/Component.ts:40](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/Component.ts#L40)
+Defined in: [packages/dom/src/Component.ts:40](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Component.ts#L40)
 
 A named component function that renders props to an Element.
 Supports multiple call signatures similar to element factories.

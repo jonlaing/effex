@@ -8,7 +8,7 @@
 
 > `const` **Tooltip**: `object`
 
-Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:294](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L294)
+Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:293](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L293)
 
 Headless Tooltip primitive for building accessible hover hints.
 

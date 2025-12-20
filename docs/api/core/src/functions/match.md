@@ -6,9 +6,9 @@
 
 # Function: match()
 
-> **match**\<`A`, `N`, `E`, `R`, `E2`, `R2`\>(`value`, `cases`, `fallback?`): [`Element`](../type-aliases/Element.md)\<`N`, `E` \| `E2`, `R` \| `R2`\>
+> **match**\<`A`, `N`, `E`, `R`, `E2`, `R2`\>(`value`, `config`): [`Element`](../type-aliases/Element.md)\<`N`, `E` \| `E2`, `R` \| `R2`\>
 
-Defined in: [packages/core/src/Control.ts:122](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Control.ts#L122)
+Defined in: [packages/core/src/Control.ts:219](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Control.ts#L219)
 
 Pattern match on a reactive value and render the corresponding element.
 
@@ -46,31 +46,37 @@ Pattern match on a reactive value and render the corresponding element.
 
 Reactive value to match against
 
-### cases
+### config
 
-readonly [`MatchCase`](../interfaces/MatchCase.md)\<`A`, `N`, `E`, `R`\>[]
+[`MatchConfig`](../interfaces/MatchConfig.md)\<`A`, `N`, `E`, `R`, `E2`, `R2`\>
 
-Array of pattern-render pairs
-
-### fallback?
-
-() => [`Element`](../type-aliases/Element.md)\<`N`, `E2`, `R2`\>
-
-Optional fallback if no pattern matches
+Configuration object with cases, optional fallback, and optional container
 
 ## Returns
 
 [`Element`](../type-aliases/Element.md)\<`N`, `E` \| `E2`, `R` \| `R2`\>
 
-## Example
+## Examples
 
 ```ts
 type Status = "loading" | "success" | "error"
 const status = yield* Signal.make<Status>("loading")
 
-match(status, [
-  { pattern: "loading", render: () => div("Loading...") },
-  { pattern: "success", render: () => div("Done!") },
-  { pattern: "error", render: () => div("Failed") },
-])
+match(status, {
+  cases: [
+    { pattern: "loading", render: () => $.div("Loading...") },
+    { pattern: "success", render: () => $.div("Done!") },
+    { pattern: "error", render: () => $.div("Failed") },
+  ]
+})
+```
+
+```ts
+// With fallback
+match(status, {
+  cases: [
+    { pattern: "loading", render: () => Spinner() },
+  ],
+  fallback: () => $.div("Unknown status")
+})
 ```

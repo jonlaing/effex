@@ -10,18 +10,19 @@
 
 - [AnimationOptions](interfaces/AnimationOptions.md)
 - [BaseAttributes](interfaces/BaseAttributes.md)
-- [ControlAnimationOptions](interfaces/ControlAnimationOptions.md)
+- [EachConfig](interfaces/EachConfig.md)
 - [EventAttributes](interfaces/EventAttributes.md)
 - [FocusTrapOptions](interfaces/FocusTrapOptions.md)
 - [ListAnimationOptions](interfaces/ListAnimationOptions.md)
-- [ListControlAnimationOptions](interfaces/ListControlAnimationOptions.md)
 - [MatchCase](interfaces/MatchCase.md)
+- [MatchConfig](interfaces/MatchConfig.md)
 - [PortalOptions](interfaces/PortalOptions.md)
 - [SuspenseOptions](interfaces/SuspenseOptions.md)
 - [VirtualEachOptions](interfaces/VirtualEachOptions.md)
 - [VirtualListControl](interfaces/VirtualListControl.md)
 - [VirtualListRefType](interfaces/VirtualListRefType.md)
 - [VisibleRange](interfaces/VisibleRange.md)
+- [WhenConfig](interfaces/WhenConfig.md)
 
 ## Type Aliases
 
@@ -30,6 +31,7 @@
 - [Child](type-aliases/Child.md)
 - [Children](type-aliases/Children.md)
 - [Component](type-aliases/Component.md)
+- [ControlAnimationOptions](type-aliases/ControlAnimationOptions.md)
 - [Element](type-aliases/Element.md)
 - [ElementFactory](type-aliases/ElementFactory.md)
 - [EventHandler](type-aliases/EventHandler.md)
@@ -165,6 +167,12 @@ Re-exports [fromStream](../../core/src/functions/fromStream.md)
 ### isReadable
 
 Re-exports [isReadable](../../core/src/functions/isReadable.md)
+
+***
+
+### ListControlAnimationOptions
+
+Renames and re-exports [ControlAnimationOptions](type-aliases/ControlAnimationOptions.md)
 
 ***
 

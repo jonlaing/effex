@@ -6,7 +6,7 @@
 
 # Interface: RefType\<A\>
 
-Defined in: [packages/core/src/Ref.ts:8](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Ref.ts#L8)
+Defined in: [packages/core/src/Ref.ts:8](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Ref.ts#L8)
 
 A mutable reference that may not have a value yet.
 Similar to React's useRef but with Effect integration.
@@ -25,7 +25,7 @@ The type of value held by the ref
 
 > **current**: `A` \| `null`
 
-Defined in: [packages/core/src/Ref.ts:10](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Ref.ts#L10)
+Defined in: [packages/core/src/Ref.ts:10](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Ref.ts#L10)
 
 The current value, or null if not yet set
 
@@ -35,7 +35,7 @@ The current value, or null if not yet set
 
 > `readonly` **set**: (`value`) => `void`
 
-Defined in: [packages/core/src/Ref.ts:14](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Ref.ts#L14)
+Defined in: [packages/core/src/Ref.ts:14](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Ref.ts#L14)
 
 Set the value (also completes the deferred)
 
@@ -55,6 +55,6 @@ Set the value (also completes the deferred)
 
 > `readonly` **value**: `Effect`\<`A`\>
 
-Defined in: [packages/core/src/Ref.ts:12](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Ref.ts#L12)
+Defined in: [packages/core/src/Ref.ts:12](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Ref.ts#L12)
 
 Effect that resolves when the value is available

@@ -6,7 +6,7 @@
 
 # Interface: ToastItemContext
 
-Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:77](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Toast/Toast.ts#L77)
+Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:77](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Toast/Toast.ts#L77)
 
 Per-toast context provided by Root.
 
@@ -16,7 +16,7 @@ Per-toast context provided by Root.
 
 > `readonly` **dismiss**: () => `Effect`\<`void`\>
 
-Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:81](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Toast/Toast.ts#L81)
+Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:81](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Toast/Toast.ts#L81)
 
 Dismiss this toast
 
@@ -30,7 +30,7 @@ Dismiss this toast
 
 > `readonly` **pauseTimer**: () => `void`
 
-Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:83](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Toast/Toast.ts#L83)
+Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:83](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Toast/Toast.ts#L83)
 
 Pause auto-dismiss timer
 
@@ -44,7 +44,7 @@ Pause auto-dismiss timer
 
 > `readonly` **resumeTimer**: () => `void`
 
-Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:85](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Toast/Toast.ts#L85)
+Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:85](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Toast/Toast.ts#L85)
 
 Resume auto-dismiss timer
 
@@ -58,6 +58,6 @@ Resume auto-dismiss timer
 
 > `readonly` **toast**: [`ToastData`](ToastData.md)
 
-Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:79](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Toast/Toast.ts#L79)
+Defined in: [packages/primitives/src/primitives/Toast/Toast.ts:79](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Toast/Toast.ts#L79)
 
 This toast's data

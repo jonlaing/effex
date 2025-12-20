@@ -6,7 +6,7 @@
 
 # Interface: VirtualListControl
 
-Defined in: [packages/dom/src/VirtualList/types.ts:17](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/VirtualList/types.ts#L17)
+Defined in: [packages/dom/src/VirtualList/types.ts:17](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/VirtualList/types.ts#L17)
 
 Control interface for a virtual list, accessible via ref.
 
@@ -16,7 +16,7 @@ Control interface for a virtual list, accessible via ref.
 
 > `readonly` **scrollTo**: (`index`, `behavior?`) => `Effect`\<`void`\>
 
-Defined in: [packages/dom/src/VirtualList/types.ts:19](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/VirtualList/types.ts#L19)
+Defined in: [packages/dom/src/VirtualList/types.ts:19](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/VirtualList/types.ts#L19)
 
 Scroll to bring a specific item index into view
 
@@ -40,7 +40,7 @@ Scroll to bring a specific item index into view
 
 > `readonly` **scrollToBottom**: (`behavior?`) => `Effect`\<`void`\>
 
-Defined in: [packages/dom/src/VirtualList/types.ts:26](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/VirtualList/types.ts#L26)
+Defined in: [packages/dom/src/VirtualList/types.ts:26](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/VirtualList/types.ts#L26)
 
 Scroll to the bottom of the list
 
@@ -60,7 +60,7 @@ Scroll to the bottom of the list
 
 > `readonly` **scrollToTop**: (`behavior?`) => `Effect`\<`void`\>
 
-Defined in: [packages/dom/src/VirtualList/types.ts:24](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/VirtualList/types.ts#L24)
+Defined in: [packages/dom/src/VirtualList/types.ts:24](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/VirtualList/types.ts#L24)
 
 Scroll to the top of the list
 
@@ -80,7 +80,7 @@ Scroll to the top of the list
 
 > `readonly` **totalItems**: [`Readable`](../../../core/src/interfaces/Readable.md)\<`number`\>
 
-Defined in: [packages/dom/src/VirtualList/types.ts:30](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/VirtualList/types.ts#L30)
+Defined in: [packages/dom/src/VirtualList/types.ts:30](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/VirtualList/types.ts#L30)
 
 Total number of items
 
@@ -90,6 +90,6 @@ Total number of items
 
 > `readonly` **visibleRange**: [`Readable`](../../../core/src/interfaces/Readable.md)\<[`VisibleRange`](VisibleRange.md)\>
 
-Defined in: [packages/dom/src/VirtualList/types.ts:28](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/VirtualList/types.ts#L28)
+Defined in: [packages/dom/src/VirtualList/types.ts:28](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/VirtualList/types.ts#L28)
 
 Currently visible range of items

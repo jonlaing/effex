@@ -8,7 +8,7 @@
 
 > **virtualEach**\<`A`, `E`, `R`\>(`items`, `options`): [`Element`](../type-aliases/Element.md)\<`E`, `R`\>
 
-Defined in: [packages/dom/src/VirtualList/VirtualList.ts:103](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/dom/src/VirtualList/VirtualList.ts#L103)
+Defined in: [packages/dom/src/VirtualList/VirtualList.ts:103](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/VirtualList/VirtualList.ts#L103)
 
 Render a virtualized list of items, only rendering items visible in the viewport.
 Ideal for large lists (1000+ items) where rendering all items would be too slow.

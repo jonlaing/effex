@@ -6,7 +6,7 @@
 
 # Interface: SelectItemContext
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:53](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L53)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:53](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L53)
 
 Context for Select.Item
 
@@ -16,7 +16,7 @@ Context for Select.Item
 
 > `readonly` **disabled**: [`Readable`](../../../core/src/namespaces/Readable/interfaces/Readable.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:59](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L59)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:59](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L59)
 
 Whether this item is disabled
 
@@ -26,7 +26,7 @@ Whether this item is disabled
 
 > `readonly` **isSelected**: [`Readable`](../../../core/src/namespaces/Readable/interfaces/Readable.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:57](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L57)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:57](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L57)
 
 Whether this item is selected
 
@@ -36,7 +36,7 @@ Whether this item is selected
 
 > `readonly` **itemValue**: `string`
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:55](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L55)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:55](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L55)
 
 The value of this item
 
@@ -46,7 +46,7 @@ The value of this item
 
 > `readonly` **setTextValue**: (`text`) => `Effect`\<`void`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:61](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L61)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:61](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L61)
 
 Register display text for this item (called by ItemText with string children)
 

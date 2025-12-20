@@ -6,7 +6,7 @@
 
 # Interface: SelectContentProps
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:107](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L107)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:107](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L107)
 
 Props for Select.Content
 
@@ -16,7 +16,7 @@ Props for Select.Content
 
 > `readonly` `optional` **align**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`"center"` \| `"start"` \| `"end"`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:113](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L113)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:113](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L113)
 
 Alignment along the side axis (default: "start")
 
@@ -26,7 +26,7 @@ Alignment along the side axis (default: "start")
 
 > `readonly` `optional` **class**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`string`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:109](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L109)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:109](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L109)
 
 Additional class names
 
@@ -36,7 +36,7 @@ Additional class names
 
 > `readonly` `optional` **side**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`"top"` \| `"bottom"`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:111](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L111)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:111](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L111)
 
 Positioning side relative to trigger (default: "bottom")
 
@@ -46,6 +46,6 @@ Positioning side relative to trigger (default: "bottom")
 
 > `readonly` `optional` **sideOffset**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`number`\>
 
-Defined in: [packages/primitives/src/primitives/Select/Select.ts:115](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Select/Select.ts#L115)
+Defined in: [packages/primitives/src/primitives/Select/Select.ts:115](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Select/Select.ts#L115)
 
 Gap between trigger and content in pixels (default: 4)

@@ -6,7 +6,7 @@
 
 # Interface: TooltipRootProps
 
-Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:34](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L34)
+Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:34](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L34)
 
 Props for Tooltip.Root
 
@@ -16,7 +16,7 @@ Props for Tooltip.Root
 
 > `readonly` `optional` **defaultOpen**: `boolean`
 
-Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:38](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L38)
+Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:38](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L38)
 
 Default open state for uncontrolled usage
 
@@ -26,7 +26,7 @@ Default open state for uncontrolled usage
 
 > `readonly` `optional` **delayDuration**: `number`
 
-Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:40](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L40)
+Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:40](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L40)
 
 Delay before showing tooltip in ms (default: 700)
 
@@ -36,7 +36,7 @@ Delay before showing tooltip in ms (default: 700)
 
 > `readonly` `optional` **onOpenChange**: (`open`) => `Effect`\<`void`\>
 
-Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:42](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L42)
+Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:42](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L42)
 
 Callback when open state changes
 
@@ -56,6 +56,6 @@ Callback when open state changes
 
 > `readonly` `optional` **open**: [`Signal`](../../../core/src/interfaces/Signal.md)\<`boolean`\>
 
-Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:36](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L36)
+Defined in: [packages/primitives/src/primitives/Tooltip/Tooltip.ts:36](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Tooltip/Tooltip.ts#L36)
 
 Controlled open state - if provided, component is controlled

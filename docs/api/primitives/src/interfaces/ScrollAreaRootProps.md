@@ -6,7 +6,7 @@
 
 # Interface: ScrollAreaRootProps
 
-Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:94](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L94)
+Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:94](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L94)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:94](htt
 
 > `readonly` `optional` **class**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`string`\>
 
-Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:100](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L100)
+Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:100](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L100)
 
 Additional class names
 
@@ -24,7 +24,7 @@ Additional class names
 
 > `readonly` `optional` **scrollHideDelay**: `number`
 
-Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:98](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L98)
+Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:98](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L98)
 
 Delay before hiding scrollbars (ms)
 
@@ -34,6 +34,6 @@ Delay before hiding scrollbars (ms)
 
 > `readonly` `optional` **type**: [`ScrollAreaType`](../type-aliases/ScrollAreaType.md)
 
-Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:96](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L96)
+Defined in: [packages/primitives/src/primitives/ScrollArea/ScrollArea.ts:96](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/ScrollArea/ScrollArea.ts#L96)
 
 Scrollbar visibility behavior

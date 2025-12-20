@@ -6,9 +6,9 @@
 
 # Function: when()
 
-> **when**\<`N`, `E1`, `R1`, `E2`, `R2`\>(`condition`, `onTrue`, `onFalse`): [`Element`](../type-aliases/Element.md)\<`N`, `E1` \| `E2`, `R1` \| `R2`\>
+> **when**\<`N`, `E1`, `R1`, `E2`, `R2`\>(`condition`, `config`): [`Element`](../type-aliases/Element.md)\<`N`, `E1` \| `E2`, `R1` \| `R2`\>
 
-Defined in: [packages/core/src/Control.ts:23](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/core/src/Control.ts#L23)
+Defined in: [packages/core/src/Control.ts:115](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Control.ts#L115)
 
 Conditionally render one of two elements based on a reactive boolean.
 
@@ -42,29 +42,32 @@ Conditionally render one of two elements based on a reactive boolean.
 
 Reactive boolean value
 
-### onTrue
+### config
 
-() => [`Element`](../type-aliases/Element.md)\<`N`, `E1`, `R1`\>
+[`WhenConfig`](../interfaces/WhenConfig.md)\<`N`, `E1`, `R1`, `E2`, `R2`\>
 
-Element to render when true
-
-### onFalse
-
-() => [`Element`](../type-aliases/Element.md)\<`N`, `E2`, `R2`\>
-
-Element to render when false
+Configuration object with onTrue, onFalse, and optional container
 
 ## Returns
 
 [`Element`](../type-aliases/Element.md)\<`N`, `E1` \| `E2`, `R1` \| `R2`\>
 
-## Example
+## Examples
 
 ```ts
 const isLoggedIn = yield* Signal.make(false)
-when(
-  isLoggedIn,
-  () => div(["Welcome back!"]),
-  () => div(["Please log in"])
-)
+
+when(isLoggedIn, {
+  onTrue: () => $.div("Welcome back!"),
+  onFalse: () => $.div("Please log in")
+})
+```
+
+```ts
+// With custom container for valid HTML in tables
+when(hasData, {
+  container: () => $.tbody({ class: "data-rows" }),
+  onTrue: () => $.tr($.td("Data row")),
+  onFalse: () => $.tr($.td("No data"))
+})
 ```

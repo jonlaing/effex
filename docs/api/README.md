@@ -421,17 +421,16 @@ yield* $.button({ onClick: handleClick }, "Click me");
 Conditionally render elements:
 
 ```ts
-when(
-  isLoggedIn,
-  () => $.div("Welcome back!"),
-  () => $.div("Please log in"),
-);
+when(isLoggedIn, {
+  onTrue: () => $.div("Welcome back!"),
+  onFalse: () => $.div("Please log in"),
+});
 
-each(
-  todos,
-  (todo) => todo.id,
-  (todo) => $.li(todo.map((t) => t.text)),
-);
+each(todos, {
+  container: () => $.ul({ class: "todo-list" }),
+  key: (todo) => todo.id,
+  render: (todo) => $.li(todo.map((t) => t.text)),
+});
 ```
 
 ### Context
@@ -558,29 +557,31 @@ const fetchUser = (id: string) =>
   });
 
 // In your app
-match(router.currentRoute, [
-  // Simple route
-  {
-    pattern: "home",
-    render: () => HomePage(),
-  },
-  // Route with async data
-  {
-    pattern: "user",
-    render: () =>
-      Boundary.suspense({
-        render: () =>
-          Effect.gen(function* () {
-            const params = yield* router.routes.user.params.get;
-            const user = yield* fetchUser(params.id);
-            return yield* UserPage({ user });
-          }),
-        fallback: () => $.div("Loading user..."),
-        catch: (error) => $.div(`Error: ${error}`),
-        delay: "200 millis", // Only show loading after 200ms
-      }),
-  },
-]);
+match(router.currentRoute, {
+  cases: [
+    // Simple route
+    {
+      pattern: "home",
+      render: () => HomePage(),
+    },
+    // Route with async data
+    {
+      pattern: "user",
+      render: () =>
+        Boundary.suspense({
+          render: () =>
+            Effect.gen(function* () {
+              const params = yield* router.routes.user.params.get;
+              const user = yield* fetchUser(params.id);
+              return yield* UserPage({ user });
+            }),
+          fallback: () => $.div("Loading user..."),
+          catch: (error) => $.div(`Error: ${error}`),
+          delay: "200 millis", // Only show loading after 200ms
+        }),
+    },
+  ],
+});
 ```
 
 `Boundary.suspense` options:
@@ -638,15 +639,14 @@ const LoginForm = component("LoginForm", () =>
           onBlur: () => form.fields.email.touch(),
         }),
         // Show errors when field is touched
-        when(
-          form.fields.email.errors.map((errs) => errs.length > 0),
-          () =>
+        when(form.fields.email.errors.map((errs) => errs.length > 0), {
+          onTrue: () =>
             $.span(
               { class: "error" },
               form.fields.email.errors.map((e) => e[0] ?? ""),
             ),
-          () => $.span(),
-        ),
+          onFalse: () => $.span(),
+        }),
       ]),
       $.div([
         $.label("Password"),
@@ -659,15 +659,14 @@ const LoginForm = component("LoginForm", () =>
             ),
           onBlur: () => form.fields.password.touch(),
         }),
-        when(
-          form.fields.password.errors.map((errs) => errs.length > 0),
-          () =>
+        when(form.fields.password.errors.map((errs) => errs.length > 0), {
+          onTrue: () =>
             $.span(
               { class: "error" },
               form.fields.password.errors.map((e) => e[0] ?? ""),
             ),
-          () => $.span(),
-        ),
+          onFalse: () => $.span(),
+        }),
       ]),
       $.button(
         {
@@ -697,51 +696,44 @@ Effex provides CSS-based animation primitives for `when`, `match`, and `each` co
 import { when, each, match, stagger } from "@effex/dom";
 
 // Simple enter/exit animations
-when(
-  isVisible,
-  () => Modal(),
-  () => $.span(),
-  { animate: { enter: "fade-in", exit: "fade-out" } },
-);
+when(isVisible, {
+  onTrue: () => Modal(),
+  onFalse: () => $.span(),
+  animate: { enter: "fade-in", exit: "fade-out" },
+});
 
 // With initial and final state classes (great for Tailwind)
-when(
-  isOpen,
-  () => Dropdown(),
-  () => $.span(),
-  {
-    animate: {
-      enterFrom: "opacity-0 scale-95",
-      enterTo: "opacity-100 scale-100",
-      exit: "fade-out",
-    },
+when(isOpen, {
+  onTrue: () => Dropdown(),
+  onFalse: () => $.span(),
+  animate: {
+    enterFrom: "opacity-0 scale-95",
+    enterTo: "opacity-100 scale-100",
+    exit: "fade-out",
   },
-);
+});
 
 // Staggered list animations
-each(
-  items,
-  (item) => item.id,
-  (item) => ListItem(item),
-  {
-    animate: {
-      enter: "slide-in",
-      exit: "slide-out",
-      stagger: stagger(50), // 50ms between items
-    },
+each(items, {
+  container: () => $.ul(),
+  key: (item) => item.id,
+  render: (item) => ListItem(item),
+  animate: {
+    enter: "slide-in",
+    exit: "slide-out",
+    stagger: stagger(50), // 50ms between items
   },
-);
+});
 
 // Route transitions with match
-match(
-  router.currentRoute,
-  [
+match(router.currentRoute, {
+  cases: [
     { pattern: "home", render: () => HomePage() },
     { pattern: "about", render: () => AboutPage() },
   ],
-  () => NotFound(),
-  { animate: { enter: "fade-in", exit: "fade-out" } },
-);
+  fallback: () => NotFound(),
+  animate: { enter: "fade-in", exit: "fade-out" },
+});
 ```
 
 **Animation Options:**
@@ -908,9 +900,8 @@ const Modal = component(
     onClose: () => void;
     children: () => Element;
   }) =>
-    when(
-      props.isOpen,
-      () =>
+    when(props.isOpen, {
+      onTrue: () =>
         Portal(() =>
           $.div({ class: "modal-overlay", onClick: props.onClose }, [
             $.div(
@@ -925,8 +916,8 @@ const Modal = component(
             ),
           ]),
         ),
-      () => $.span(),
-    ),
+      onFalse: () => $.span(),
+    }),
 );
 ```
 
@@ -964,7 +955,7 @@ The function-based API is already quite clean for UI structure, and deeply neste
 
 ## API Documentation
 
-See the [docs](./docs) folder for full API documentation.
+See the [docs/api](./docs/api) folder for full API documentation.
 
 ## Acknowledgments
 

@@ -8,7 +8,7 @@
 
 > **makeRoute**\<`Path`, `P`\>(`path`, `options?`): [`RouteType`](../interfaces/RouteType.md)\<`Path`, `P`\>
 
-Defined in: [packages/router/src/router/Route.ts:115](https://github.com/jonlaing/effex/blob/e712ed29ee888bf34312ef448dc28fddadfdefbd/packages/router/src/router/Route.ts#L115)
+Defined in: [packages/router/src/router/Route.ts:115](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/router/src/router/Route.ts#L115)
 
 Create a route definition.
 
