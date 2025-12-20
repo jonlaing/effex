@@ -1,4 +1,4 @@
-import { Effect, Option } from "effect";
+import { Effect, Layer, Option } from "effect";
 import type { Duration, Scope } from "effect";
 import type { Element } from "./Element";
 import {
@@ -6,8 +6,11 @@ import {
   error as coreError,
   RendererContext,
   type RendererInterface,
+  type Renderer,
 } from "@effex/core";
 import { SSRContext } from "./SSRContext";
+import { HydrationContext } from "./HydrationContext";
+import { DOMRenderer } from "./DOMRenderer";
 
 /**
  * Options for the suspense boundary (DOM-specialized version).
@@ -125,7 +128,81 @@ export const suspense: {
       return container as HTMLElement;
     }
 
-    // Client-side: use the core implementation
+    // Check for hydration mode
+    const hydrationContext = yield* Effect.serviceOption(HydrationContext);
+
+    // Hydration mode: find existing container and trigger async load
+    if (Option.isSome(hydrationContext)) {
+      const hydrationId = yield* hydrationContext.value.generateId;
+
+      // Find the existing suspense container
+      const suspenseInfo =
+        yield* hydrationContext.value.findSuspense(hydrationId);
+
+      if (suspenseInfo && suspenseInfo.state === "loading") {
+        const { container, fallback } = suspenseInfo;
+
+        // Use DOMRenderer for creating new async content (not HydrationRenderer)
+        // since this content doesn't exist in the DOM yet
+        const domRendererLayer = Layer.succeed(
+          RendererContext,
+          DOMRenderer as Renderer<unknown>,
+        );
+
+        // Run the async render - when it completes, replace the fallback
+        // Fork and await the fiber to ensure we wait for completion
+        const fiber = yield* options.render().pipe(
+          // Provide DOMRenderer for creating new elements
+          Effect.provide(domRendererLayer),
+          Effect.tap((element) =>
+            Effect.sync(() => {
+              // Update state attribute
+              container.setAttribute("data-effex-suspense-state", "loaded");
+
+              // Replace fallback with actual content
+              if (fallback) {
+                container.replaceChild(element, fallback);
+              } else {
+                container.appendChild(element);
+              }
+            }),
+          ),
+          Effect.catchAll((error) => {
+            // If there's a catch handler, use it
+            if (options.catch) {
+              return options.catch!(error).pipe(
+                Effect.provide(domRendererLayer),
+                Effect.tap((errorElement) =>
+                  Effect.sync(() => {
+                    container.setAttribute(
+                      "data-effex-suspense-state",
+                      "error",
+                    );
+                    if (fallback) {
+                      container.replaceChild(errorElement, fallback);
+                    } else {
+                      container.appendChild(errorElement);
+                    }
+                  }),
+                ),
+              );
+            }
+            // Re-throw if no catch handler
+            return Effect.fail(error);
+          }),
+          Effect.fork,
+        );
+
+        // Add finalizer to await the fiber when scope closes
+        yield* Effect.addFinalizer(() => fiber.await.pipe(Effect.ignore));
+
+        return container as HTMLElement;
+      }
+
+      // If container not found or already loaded, fall through to normal render
+    }
+
+    // Client-side (fresh render): use the core implementation
     // Cast to any to bypass the strict type checking on overloads
     // The runtime behavior is correct because coreSuspense handles all cases
     return yield* (coreSuspense as any)(options);

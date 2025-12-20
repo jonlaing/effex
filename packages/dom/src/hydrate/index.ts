@@ -16,6 +16,7 @@ import { Effect, Layer } from "effect";
 import { RendererContext, SignalRegistry, type Renderer } from "@effex/core";
 import type { Element } from "../Element";
 import { createHydrationRenderer } from "./HydrationRenderer";
+import { makeHydrationContext } from "../HydrationContext";
 
 export interface HydrateOptions {
   /**
@@ -56,7 +57,10 @@ export const hydrate = (
   );
 
   const program = Effect.gen(function* () {
-    yield* element;
+    // Create hydration context with ID counter matching SSR order
+    const hydrationContextLayer = yield* makeHydrationContext(container);
+
+    yield* Effect.provide(element, hydrationContextLayer);
   });
 
   return Effect.runPromise(
@@ -69,3 +73,7 @@ export const hydrate = (
 
 export type { HydrationRenderer } from "./HydrationRenderer";
 export { createHydrationRenderer } from "./HydrationRenderer";
+export {
+  HydrationContext,
+  type HydrationContextService,
+} from "../HydrationContext";

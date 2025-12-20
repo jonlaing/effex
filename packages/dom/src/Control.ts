@@ -25,6 +25,7 @@ import {
   calculateStaggerDelay,
 } from "./Animation/index.js";
 import { SSRContext } from "./SSRContext";
+import { HydrationContext } from "./HydrationContext";
 
 // Re-export the MatchCase type specialized for HTMLElement
 export interface MatchCase<A, E = never, R = never> extends CoreMatchCase<
@@ -201,6 +202,12 @@ export const when = <E1 = never, R1 = never, E2 = never, R2 = never>(
       return container;
     }
 
+    // Hydration mode: advance the ID counter to stay in sync, then proceed normally
+    const hydrationContext = yield* Effect.serviceOption(HydrationContext);
+    if (Option.isSome(hydrationContext)) {
+      yield* hydrationContext.value.generateId;
+    }
+
     // Client-side: if no animations, use the core implementation
     if (!config.animate) {
       return yield* coreWhen(condition, {
@@ -357,6 +364,12 @@ export const match = <A, E = never, R = never, E2 = never, R2 = never>(
         yield* renderer.appendChild(container, element);
       }
       return container;
+    }
+
+    // Hydration mode: advance the ID counter to stay in sync, then proceed normally
+    const hydrationContext = yield* Effect.serviceOption(HydrationContext);
+    if (Option.isSome(hydrationContext)) {
+      yield* hydrationContext.value.generateId;
     }
 
     // Client-side: if no animations, use the core implementation
@@ -527,6 +540,12 @@ export const each = <A, E = never, R = never>(
       }
 
       return container;
+    }
+
+    // Hydration mode: advance the ID counter to stay in sync, then proceed normally
+    const hydrationContext = yield* Effect.serviceOption(HydrationContext);
+    if (Option.isSome(hydrationContext)) {
+      yield* hydrationContext.value.generateId;
     }
 
     // Client-side: if no animations, use the core implementation

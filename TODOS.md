@@ -60,9 +60,11 @@
   - [x] Basic hydration (`@effex/dom/hydrate` with `hydrate`)
   - [x] Hydration markers on control flow (`data-effex-*` attributes)
   - [x] Suspense SSR (renders fallback with `data-effex-suspense-state`)
-  - [ ] **Suspense hydration** - Client needs to re-trigger async content after hydration
-    - Currently SSR renders fallback, but hydration doesn't re-run the async `render` function
-    - Options: (1) block SSR and wait, (2) streaming SSR, (3) client fetches on hydration (current, causes flash)
+  - [x] **Suspense hydration** - Client re-triggers async content after hydration
+    - SSR renders fallback with `data-effex-suspense-state="loading"`
+    - Hydration finds container via HydrationContext, runs async render
+    - Uses DOMRenderer for async content (since it doesn't exist in SSR HTML)
+    - Replaces fallback when async completes, updates state to "loaded"
   - [ ] **Data serialization for hydration** - Avoid double-fetching on client
     - Server should serialize fetched data into `<script>window.__EFFEX_DATA__ = {...}</script>`
     - Services could check this cache before making API calls
