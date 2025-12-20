@@ -10,6 +10,7 @@ import {
 } from "./RouterContext";
 import type { BaseRouter } from "./types";
 import type { Readable } from "@effex/dom";
+import { DOMRendererLive } from "@effex/dom";
 
 // Create a simple readable for testing
 const makeTestReadable = <A>(value: A): Readable.Readable<A> => {
@@ -78,7 +79,10 @@ describe("RouterContext", () => {
 
       const element = await Effect.runPromise(
         Effect.scoped(
-          Link({ href: "/test" }, "Test").pipe(Effect.provide(layer)),
+          Link({ href: "/test" }, "Test").pipe(
+            Effect.provide(layer),
+            Effect.provide(DOMRendererLive),
+          ),
         ),
       );
 
@@ -95,6 +99,7 @@ describe("RouterContext", () => {
         Effect.scoped(
           Link({ href: "/other", class: "nav" }, "Other").pipe(
             Effect.provide(layer),
+            Effect.provide(DOMRendererLive),
           ),
         ),
       );
@@ -103,7 +108,10 @@ describe("RouterContext", () => {
       // Test active link (matches current path "/")
       const activeElement = await Effect.runPromise(
         Effect.scoped(
-          Link({ href: "/", class: "nav" }, "Home").pipe(Effect.provide(layer)),
+          Link({ href: "/", class: "nav" }, "Home").pipe(
+            Effect.provide(layer),
+            Effect.provide(DOMRendererLive),
+          ),
         ),
       );
       expect(activeElement.className).toBe("nav active");

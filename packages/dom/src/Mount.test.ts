@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { Effect, Fiber } from "effect";
 import { mount } from "./Mount";
 import { div, span } from "./Element";
+import { DOMRendererLive } from "./DOMRenderer";
 
 describe("mount", () => {
   let container: HTMLElement;
@@ -76,7 +77,7 @@ describe("mount", () => {
           yield* mount(Effect.succeed(el), container);
           yield* Effect.sleep(100);
         }),
-      ),
+      ).pipe(Effect.provide(DOMRendererLive)),
     );
 
     await new Promise((r) => setTimeout(r, 10));

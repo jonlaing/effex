@@ -2,6 +2,10 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { Effect } from "effect";
 import { Boundary } from "./Boundary";
 import { div } from "./Element";
+import { DOMRendererLive } from "./DOMRenderer";
+
+const runTest = <A>(effect: Effect.Effect<A, never, any>) =>
+  Effect.runPromise(Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)));
 
 describe("Boundary", () => {
   beforeEach(() => {
@@ -10,12 +14,10 @@ describe("Boundary", () => {
 
   describe("error", () => {
     it("should render content when no error", async () => {
-      const el = await Effect.runPromise(
-        Effect.scoped(
-          Boundary.error(
-            () => div("Success"),
-            () => div("Error occurred"),
-          ),
+      const el = await runTest(
+        Boundary.error(
+          () => div("Success"),
+          () => div("Error occurred"),
         ),
       );
 
@@ -33,16 +35,14 @@ describe("Boundary", () => {
         message,
       });
 
-      const el = await Effect.runPromise(
-        Effect.scoped(
-          Boundary.error(
-            () =>
-              Effect.gen(function* () {
-                yield* Effect.fail(makeTestError("oops"));
-                return yield* div("Never reached");
-              }),
-            (error) => div(`Caught: ${error.message}`),
-          ),
+      const el = await runTest(
+        Boundary.error(
+          () =>
+            Effect.gen(function* () {
+              yield* Effect.fail(makeTestError("oops"));
+              return yield* div("Never reached");
+            }),
+          (error) => div(`Caught: ${error.message}`),
         ),
       );
 
@@ -52,30 +52,28 @@ describe("Boundary", () => {
 
   describe("suspense", () => {
     it("should show fallback then content", async () => {
-      const el = await Effect.runPromise(
-        Effect.scoped(
-          Effect.gen(function* () {
-            const container = yield* Boundary.suspense({
-              render: () =>
-                Effect.gen(function* () {
-                  yield* Effect.sleep(20);
-                  return yield* div("Loaded!");
-                }),
-              fallback: () => div("Loading..."),
-            });
+      const el = await runTest(
+        Effect.gen(function* () {
+          const container = yield* Boundary.suspense({
+            render: () =>
+              Effect.gen(function* () {
+                yield* Effect.sleep(20);
+                return yield* div("Loaded!");
+              }),
+            fallback: () => div("Loading..."),
+          });
 
-            // Should show fallback initially
-            expect(container.textContent).toBe("Loading...");
+          // Should show fallback initially
+          expect(container.textContent).toBe("Loading...");
 
-            // Wait for async content
-            yield* Effect.sleep(50);
+          // Wait for async content
+          yield* Effect.sleep(50);
 
-            // Should now show loaded content
-            expect(container.textContent).toBe("Loaded!");
+          // Should now show loaded content
+          expect(container.textContent).toBe("Loaded!");
 
-            return container;
-          }),
-        ),
+          return container;
+        }),
       );
 
       expect(el).toBeTruthy();

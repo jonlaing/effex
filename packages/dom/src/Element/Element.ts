@@ -1,11 +1,12 @@
 import { Array, Effect, Scope } from "effect";
-import type { Readable } from "@effex/core";
+import type { Readable, RendererInterface } from "@effex/core";
+import { RendererContext } from "@effex/core";
 import {
-  applyClass,
-  applyEventHandler,
-  applyGenericAttribute,
-  applyInputValue,
-  applyStyle,
+  applyClassWithRenderer,
+  applyEventHandlerWithRenderer,
+  applyGenericAttributeWithRenderer,
+  applyInputValueWithRenderer,
+  applyStyleWithRenderer,
   flattenChildren,
   isElement,
   isReadable,
@@ -29,20 +30,21 @@ const applyRef = <K extends keyof HTMLElementTagNameMap>(
 };
 
 const applyInnerHTML = (
-  element: HTMLElement,
+  renderer: RendererInterface<Node>,
+  element: Node,
   value: string | Readable<string>,
 ): Effect.Effect<void, never, Scope.Scope> => {
   if (isReadable(value)) {
-    return subscribeToReadable(value as Readable<string>, (html) => {
-      element.innerHTML = html;
-    });
+    return subscribeToReadable(value as Readable<string>, (html) =>
+      Effect.runSync(renderer.setInnerHTML(element, html)),
+    );
   }
-  element.innerHTML = value as string;
-  return Effect.void;
+  return renderer.setInnerHTML(element, value as string);
 };
 
 const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
-  element: HTMLElementTagNameMap[K],
+  renderer: RendererInterface<Node>,
+  element: Node,
   attrs: HTMLAttributes<K>,
 ): Effect.Effect<void, never, Scope.Scope> =>
   Effect.gen(function* () {
@@ -50,37 +52,51 @@ const applyAttributes = <K extends keyof HTMLElementTagNameMap>(
       if (value === undefined) continue;
 
       if (key === "ref") {
-        applyRef(element, value as Ref<HTMLElementTagNameMap[K]>);
+        applyRef(
+          element as HTMLElementTagNameMap[K],
+          value as Ref<HTMLElementTagNameMap[K]>,
+        );
       } else if (key === "class") {
-        yield* applyClass(element, value as ClassValue);
+        yield* applyClassWithRenderer(renderer, element, value as ClassValue);
       } else if (key === "style") {
-        yield* applyStyle(
+        yield* applyStyleWithRenderer(
+          renderer,
           element,
           value as
             | Record<string, StyleValue>
             | Readable<Record<string, string>>,
         );
       } else if (key === "innerHTML") {
-        yield* applyInnerHTML(element, value as string | Readable<string>);
+        yield* applyInnerHTML(
+          renderer,
+          element,
+          value as string | Readable<string>,
+        );
       } else if (key.startsWith("on")) {
-        applyEventHandler(element, key, value as EventHandler<Event>);
+        yield* applyEventHandlerWithRenderer(
+          renderer,
+          element,
+          key,
+          value as EventHandler<Event>,
+        );
       } else if (key === "id") {
-        element.id = value as string;
+        yield* renderer.setAttribute(element, "id", value as string);
       } else if (
         key === "value" &&
-        (element instanceof HTMLInputElement ||
-          element instanceof HTMLTextAreaElement ||
-          element instanceof HTMLSelectElement)
+        ((element as HTMLElement) instanceof HTMLInputElement ||
+          (element as HTMLElement) instanceof HTMLTextAreaElement ||
+          (element as HTMLElement) instanceof HTMLSelectElement)
       ) {
-        yield* applyInputValue(element, value);
+        yield* applyInputValueWithRenderer(renderer, element, value);
       } else {
-        yield* applyGenericAttribute(element, key, value);
+        yield* applyGenericAttributeWithRenderer(renderer, element, key, value);
       }
     }
   });
 
 const appendChildren = <E, R>(
-  parent: HTMLElement,
+  renderer: RendererInterface<Node>,
+  parent: Node,
   children: readonly Child<E, R>[],
 ): Effect.Effect<void, E, Scope.Scope | R> =>
   Effect.gen(function* () {
@@ -88,17 +104,18 @@ const appendChildren = <E, R>(
 
     for (const child of flattened) {
       if (typeof child === "string" || typeof child === "number") {
-        parent.appendChild(document.createTextNode(String(child)));
+        const textNode = yield* renderer.createTextNode(String(child));
+        yield* renderer.appendChild(parent, textNode);
       } else if (isElement(child)) {
         const childElement = yield* child;
-        parent.appendChild(childElement);
+        yield* renderer.appendChild(parent, childElement as Node);
       } else if (isReadable(child)) {
-        const textNode = document.createTextNode("");
-        parent.appendChild(textNode);
+        const textNode = yield* renderer.createTextNode("");
+        yield* renderer.appendChild(parent, textNode);
         yield* subscribeToReadable(
           child as Readable<string | number>,
           (value) => {
-            textNode.textContent = String(value);
+            Effect.runSync(renderer.setTextContent(textNode, String(value)));
           },
         );
       }
@@ -109,12 +126,13 @@ const createElement = <K extends keyof HTMLElementTagNameMap, E, R>(
   tagName: K,
   attrs: HTMLAttributes<K>,
   children: readonly Child<E, R>[],
-): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R> =>
+): Effect.Effect<HTMLElementTagNameMap[K], E, Scope.Scope | R | RendererContext> =>
   Effect.gen(function* () {
-    const element = document.createElement(tagName);
-    yield* applyAttributes(element, attrs);
-    yield* appendChildren(element, children);
-    return element;
+    const renderer = (yield* RendererContext) as RendererInterface<Node>;
+    const element = yield* renderer.createNode(tagName);
+    yield* applyAttributes(renderer, element, attrs);
+    yield* appendChildren(renderer, element, children);
+    return element as HTMLElementTagNameMap[K];
   });
 
 const makeElementFactory = <K extends keyof HTMLElementTagNameMap>(

@@ -1,6 +1,7 @@
 import { Effect, Layer, Scope } from "effect";
-import { SignalRegistry } from "@effex/core";
+import { RendererContext, SignalRegistry, type RendererInterface } from "@effex/core";
 import type { Element } from "./Element";
+import { DOMRenderer } from "./DOMRenderer";
 
 /**
  * Mount an Element into a DOM container. Automatically cleans up when the scope closes.
@@ -59,11 +60,13 @@ import type { Element } from "./Element";
  * ```
  */
 export const mount = (
-  element: Element<never, never>,
+  element: Element<never, RendererContext>,
   container: HTMLElement,
 ): Effect.Effect<void, never, Scope.Scope> =>
   Effect.gen(function* () {
-    const el = yield* element;
+    const el = yield* element.pipe(
+      Effect.provideService(RendererContext, DOMRenderer as RendererInterface<unknown>),
+    );
     container.appendChild(el);
 
     yield* Effect.addFinalizer(() =>

@@ -4,6 +4,10 @@ import { Signal } from "@effex/core";
 import { component } from "./Component";
 import { div, button, span } from "./Element";
 import type { Element } from "./Element";
+import { DOMRendererLive } from "./DOMRenderer";
+
+const runTest = <A>(effect: Effect.Effect<A, never, any>) =>
+  Effect.runPromise(Effect.scoped(effect).pipe(Effect.provide(DOMRendererLive)));
 
 describe("Component", () => {
   beforeEach(() => {
@@ -20,7 +24,7 @@ describe("Component", () => {
     const Greeting = component("Greeting", () => div("Hello, World!"));
 
     // Can call without any argument when props is empty
-    const el = await Effect.runPromise(Effect.scoped(Greeting()));
+    const el = await runTest(Greeting());
 
     expect(el.textContent).toBe("Hello, World!");
   });
@@ -29,7 +33,7 @@ describe("Component", () => {
     const Greeting = component("Greeting", () => div("Hello, World!"));
 
     // Can also pass explicit empty object
-    const el = await Effect.runPromise(Effect.scoped(Greeting({})));
+    const el = await runTest(Greeting({}));
 
     expect(el.textContent).toBe("Hello, World!");
   });
@@ -43,9 +47,7 @@ describe("Component", () => {
       div(`Hello, ${props.name}!`),
     );
 
-    const el = await Effect.runPromise(
-      Effect.scoped(Greeting({ name: "Alice" })),
-    );
+    const el = await runTest(Greeting({ name: "Alice" }));
 
     expect(el.textContent).toBe("Hello, Alice!");
   });
@@ -62,22 +64,20 @@ describe("Component", () => {
       }),
     );
 
-    await Effect.runPromise(
-      Effect.scoped(
-        Effect.gen(function* () {
-          const el = yield* Counter({});
+    await runTest(
+      Effect.gen(function* () {
+        const el = yield* Counter({});
 
-          expect(el.textContent).toContain("Count: 0");
+        expect(el.textContent).toContain("Count: 0");
 
-          // Find and click the button
-          const btn = el.querySelector("button")!;
-          btn.click();
+        // Find and click the button
+        const btn = el.querySelector("button")!;
+        btn.click();
 
-          yield* Effect.sleep(10);
+        yield* Effect.sleep(10);
 
-          expect(el.textContent).toContain("Count: 1");
-        }),
-      ),
+        expect(el.textContent).toContain("Count: 1");
+      }),
     );
   });
 
@@ -105,19 +105,17 @@ describe("Component", () => {
       }),
     );
 
-    await Effect.runPromise(
-      Effect.scoped(
-        Effect.gen(function* () {
-          const el = yield* Counter({});
+    await runTest(
+      Effect.gen(function* () {
+        const el = yield* Counter({});
 
-          expect(el.querySelector("span")?.textContent).toBe("0");
+        expect(el.querySelector("span")?.textContent).toBe("0");
 
-          el.querySelector("button")?.click();
-          yield* Effect.sleep(10);
+        el.querySelector("button")?.click();
+        yield* Effect.sleep(10);
 
-          expect(el.querySelector("span")?.textContent).toBe("1");
-        }),
-      ),
+        expect(el.querySelector("span")?.textContent).toBe("1");
+      }),
     );
   });
 
@@ -148,16 +146,14 @@ describe("Component", () => {
 
     let selected: string | null = null;
 
-    const el = await Effect.runPromise(
-      Effect.scoped(
-        Card({
-          title: "My List",
-          items: ["Apple", "Banana", "Cherry"],
-          onSelect: (item) => {
-            selected = item;
-          },
-        }),
-      ),
+    const el = await runTest(
+      Card({
+        title: "My List",
+        items: ["Apple", "Banana", "Cherry"],
+        onSelect: (item) => {
+          selected = item;
+        },
+      }),
     );
 
     expect(el.querySelector(".title")?.textContent).toBe("My List");
@@ -193,9 +189,7 @@ describe("Component", () => {
         }),
     );
 
-    const el = await Effect.runPromise(
-      Effect.scoped(AsyncGreeting({ name: "World" })),
-    );
+    const el = await runTest(AsyncGreeting({ name: "World" }));
 
     expect(el.textContent).toBe("Hello, World!");
   });
@@ -210,10 +204,8 @@ describe("Component", () => {
         ),
     );
 
-    const el = await Effect.runPromise(
-      Effect.scoped(
-        Container({ class: "wrapper" }, [span("Child 1"), span("Child 2")]),
-      ),
+    const el = await runTest(
+      Container({ class: "wrapper" }, [span("Child 1"), span("Child 2")]),
     );
 
     expect(el.className).toBe("wrapper");
@@ -232,9 +224,7 @@ describe("Component", () => {
         ),
     );
 
-    const el = await Effect.runPromise(
-      Effect.scoped(Container({ class: "wrapper" }, "Hello")),
-    );
+    const el = await runTest(Container({ class: "wrapper" }, "Hello"));
 
     expect(el.className).toBe("wrapper");
     expect(el.textContent).toBe("Hello");
@@ -266,11 +256,9 @@ describe("Component", () => {
     const result = Parent({ title: "Title" }, [ChildWithService()]);
 
     // Provide the service and run
-    const el = await Effect.runPromise(
-      Effect.scoped(
-        result.pipe(
-          Effect.provideService(TestService, { value: "from service" }),
-        ),
+    const el = await runTest(
+      result.pipe(
+        Effect.provideService(TestService, { value: "from service" }),
       ),
     );
 

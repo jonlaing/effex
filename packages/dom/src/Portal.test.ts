@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { Effect, Scope, Exit } from "effect";
 import { Portal } from "./Portal";
 import { $ } from "./Element";
+import { DOMRendererLive } from "./DOMRenderer";
 
 describe("Portal", () => {
   let portalRoot: HTMLDivElement;
@@ -29,7 +30,10 @@ describe("Portal", () => {
     });
 
     const placeholder = await Effect.runPromise(
-      program.pipe(Effect.provideService(Scope.Scope, scope)),
+      program.pipe(
+        Effect.provideService(Scope.Scope, scope),
+        Effect.provide(DOMRendererLive),
+      ),
     );
 
     // Placeholder should be a hidden span
@@ -58,7 +62,10 @@ describe("Portal", () => {
     });
 
     await Effect.runPromise(
-      program.pipe(Effect.provideService(Scope.Scope, scope)),
+      program.pipe(
+        Effect.provideService(Scope.Scope, scope),
+        Effect.provide(DOMRendererLive),
+      ),
     );
 
     // Content should be in portal root, not document.body directly
@@ -81,7 +88,10 @@ describe("Portal", () => {
     });
 
     await Effect.runPromise(
-      program.pipe(Effect.provideService(Scope.Scope, scope)),
+      program.pipe(
+        Effect.provideService(Scope.Scope, scope),
+        Effect.provide(DOMRendererLive),
+      ),
     );
 
     // Content should be in portal root
@@ -103,7 +113,10 @@ describe("Portal", () => {
     });
 
     await Effect.runPromise(
-      program.pipe(Effect.provideService(Scope.Scope, scope)),
+      program.pipe(
+        Effect.provideService(Scope.Scope, scope),
+        Effect.provide(DOMRendererLive),
+      ),
     );
 
     // Content should exist
@@ -126,7 +139,9 @@ describe("Portal", () => {
       return placeholder;
     });
 
-    const result = await Effect.runPromise(Effect.scoped(program));
+    const result = await Effect.runPromise(
+      Effect.scoped(program).pipe(Effect.provide(DOMRendererLive)),
+    );
 
     // Should return a hidden fallback element
     expect(result.tagName).toBe("SPAN");
@@ -160,7 +175,10 @@ describe("Portal", () => {
     });
 
     await Effect.runPromise(
-      program.pipe(Effect.provideService(Scope.Scope, scope)),
+      program.pipe(
+        Effect.provideService(Scope.Scope, scope),
+        Effect.provide(DOMRendererLive),
+      ),
     );
 
     const modal = document.getElementById("modal");

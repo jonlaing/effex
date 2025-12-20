@@ -35,3 +35,7 @@ export { Reaction } from "./Reaction";
 // Ref
 export type { Ref as RefType } from "./Ref";
 export { Ref } from "./Ref";
+
+// Renderer
+export type { Renderer as RendererInterface } from "./Renderer";
+export { Renderer, RendererContext } from "./Renderer";

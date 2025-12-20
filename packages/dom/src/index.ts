@@ -21,7 +21,13 @@ export {
   Reaction,
   type RefType,
   Ref,
+  Renderer,
+  RendererContext,
+  type RendererInterface,
 } from "@effex/core";
+
+// DOM Renderer
+export { DOMRenderer, DOMRendererLive } from "./DOMRenderer";
 
 // Element
 export type {
