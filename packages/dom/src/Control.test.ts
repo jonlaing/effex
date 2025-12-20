@@ -20,11 +20,10 @@ describe("Control", () => {
       await runTest(
         Effect.gen(function* () {
           const isVisible = yield* Signal.make(true);
-          const el = yield* when(
-            isVisible,
-            () => div("Visible"),
-            () => div("Hidden"),
-          );
+          const el = yield* when(isVisible, {
+            onTrue: () => div("Visible"),
+            onFalse: () => div("Hidden"),
+          });
 
           expect(el.textContent).toBe("Visible");
         }),
@@ -35,11 +34,10 @@ describe("Control", () => {
       await runTest(
         Effect.gen(function* () {
           const isVisible = yield* Signal.make(false);
-          const el = yield* when(
-            isVisible,
-            () => div("Visible"),
-            () => div("Hidden"),
-          );
+          const el = yield* when(isVisible, {
+            onTrue: () => div("Visible"),
+            onFalse: () => div("Hidden"),
+          });
 
           expect(el.textContent).toBe("Hidden");
         }),
@@ -50,11 +48,10 @@ describe("Control", () => {
       await runTest(
         Effect.gen(function* () {
           const isVisible = yield* Signal.make(true);
-          const el = yield* when(
-            isVisible,
-            () => div("Visible"),
-            () => div("Hidden"),
-          );
+          const el = yield* when(isVisible, {
+            onTrue: () => div("Visible"),
+            onFalse: () => div("Hidden"),
+          });
 
           expect(el.textContent).toBe("Visible");
 
@@ -77,14 +74,13 @@ describe("Control", () => {
       await runTest(
         Effect.gen(function* () {
           const isVisible = yield* Signal.make(true);
-          yield* when(
-            isVisible,
-            () => {
+          yield* when(isVisible, {
+            onTrue: () => {
               renderCount++;
               return div("Visible");
             },
-            () => div("Hidden"),
-          );
+            onFalse: () => div("Hidden"),
+          });
 
           expect(renderCount).toBe(1);
 
@@ -105,11 +101,13 @@ describe("Control", () => {
           const status = yield* Signal.make<"loading" | "success" | "error">(
             "loading",
           );
-          const el = yield* match(status, [
-            { pattern: "loading", render: () => div("Loading...") },
-            { pattern: "success", render: () => div("Done!") },
-            { pattern: "error", render: () => div("Failed") },
-          ]);
+          const el = yield* match(status, {
+            cases: [
+              { pattern: "loading", render: () => div("Loading...") },
+              { pattern: "success", render: () => div("Done!") },
+              { pattern: "error", render: () => div("Failed") },
+            ],
+          });
 
           expect(el.textContent).toBe("Loading...");
         }),
@@ -122,11 +120,13 @@ describe("Control", () => {
           const status = yield* Signal.make<"loading" | "success" | "error">(
             "loading",
           );
-          const el = yield* match(status, [
-            { pattern: "loading", render: () => div("Loading...") },
-            { pattern: "success", render: () => div("Done!") },
-            { pattern: "error", render: () => div("Failed") },
-          ]);
+          const el = yield* match(status, {
+            cases: [
+              { pattern: "loading", render: () => div("Loading...") },
+              { pattern: "success", render: () => div("Done!") },
+              { pattern: "error", render: () => div("Failed") },
+            ],
+          });
 
           expect(el.textContent).toBe("Loading...");
 
@@ -147,14 +147,13 @@ describe("Control", () => {
       await runTest(
         Effect.gen(function* () {
           const value = yield* Signal.make(999);
-          const el = yield* match(
-            value,
-            [
+          const el = yield* match(value, {
+            cases: [
               { pattern: 1, render: () => div("One") },
               { pattern: 2, render: () => div("Two") },
             ],
-            () => div("Unknown"),
-          );
+            fallback: () => div("Unknown"),
+          });
 
           expect(el.textContent).toBe("Unknown");
         }),
@@ -172,11 +171,10 @@ describe("Control", () => {
             { id: "3", name: "Charlie" },
           ]);
 
-          const el = yield* each(
-            items,
-            (item) => item.id,
-            (item) => li(item.map((i) => i.name)),
-          );
+          const el = yield* each(items, {
+            key: (item) => item.id,
+            render: (item) => li(item.map((i) => i.name)),
+          });
 
           expect(el.children.length).toBe(3);
           expect(el.children[0].textContent).toBe("Alice");
@@ -191,11 +189,10 @@ describe("Control", () => {
         Effect.gen(function* () {
           const items = yield* Signal.make([{ id: "1", name: "Alice" }]);
 
-          const el = yield* each(
-            items,
-            (item) => item.id,
-            (item) => li(item.map((i) => i.name)),
-          );
+          const el = yield* each(items, {
+            key: (item) => item.id,
+            render: (item) => li(item.map((i) => i.name)),
+          });
 
           expect(el.children.length).toBe(1);
 
@@ -216,11 +213,10 @@ describe("Control", () => {
             { id: "2", name: "Bob" },
           ]);
 
-          const el = yield* each(
-            items,
-            (item) => item.id,
-            (item) => li(item.map((i) => i.name)),
-          );
+          const el = yield* each(items, {
+            key: (item) => item.id,
+            render: (item) => li(item.map((i) => i.name)),
+          });
 
           expect(el.children.length).toBe(2);
 
@@ -238,11 +234,10 @@ describe("Control", () => {
         Effect.gen(function* () {
           const items = yield* Signal.make([{ id: "1", name: "Alice" }]);
 
-          const el = yield* each(
-            items,
-            (item) => item.id,
-            (item) => li(item.map((i) => i.name)),
-          );
+          const el = yield* each(items, {
+            key: (item) => item.id,
+            render: (item) => li(item.map((i) => i.name)),
+          });
 
           expect(el.children[0].textContent).toBe("Alice");
 
@@ -265,11 +260,10 @@ describe("Control", () => {
             { id: "3", name: "Charlie" },
           ]);
 
-          const el = yield* each(
-            items,
-            (item) => item.id,
-            (item) => li(item.map((i) => i.name)),
-          );
+          const el = yield* each(items, {
+            key: (item) => item.id,
+            render: (item) => li(item.map((i) => i.name)),
+          });
 
           expect(el.children[0].textContent).toBe("Alice");
           expect(el.children[2].textContent).toBe("Charlie");
@@ -292,11 +286,10 @@ describe("Control", () => {
         Effect.gen(function* () {
           const items = yield* Signal.make<{ id: string; name: string }[]>([]);
 
-          const el = yield* each(
-            items,
-            (item) => item.id,
-            (item) => li(item.map((i) => i.name)),
-          );
+          const el = yield* each(items, {
+            key: (item) => item.id,
+            render: (item) => li(item.map((i) => i.name)),
+          });
 
           expect(el.children.length).toBe(0);
         }),

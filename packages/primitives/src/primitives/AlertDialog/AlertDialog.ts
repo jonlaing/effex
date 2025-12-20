@@ -204,17 +204,16 @@ const AlertDialogPortal = (
   Effect.gen(function* () {
     const ctx = yield* AlertDialogCtx;
 
-    return yield* when(
-      ctx.isOpen,
-      () =>
+    return yield* when(ctx.isOpen, {
+      onTrue: () =>
         Portal({ target: props.target }, () =>
           $.div(
             { style: { display: "contents" }, "data-alertdialog-portal": "" },
             provide(AlertDialogCtx, ctx, children),
           ),
         ),
-      () => $.div({ style: { display: "none" } }),
-    );
+      onFalse: () => $.div({ style: { display: "none" } }),
+    });
   });
 
 /**

@@ -243,9 +243,8 @@ const Content = component(
 
       const dataState = ctx.isOpen.map((open) => (open ? "open" : "closed"));
 
-      return yield* when(
-        ctx.isOpen,
-        () =>
+      return yield* when(ctx.isOpen, {
+        onTrue: () =>
           Portal(() =>
             Effect.gen(function* () {
               // Get anchor element (prefer anchorRef, fallback to triggerRef)
@@ -349,8 +348,8 @@ const Content = component(
               return contentEl;
             }),
           ),
-        () => $.div({ style: { display: "none" } }),
-      );
+        onFalse: () => $.div({ style: { display: "none" } }),
+      });
     }),
 );
 

@@ -6,9 +6,7 @@ export type {
   AnimationEndResult,
   AnimationHook,
   AnimationOptions,
-  ControlAnimationOptions,
   ListAnimationOptions,
-  ListControlAnimationOptions,
   StaggerFunction,
 } from "./types";
 

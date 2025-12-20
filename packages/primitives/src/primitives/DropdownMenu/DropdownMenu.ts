@@ -407,9 +407,8 @@ const Content = component(
 
       const dataState = ctx.isOpen.map((open) => (open ? "open" : "closed"));
 
-      return yield* when(
-        ctx.isOpen,
-        () =>
+      return yield* when(ctx.isOpen, {
+        onTrue: () =>
           Portal(() =>
             Effect.gen(function* () {
               const triggerEl = ctx.triggerRef.current;
@@ -529,8 +528,8 @@ const Content = component(
               return contentEl;
             }),
           ),
-        () => $.div({ style: { display: "none" } }),
-      );
+        onFalse: () => $.div({ style: { display: "none" } }),
+      });
     }),
 );
 
@@ -1005,9 +1004,8 @@ const SubContent = component(
 
       const dataState = subCtx.isOpen.map((open) => (open ? "open" : "closed"));
 
-      return yield* when(
-        subCtx.isOpen,
-        () =>
+      return yield* when(subCtx.isOpen, {
+        onTrue: () =>
           Portal(() =>
             Effect.gen(function* () {
               const triggerEl = subCtx.triggerRef.current;
@@ -1146,8 +1144,8 @@ const SubContent = component(
               return contentEl;
             }),
           ),
-        () => $.div({ style: { display: "none" } }),
-      );
+        onFalse: () => $.div({ style: { display: "none" } }),
+      });
     }),
 );
 

@@ -10,12 +10,14 @@ import {
   match as coreMatch,
   each as coreEach,
   type MatchCase as CoreMatchCase,
+  type WhenConfig as CoreWhenConfig,
+  type MatchConfig as CoreMatchConfig,
+  type EachConfig as CoreEachConfig,
 } from "@effex/core";
 import type { Element } from "./Element";
 import type {
-  ControlAnimationOptions,
+  AnimationOptions,
   ListAnimationOptions,
-  ListControlAnimationOptions,
 } from "./Animation/index.js";
 import {
   runEnterAnimation,
@@ -24,68 +26,153 @@ import {
 } from "./Animation/index.js";
 
 // Re-export the MatchCase type specialized for HTMLElement
-export interface MatchCase<A, E = never, R = never> extends CoreMatchCase<
+export interface MatchCase<A, E = never, R = never>
+  extends CoreMatchCase<A, HTMLElement, E, R> {}
+
+/**
+ * Configuration for the `when` control flow (DOM-specific with animation support).
+ */
+export interface WhenConfig<E1 = never, R1 = never, E2 = never, R2 = never> {
+  /**
+   * Optional custom container element. If not provided, defaults to a div
+   * with `display: contents`.
+   *
+   * @example
+   * ```ts
+   * container: () => $.tbody({ class: "data-rows" })
+   * ```
+   */
+  readonly container?: () => Element<never, never>;
+  /** Element to render when condition is true */
+  readonly onTrue: () => Element<E1, R1>;
+  /** Element to render when condition is false */
+  readonly onFalse: () => Element<E2, R2>;
+  /** Optional animation configuration */
+  readonly animate?: AnimationOptions;
+}
+
+/**
+ * Configuration for the `match` control flow (DOM-specific with animation support).
+ */
+export interface MatchConfig<
   A,
-  HTMLElement,
-  E,
-  R
-> {}
+  E = never,
+  R = never,
+  E2 = never,
+  R2 = never,
+> {
+  /**
+   * Optional custom container element. If not provided, defaults to a div
+   * with `display: contents`.
+   */
+  readonly container?: () => Element<never, never>;
+  /** Array of pattern-render pairs */
+  readonly cases: readonly MatchCase<A, E, R>[];
+  /** Optional fallback if no pattern matches */
+  readonly fallback?: () => Element<E2, R2>;
+  /** Optional animation configuration */
+  readonly animate?: AnimationOptions;
+}
+
+/**
+ * Configuration for the `each` control flow (DOM-specific with animation support).
+ */
+export interface EachConfig<A, E = never, R = never> {
+  /**
+   * Optional custom container element. If not provided, defaults to a div
+   * with `display: contents`.
+   *
+   * @example
+   * ```ts
+   * container: () => $.ul({ class: "todo-list" })
+   * ```
+   */
+  readonly container?: () => Element<never, never>;
+  /** Function to extract a unique key from each item */
+  readonly key: (item: A) => string;
+  /** Function to render each item (receives a Readable for the item) */
+  readonly render: (item: Readable<A>) => Element<E, R>;
+  /** Optional animation configuration */
+  readonly animate?: ListAnimationOptions;
+}
+
+/**
+ * Helper to create the default container (div with display: contents)
+ */
+const createDefaultContainer = (
+  renderer: RendererInterface<Node>,
+): Effect.Effect<HTMLElement, never, never> =>
+  Effect.gen(function* () {
+    const container = yield* renderer.createNode("div");
+    yield* renderer.setStyleProperty(container, "display", "contents");
+    return container as HTMLElement;
+  });
 
 /**
  * Conditionally render one of two elements based on a reactive boolean.
+ *
  * @param condition - Reactive boolean value
- * @param onTrue - Element to render when true
- * @param onFalse - Element to render when false
- * @param options - Optional animation configuration
+ * @param config - Configuration object with onTrue, onFalse, optional container and animate
  *
  * @example
  * ```ts
  * const isLoggedIn = yield* Signal.make(false)
- * when(
- *   isLoggedIn,
- *   () => div(["Welcome back!"]),
- *   () => div(["Please log in"])
- * )
+ *
+ * when(isLoggedIn, {
+ *   onTrue: () => $.div("Welcome back!"),
+ *   onFalse: () => $.div("Please log in")
+ * })
+ * ```
+ *
+ * @example
+ * ```ts
+ * // With custom container for valid HTML in tables
+ * when(hasData, {
+ *   container: () => $.tbody({ class: "data-rows" }),
+ *   onTrue: () => $.tr($.td("Data row")),
+ *   onFalse: () => $.tr($.td("No data"))
+ * })
  * ```
  *
  * @example
  * ```ts
  * // With animations
- * when(
- *   isVisible,
- *   () => Modal(),
- *   () => div(),
- *   { animate: { enter: "fade-in", exit: "fade-out" } }
- * )
+ * when(isVisible, {
+ *   onTrue: () => Modal(),
+ *   onFalse: () => $.div(),
+ *   animate: { enter: "fade-in", exit: "fade-out" }
+ * })
  * ```
  */
 export const when = <E1 = never, R1 = never, E2 = never, R2 = never>(
   condition: Readable<boolean>,
-  onTrue: () => Element<E1, R1>,
-  onFalse: () => Element<E2, R2>,
-  options?: ControlAnimationOptions,
+  config: WhenConfig<E1, R1, E2, R2>,
 ): Element<E1 | E2, R1 | R2> => {
   // If no animations, use the core implementation
-  if (!options?.animate) {
-    return coreWhen(condition, onTrue, onFalse, {
-      as: options?.as,
-    }) as Element<E1 | E2, R1 | R2>;
+  if (!config.animate) {
+    return coreWhen(condition, {
+      container: config.container,
+      onTrue: config.onTrue,
+      onFalse: config.onFalse,
+    } as CoreWhenConfig<HTMLElement, E1, R1, E2, R2>) as Element<
+      E1 | E2,
+      R1 | R2
+    >;
   }
 
   // With animations, use the DOM-specific implementation
   return Effect.gen(function* () {
     const renderer = (yield* RendererContext) as RendererInterface<Node>;
     const scope = yield* Effect.scope;
-    const containerTag = options?.as ?? "div";
-    const container = yield* renderer.createNode(containerTag);
-    if (!options?.as) {
-      yield* renderer.setStyleProperty(container, "display", "contents");
-    }
+
+    const container = config.container
+      ? yield* config.container()
+      : yield* createDefaultContainer(renderer);
 
     let currentElement: HTMLElement | null = null;
     let currentValue: boolean | null = null;
     let currentElementScope: Scope.CloseableScope | null = null;
-    const animate = options.animate;
+    const animate = config.animate;
 
     const render = (
       value: boolean,
@@ -102,10 +189,10 @@ export const when = <E1 = never, R1 = never, E2 = never, R2 = never>(
         currentElementScope = yield* Scope.make();
 
         const newElement = value
-          ? yield* onTrue().pipe(
+          ? yield* config.onTrue().pipe(
               Effect.provideService(Scope.Scope, currentElementScope),
             )
-          : yield* onFalse().pipe(
+          : yield* config.onFalse().pipe(
               Effect.provideService(Scope.Scope, currentElementScope),
             );
 
@@ -152,73 +239,72 @@ export const when = <E1 = never, R1 = never, E2 = never, R2 = never>(
       }),
     );
 
-    return container as HTMLElement;
+    return container;
   });
 };
 
 /**
  * Pattern match on a reactive value and render the corresponding element.
- * For async data loading, use {@link DeferredSuspense} or {@link DeferredSuspenseWithBoundary}
- * inside the render function.
  *
  * @param value - Reactive value to match against
- * @param cases - Array of pattern-render pairs
- * @param fallback - Optional fallback if no pattern matches
- * @param options - Optional animation configuration
+ * @param config - Configuration object with cases, optional fallback, container and animate
  *
  * @example
  * ```ts
- * // Simple matching
  * type Status = "loading" | "success" | "error"
  * const status = yield* Signal.make<Status>("loading")
  *
- * match(status, [
- *   { pattern: "loading", render: () => div("Loading...") },
- *   { pattern: "success", render: () => div("Done!") },
- *   { pattern: "error", render: () => div("Failed") },
- * ])
+ * match(status, {
+ *   cases: [
+ *     { pattern: "loading", render: () => $.div("Loading...") },
+ *     { pattern: "success", render: () => $.div("Done!") },
+ *     { pattern: "error", render: () => $.div("Failed") },
+ *   ]
+ * })
  * ```
  *
  * @example
  * ```ts
- * // With animations
- * match(status, [
- *   { pattern: "loading", render: () => Spinner() },
- *   { pattern: "success", render: () => SuccessMessage() },
- *   { pattern: "error", render: () => ErrorMessage() },
- * ], undefined, { animate: { enter: "fade-in", exit: "fade-out" } })
+ * // With fallback and animations
+ * match(status, {
+ *   cases: [
+ *     { pattern: "loading", render: () => Spinner() },
+ *     { pattern: "success", render: () => SuccessMessage() },
+ *   ],
+ *   fallback: () => $.div("Unknown status"),
+ *   animate: { enter: "fade-in", exit: "fade-out" }
+ * })
  * ```
  */
 export const match = <A, E = never, R = never, E2 = never, R2 = never>(
   value: Readable<A>,
-  cases: readonly MatchCase<A, E, R>[],
-  fallback?: () => Element<E2, R2>,
-  options?: ControlAnimationOptions,
+  config: MatchConfig<A, E, R, E2, R2>,
 ): Element<E | E2, R | R2> => {
   // If no animations, use the core implementation
-  if (!options?.animate) {
-    return coreMatch(
-      value,
-      cases as readonly CoreMatchCase<A, HTMLElement, E, R>[],
-      fallback,
-      { as: options?.as },
-    ) as Element<E | E2, R | R2>;
+  if (!config.animate) {
+    return coreMatch(value, {
+      container: config.container,
+      cases: config.cases as readonly CoreMatchCase<A, HTMLElement, E, R>[],
+      fallback: config.fallback,
+    } as CoreMatchConfig<A, HTMLElement, E, R, E2, R2>) as Element<
+      E | E2,
+      R | R2
+    >;
   }
 
   // With animations, use the DOM-specific implementation
   return Effect.gen(function* () {
     const renderer = (yield* RendererContext) as RendererInterface<Node>;
     const scope = yield* Effect.scope;
-    const containerTag = options?.as ?? "div";
-    const container = yield* renderer.createNode(containerTag);
-    if (!options?.as) {
-      yield* renderer.setStyleProperty(container, "display", "contents");
-    }
+
+    const container = config.container
+      ? yield* config.container()
+      : yield* createDefaultContainer(renderer);
 
     let currentElement: HTMLElement | null = null;
     let currentPattern: A | null = null;
     let currentElementScope: Scope.CloseableScope | null = null;
-    const animate = options.animate;
+    const animate = config.animate;
 
     const render = (
       val: A,
@@ -234,15 +320,15 @@ export const match = <A, E = never, R = never, E2 = never, R2 = never>(
         // Create a new scope for this element that stays open
         currentElementScope = yield* Scope.make();
 
-        const matchedCase = cases.find((c) => c.pattern === val);
+        const matchedCase = config.cases.find((c) => c.pattern === val);
 
         let newElement: HTMLElement;
         if (matchedCase) {
           newElement = yield* matchedCase
             .render()
             .pipe(Effect.provideService(Scope.Scope, currentElementScope));
-        } else if (fallback) {
-          newElement = yield* fallback().pipe(
+        } else if (config.fallback) {
+          newElement = yield* config.fallback().pipe(
             Effect.provideService(Scope.Scope, currentElementScope),
           );
         } else {
@@ -295,70 +381,66 @@ export const match = <A, E = never, R = never, E2 = never, R2 = never>(
       }),
     );
 
-    return container as HTMLElement;
+    return container;
   });
 };
 
 /**
  * Render a list of items with efficient updates using keys.
+ *
  * @param items - Reactive array of items
- * @param keyFn - Function to extract a unique key from each item
- * @param render - Function to render each item (receives a Readable for the item)
- * @param options - Optional configuration including container tag and animations
+ * @param config - Configuration object with key, render, optional container and animate
  *
  * @example
  * ```ts
  * interface Todo { id: string; text: string }
  * const todos = yield* Signal.make<Todo[]>([])
  *
- * // Use `as: "ul"` to render a proper HTML list
- * each(
- *   todos,
- *   (todo) => todo.id,
- *   (todo) => $.li(todo.map(t => t.text)),
- *   { as: "ul" }
- * )
+ * each(todos, {
+ *   container: () => $.ul({ class: "todo-list" }),
+ *   key: (todo) => todo.id,
+ *   render: (todo) => $.li(todo.map(t => t.text))
+ * })
  * ```
  *
  * @example
  * ```ts
  * // With staggered animations
- * each(
- *   items,
- *   (item) => item.id,
- *   (item) => ListItem(item),
- *   {
- *     as: "ul",
- *     animate: {
- *       enter: "slide-in",
- *       exit: "slide-out",
- *       stagger: 50  // 50ms between items
- *     }
+ * each(items, {
+ *   container: () => $.ul({ class: "animated-list" }),
+ *   key: (item) => item.id,
+ *   render: (item) => ListItem(item),
+ *   animate: {
+ *     enter: "slide-in",
+ *     exit: "slide-out",
+ *     stagger: 50  // 50ms between items
  *   }
- * )
+ * })
  * ```
  */
 export const each = <A, E = never, R = never>(
   items: Readable<readonly A[]>,
-  keyFn: (item: A) => string,
-  render: (item: Readable<A>) => Element<E, R>,
-  options?: ListControlAnimationOptions,
+  config: EachConfig<A, E, R>,
 ): Element<E, R> => {
   // If no animations, use the core implementation
-  if (!options?.animate) {
-    return coreEach(items, keyFn, render, { as: options?.as }) as Element<E, R>;
+  if (!config.animate) {
+    return coreEach(items, {
+      container: config.container,
+      key: config.key,
+      render: config.render,
+    } as CoreEachConfig<A, HTMLElement, E, R>) as Element<E, R>;
   }
 
   // With animations, use the DOM-specific implementation
   return Effect.gen(function* () {
     const renderer = (yield* RendererContext) as RendererInterface<Node>;
     const scope = yield* Effect.scope;
-    const containerTag = options?.as ?? "div";
-    const container = yield* renderer.createNode(containerTag);
-    if (!options?.as) {
-      yield* renderer.setStyleProperty(container, "display", "contents");
-    }
-    const animate = options.animate;
+
+    const container = config.container
+      ? yield* config.container()
+      : yield* createDefaultContainer(renderer);
+
+    const animate = config.animate;
 
     const itemMap = new Map<
       string,
@@ -380,7 +462,7 @@ export const each = <A, E = never, R = never>(
       isInitial: boolean = false,
     ): Effect.Effect<void, E, Scope.Scope | RendererContext | R> =>
       Effect.gen(function* () {
-        const newKeys = new Set(newItems.map(keyFn));
+        const newKeys = new Set(newItems.map(config.key));
 
         // Collect items to remove
         const removals: {
@@ -396,7 +478,7 @@ export const each = <A, E = never, R = never>(
 
         // Run exit animations with stagger (skip on initial render)
         if (animate && removals.length > 0 && !isInitial) {
-          const stagger = (animate as ListAnimationOptions).stagger;
+          const stagger = animate.stagger;
           yield* Effect.all(
             removals.map(({ element }, index) =>
               Effect.gen(function* () {
@@ -427,7 +509,7 @@ export const each = <A, E = never, R = never>(
 
         for (let i = 0; i < newItems.length; i++) {
           const item = newItems[i];
-          const key = keyFn(item);
+          const key = config.key(item);
           const existing = itemMap.get(key);
 
           if (existing) {
@@ -495,7 +577,7 @@ export const each = <A, E = never, R = never>(
               },
             };
 
-            const element = yield* render(itemReadable).pipe(
+            const element = yield* config.render(itemReadable).pipe(
               Effect.provideService(Scope.Scope, itemScope),
             );
 
@@ -526,7 +608,7 @@ export const each = <A, E = never, R = never>(
 
         // Run enter animations with stagger on new items (skip on initial render)
         if (animate && newEntries.length > 0 && !isInitial) {
-          const stagger = (animate as ListAnimationOptions).stagger;
+          const stagger = animate.stagger;
           yield* Effect.all(
             newEntries.map(({ element, index }) =>
               Effect.gen(function* () {
@@ -565,6 +647,6 @@ export const each = <A, E = never, R = never>(
       }),
     );
 
-    return container as HTMLElement;
+    return container;
   });
 };

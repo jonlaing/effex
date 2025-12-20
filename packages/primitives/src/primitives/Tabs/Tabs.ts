@@ -295,9 +295,8 @@ const Content = component("TabsContent", (props: TabsContentProps, children) =>
     }
 
     // Conditional render using when
-    return yield* when(
-      isSelected,
-      () =>
+    return yield* when(isSelected, {
+      onTrue: () =>
         $.div(
           {
             id: `tabs-content-${props.value}`,
@@ -309,8 +308,8 @@ const Content = component("TabsContent", (props: TabsContentProps, children) =>
           },
           children ?? [],
         ),
-      () => $.div({ style: { display: "none" } }),
-    );
+      onFalse: () => $.div({ style: { display: "none" } }),
+    });
   }),
 );
 

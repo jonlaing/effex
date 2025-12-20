@@ -5,71 +5,124 @@ import { RendererContext, type Renderer } from "./Renderer";
 import type { Element } from "./Element";
 
 /**
- * Options for the `when` control flow.
+ * Configuration for the `when` control flow.
  */
-export interface WhenOptions {
-  /** The HTML tag to use for the container element (default: "div") */
-  readonly as?: string;
+export interface WhenConfig<N, E1 = never, R1 = never, E2 = never, R2 = never> {
+  /**
+   * Optional custom container element. If not provided, defaults to a div
+   * with `display: contents`.
+   *
+   * @example
+   * ```ts
+   * container: () => $.tbody({ class: "data-rows" })
+   * ```
+   */
+  readonly container?: () => Element<N, never, never>;
+  /** Element to render when condition is true */
+  readonly onTrue: () => Element<N, E1, R1>;
+  /** Element to render when condition is false */
+  readonly onFalse: () => Element<N, E2, R2>;
 }
 
 /**
- * Options for the `match` control flow.
+ * A case for pattern matching with {@link match}.
  */
-export interface MatchOptions {
-  /** The HTML tag to use for the container element (default: "div") */
-  readonly as?: string;
+export interface MatchCase<A, N, E = never, R = never> {
+  readonly pattern: A;
+  readonly render: () => Element<N, E, R>;
 }
 
 /**
- * Options for the `each` control flow.
+ * Configuration for the `match` control flow.
  */
-export interface EachOptions {
-  /** The HTML tag to use for the container element (default: "div") */
-  readonly as?: string;
+export interface MatchConfig<
+  A,
+  N,
+  E = never,
+  R = never,
+  E2 = never,
+  R2 = never,
+> {
+  /**
+   * Optional custom container element. If not provided, defaults to a div
+   * with `display: contents`.
+   */
+  readonly container?: () => Element<N, never, never>;
+  /** Array of pattern-render pairs */
+  readonly cases: readonly MatchCase<A, N, E, R>[];
+  /** Optional fallback if no pattern matches */
+  readonly fallback?: () => Element<N, E2, R2>;
 }
+
+/**
+ * Configuration for the `each` control flow.
+ */
+export interface EachConfig<A, N, E = never, R = never> {
+  /**
+   * Optional custom container element. If not provided, defaults to a div
+   * with `display: contents`.
+   *
+   * @example
+   * ```ts
+   * container: () => $.ul({ class: "todo-list" })
+   * ```
+   */
+  readonly container?: () => Element<N, never, never>;
+  /** Function to extract a unique key from each item */
+  readonly key: (item: A) => string;
+  /** Function to render each item (receives a Readable for the item) */
+  readonly render: (item: Readable<A>) => Element<N, E, R>;
+}
+
+/**
+ * Helper to create the default container (div with display: contents)
+ */
+const createDefaultContainer = <N>(
+  renderer: Renderer<N>,
+): Effect.Effect<N, never, never> =>
+  Effect.gen(function* () {
+    const container = yield* renderer.createNode("div");
+    yield* renderer.setStyleProperty(container, "display", "contents");
+    return container;
+  });
 
 /**
  * Conditionally render one of two elements based on a reactive boolean.
+ *
  * @param condition - Reactive boolean value
- * @param onTrue - Element to render when true
- * @param onFalse - Element to render when false
- * @param options - Optional configuration
+ * @param config - Configuration object with onTrue, onFalse, and optional container
  *
  * @example
  * ```ts
  * const isLoggedIn = yield* Signal.make(false)
- * when(
- *   isLoggedIn,
- *   () => div(["Welcome back!"]),
- *   () => div(["Please log in"])
- * )
+ *
+ * when(isLoggedIn, {
+ *   onTrue: () => $.div("Welcome back!"),
+ *   onFalse: () => $.div("Please log in")
+ * })
  * ```
  *
  * @example
  * ```ts
- * // With custom container tag for valid HTML in tables
- * when(
- *   hasData,
- *   () => tr(td("Data row")),
- *   () => tr(td("No data")),
- *   { as: "tbody" }
- * )
+ * // With custom container for valid HTML in tables
+ * when(hasData, {
+ *   container: () => $.tbody({ class: "data-rows" }),
+ *   onTrue: () => $.tr($.td("Data row")),
+ *   onFalse: () => $.tr($.td("No data"))
+ * })
  * ```
  */
 export const when = <N, E1 = never, R1 = never, E2 = never, R2 = never>(
   condition: Readable<boolean>,
-  onTrue: () => Element<N, E1, R1>,
-  onFalse: () => Element<N, E2, R2>,
-  options?: WhenOptions,
+  config: WhenConfig<N, E1, R1, E2, R2>,
 ): Element<N, E1 | E2, R1 | R2> =>
   Effect.gen(function* () {
     const renderer = (yield* RendererContext) as Renderer<N>;
     const scope = yield* Effect.scope;
-    const containerTag = options?.as ?? "div";
-    const container = yield* renderer.createNode(containerTag);
-    if (!options?.as) {
-      yield* renderer.setStyleProperty(container, "display", "contents");
-    }
+
+    const container = config.container
+      ? yield* config.container()
+      : yield* createDefaultContainer(renderer);
 
     let currentElement: N | null = null;
     let currentValue: boolean | null = null;
@@ -89,10 +142,10 @@ export const when = <N, E1 = never, R1 = never, E2 = never, R2 = never>(
         currentElementScope = yield* Scope.make();
 
         const newElement = value
-          ? yield* onTrue().pipe(
+          ? yield* config.onTrue().pipe(
               Effect.provideService(Scope.Scope, currentElementScope),
             )
-          : yield* onFalse().pipe(
+          : yield* config.onFalse().pipe(
               Effect.provideService(Scope.Scope, currentElementScope),
             );
 
@@ -133,47 +186,47 @@ export const when = <N, E1 = never, R1 = never, E2 = never, R2 = never>(
   });
 
 /**
- * A case for pattern matching with {@link match}.
- */
-export interface MatchCase<A, N, E = never, R = never> {
-  readonly pattern: A;
-  readonly render: () => Element<N, E, R>;
-}
-
-/**
  * Pattern match on a reactive value and render the corresponding element.
  *
  * @param value - Reactive value to match against
- * @param cases - Array of pattern-render pairs
- * @param fallback - Optional fallback if no pattern matches
- * @param options - Optional configuration
+ * @param config - Configuration object with cases, optional fallback, and optional container
  *
  * @example
  * ```ts
  * type Status = "loading" | "success" | "error"
  * const status = yield* Signal.make<Status>("loading")
  *
- * match(status, [
- *   { pattern: "loading", render: () => div("Loading...") },
- *   { pattern: "success", render: () => div("Done!") },
- *   { pattern: "error", render: () => div("Failed") },
- * ])
+ * match(status, {
+ *   cases: [
+ *     { pattern: "loading", render: () => $.div("Loading...") },
+ *     { pattern: "success", render: () => $.div("Done!") },
+ *     { pattern: "error", render: () => $.div("Failed") },
+ *   ]
+ * })
+ * ```
+ *
+ * @example
+ * ```ts
+ * // With fallback
+ * match(status, {
+ *   cases: [
+ *     { pattern: "loading", render: () => Spinner() },
+ *   ],
+ *   fallback: () => $.div("Unknown status")
+ * })
  * ```
  */
 export const match = <A, N, E = never, R = never, E2 = never, R2 = never>(
   value: Readable<A>,
-  cases: readonly MatchCase<A, N, E, R>[],
-  fallback?: () => Element<N, E2, R2>,
-  options?: MatchOptions,
+  config: MatchConfig<A, N, E, R, E2, R2>,
 ): Element<N, E | E2, R | R2> =>
   Effect.gen(function* () {
     const renderer = (yield* RendererContext) as Renderer<N>;
     const scope = yield* Effect.scope;
-    const containerTag = options?.as ?? "div";
-    const container = yield* renderer.createNode(containerTag);
-    if (!options?.as) {
-      yield* renderer.setStyleProperty(container, "display", "contents");
-    }
+
+    const container = config.container
+      ? yield* config.container()
+      : yield* createDefaultContainer(renderer);
 
     let currentElement: N | null = null;
     let currentPattern: A | null = null;
@@ -192,15 +245,15 @@ export const match = <A, N, E = never, R = never, E2 = never, R2 = never>(
         // Create a new scope for this element that stays open
         currentElementScope = yield* Scope.make();
 
-        const matchedCase = cases.find((c) => c.pattern === val);
+        const matchedCase = config.cases.find((c) => c.pattern === val);
 
         let newElement: N;
         if (matchedCase) {
           newElement = yield* matchedCase
             .render()
             .pipe(Effect.provideService(Scope.Scope, currentElementScope));
-        } else if (fallback) {
-          newElement = yield* fallback().pipe(
+        } else if (config.fallback) {
+          newElement = yield* config.fallback().pipe(
             Effect.provideService(Scope.Scope, currentElementScope),
           );
         } else {
@@ -248,39 +301,33 @@ export const match = <A, N, E = never, R = never, E2 = never, R2 = never>(
 
 /**
  * Render a list of items with efficient updates using keys.
+ *
  * @param items - Reactive array of items
- * @param keyFn - Function to extract a unique key from each item
- * @param render - Function to render each item (receives a Readable for the item)
- * @param options - Optional configuration including the container tag
+ * @param config - Configuration object with key, render, and optional container
  *
  * @example
  * ```ts
  * interface Todo { id: string; text: string }
  * const todos = yield* Signal.make<Todo[]>([])
  *
- * // Use `as: "ul"` to render a proper HTML list
- * each(
- *   todos,
- *   (todo) => todo.id,
- *   (todo) => li([todo.map(t => t.text)]),
- *   { as: "ul" }
- * )
+ * each(todos, {
+ *   container: () => $.ul({ class: "todo-list" }),
+ *   key: (todo) => todo.id,
+ *   render: (todo) => $.li(todo.map(t => t.text))
+ * })
  * ```
  */
 export const each = <A, N, E = never, R = never>(
   items: Readable<readonly A[]>,
-  keyFn: (item: A) => string,
-  render: (item: Readable<A>) => Element<N, E, R>,
-  options?: EachOptions,
+  config: EachConfig<A, N, E, R>,
 ): Element<N, E, R> =>
   Effect.gen(function* () {
     const renderer = (yield* RendererContext) as Renderer<N>;
     const scope = yield* Effect.scope;
-    const containerTag = options?.as ?? "div";
-    const container = yield* renderer.createNode(containerTag);
-    if (!options?.as) {
-      yield* renderer.setStyleProperty(container, "display", "contents");
-    }
+
+    const container = config.container
+      ? yield* config.container()
+      : yield* createDefaultContainer(renderer);
 
     const itemMap = new Map<
       string,
@@ -302,7 +349,7 @@ export const each = <A, N, E = never, R = never>(
       isInitial: boolean = false,
     ): Effect.Effect<void, E, Scope.Scope | RendererContext | R> =>
       Effect.gen(function* () {
-        const newKeys = new Set(newItems.map(keyFn));
+        const newKeys = new Set(newItems.map(config.key));
 
         // Collect items to remove
         const removals: {
@@ -325,7 +372,7 @@ export const each = <A, N, E = never, R = never>(
 
         for (let i = 0; i < newItems.length; i++) {
           const item = newItems[i];
-          const key = keyFn(item);
+          const key = config.key(item);
           const existing = itemMap.get(key);
 
           if (existing) {
@@ -393,7 +440,7 @@ export const each = <A, N, E = never, R = never>(
               },
             };
 
-            const element = yield* render(itemReadable).pipe(
+            const element = yield* config.render(itemReadable).pipe(
               Effect.provideService(Scope.Scope, itemScope),
             );
 

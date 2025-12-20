@@ -658,9 +658,8 @@ const Content = component(
 
       const dataState = ctx.isOpen.map((open) => (open ? "open" : "closed"));
 
-      return yield* when(
-        ctx.isOpen,
-        () =>
+      return yield* when(ctx.isOpen, {
+        onTrue: () =>
           Portal(() =>
             Effect.gen(function* () {
               const inputEl = ctx.inputRef.current;
@@ -739,8 +738,8 @@ const Content = component(
               return contentEl;
             }),
           ),
-        () => $.div({ style: { display: "none" } }),
-      );
+        onFalse: () => $.div({ style: { display: "none" } }),
+      });
     }),
 );
 
@@ -819,9 +818,8 @@ const Item = (
     };
 
     // Conditionally render based on filter
-    return yield* when(
-      shouldShow,
-      () =>
+    return yield* when(shouldShow, {
+      onTrue: () =>
         $.div(
           {
             id: ctx.getItemId(props.value),
@@ -842,8 +840,8 @@ const Item = (
           },
           provide(ComboboxItemCtx, itemCtx, children),
         ),
-      () => $.div({ style: { display: "none" } }),
-    );
+      onFalse: () => $.div({ style: { display: "none" } }),
+    });
   });
 
 /**
@@ -959,9 +957,8 @@ const Empty = component(
         map: (f) => Readable.map(itemsEmpty, (empty) => f(empty)),
       };
 
-      return yield* when(
-        shouldShow,
-        () =>
+      return yield* when(shouldShow, {
+        onTrue: () =>
           $.div(
             {
               class: props.class,
@@ -969,8 +966,8 @@ const Empty = component(
             },
             children ?? [],
           ),
-        () => $.div({ style: { display: "none" } }),
-      );
+        onFalse: () => $.div({ style: { display: "none" } }),
+      });
     }),
 );
 
@@ -989,9 +986,8 @@ const Loading = component(
     Effect.gen(function* () {
       const ctx = yield* ComboboxCtx;
 
-      return yield* when(
-        ctx.isLoading,
-        () =>
+      return yield* when(ctx.isLoading, {
+        onTrue: () =>
           $.div(
             {
               class: props.class,
@@ -999,8 +995,8 @@ const Loading = component(
             },
             children ?? [],
           ),
-        () => $.div({ style: { display: "none" } }),
-      );
+        onFalse: () => $.div({ style: { display: "none" } }),
+      });
     }),
 );
 

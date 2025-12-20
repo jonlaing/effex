@@ -208,9 +208,8 @@ const Content = component(
 
       const dataState = ctx.isOpen.map((open) => (open ? "open" : "closed"));
 
-      return yield* when(
-        ctx.isOpen,
-        () =>
+      return yield* when(ctx.isOpen, {
+        onTrue: () =>
           Portal(() =>
             Effect.gen(function* () {
               const triggerEl = yield* ctx.triggerRef.get;
@@ -259,8 +258,8 @@ const Content = component(
               );
             }),
           ),
-        () => $.div({ style: { display: "none" } }),
-      );
+        onFalse: () => $.div({ style: { display: "none" } }),
+      });
     }),
 );
 

@@ -224,17 +224,16 @@ const DialogPortal = (
   Effect.gen(function* () {
     const ctx = yield* DialogCtx;
 
-    return yield* when(
-      ctx.isOpen,
-      () =>
+    return yield* when(ctx.isOpen, {
+      onTrue: () =>
         Portal({ target: props.target }, () =>
           $.div(
             { style: { display: "contents" }, "data-dialog-portal": "" },
             provide(DialogCtx, ctx, children),
           ),
         ),
-      () => $.div({ style: { display: "none" } }),
-    );
+      onFalse: () => $.div({ style: { display: "none" } }),
+    });
   });
 
 /**
