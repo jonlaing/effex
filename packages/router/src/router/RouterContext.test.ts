@@ -9,7 +9,7 @@ import {
   makeRouterLayer,
 } from "./RouterContext";
 import type { BaseRouter } from "./types";
-import type { Readable } from "@effex/dom";
+import type { Readable } from "@effex/core";
 import { DOMRendererLive } from "@effex/dom";
 
 // Create a simple readable for testing

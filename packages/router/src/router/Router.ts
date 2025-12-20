@@ -1,7 +1,6 @@
 import { Effect, Scope } from "effect";
 import type { Schema } from "effect";
-import { Signal } from "@effex/dom";
-import { Derived } from "@effex/dom";
+import { Signal, Derived } from "@effex/core";
 import type {
   Route,
   Router as RouterType,
@@ -44,12 +43,13 @@ export const make = <
   options?: RouterOptions,
 ): Effect.Effect<RouterType<Routes>, never, Scope.Scope> =>
   Effect.gen(function* () {
-    // Get initial path from options or window.location
+    // Get initial path and search from options or window.location
     const initialPath =
       options?.initialPath ??
       (typeof window !== "undefined" ? window.location.pathname : "/");
     const initialSearch =
-      typeof window !== "undefined" ? window.location.search : "";
+      options?.initialSearch ??
+      (typeof window !== "undefined" ? window.location.search : "");
 
     // Create signals for pathname and search params
     const pathnameSignal = yield* Signal.make(initialPath);

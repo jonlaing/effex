@@ -1,5 +1,5 @@
 import type { Effect, Schema } from "effect";
-import type { Readable } from "@effex/dom";
+import type { Readable } from "@effex/core";
 
 /**
  * A path segment in a route pattern.
@@ -137,6 +137,8 @@ export interface Router<
 export interface RouterOptions {
   /** Initial path to start at (defaults to window.location.pathname) */
   readonly initialPath?: string;
+  /** Initial search string to start at (defaults to window.location.search) */
+  readonly initialSearch?: string;
 }
 
 /**

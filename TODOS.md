@@ -69,9 +69,11 @@
     - Server should serialize fetched data into `<script>window.__EFFEX_DATA__ = {...}</script>`
     - Services could check this cache before making API calls
     - Needs: SSR to collect resolved data, mechanism to inject into HTML, client cache layer
-  - [ ] **Router SSR refinement** - Router works but could be cleaner
-    - Consider SSR-specific router that skips `popstate` listeners entirely
-    - Document the `initialPath` option pattern for server usage
+  - [x] **Router SSR refinement** - Router works cleanly for SSR
+    - Added `initialSearch` option to `RouterOptions`
+    - Router imports core types from `@effex/core` (framework-agnostic)
+    - Skips `popstate` listeners when `window` is undefined
+    - Navigation methods are no-ops in SSR mode (no errors thrown)
   - [ ] **Streaming SSR** - `renderToStream` for progressive HTML delivery
     - Suspense boundaries could flush placeholders early, stream resolved content later
     - Would require chunked transfer encoding support

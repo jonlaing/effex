@@ -35,6 +35,7 @@
     "build": "tsup"
   },
   "dependencies": {
+    "@effex/core": "workspace:*",
     "@effex/dom": "workspace:*"
   },
   "peerDependencies": {

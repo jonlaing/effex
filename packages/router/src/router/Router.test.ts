@@ -92,6 +92,30 @@ describe("Router", () => {
       expect(result.currentRoute).toBe("users");
     });
 
+    it("should use initialSearch option", async () => {
+      const result = await Effect.runPromise(
+        Effect.scoped(
+          Effect.gen(function* () {
+            const router = yield* Router.make(
+              {
+                home: Route.make("/"),
+              },
+              { initialPath: "/", initialSearch: "?foo=bar&baz=qux" },
+            );
+
+            const params = yield* router.searchParams.get;
+            return {
+              foo: params.get("foo"),
+              baz: params.get("baz"),
+            };
+          }),
+        ),
+      );
+
+      expect(result.foo).toBe("bar");
+      expect(result.baz).toBe("qux");
+    });
+
     it("should return null currentRoute when no match", async () => {
       const result = await Effect.runPromise(
         Effect.scoped(
@@ -399,6 +423,116 @@ describe("Router", () => {
         "popstate",
         expect.any(Function),
       );
+    });
+  });
+
+  describe("SSR mode", () => {
+    it("should work without window when using initialPath and initialSearch", async () => {
+      // Temporarily remove window
+      const originalWindow = globalThis.window;
+      // @ts-expect-error - Intentionally setting window to undefined for SSR test
+      globalThis.window = undefined;
+
+      try {
+        const result = await Effect.runPromise(
+          Effect.scoped(
+            Effect.gen(function* () {
+              const router = yield* Router.make(
+                {
+                  home: Route.make("/"),
+                  users: Route.make("/users/:id", {
+                    params: Schema.Struct({ id: Schema.String }),
+                  }),
+                },
+                { initialPath: "/users/123", initialSearch: "?tab=profile" },
+              );
+
+              return {
+                pathname: yield* router.pathname.get,
+                currentRoute: yield* router.currentRoute.get,
+                params: yield* router.routes.users.params.get,
+                search: (yield* router.searchParams.get).get("tab"),
+              };
+            }),
+          ),
+        );
+
+        expect(result.pathname).toBe("/users/123");
+        expect(result.currentRoute).toBe("users");
+        expect(result.params).toEqual({ id: "123" });
+        expect(result.search).toBe("profile");
+      } finally {
+        // Restore window
+        globalThis.window = originalWindow;
+      }
+    });
+
+    it("should default to / and empty search when window is undefined and no options", async () => {
+      // Temporarily remove window
+      const originalWindow = globalThis.window;
+      // @ts-expect-error - Intentionally setting window to undefined for SSR test
+      globalThis.window = undefined;
+
+      try {
+        const result = await Effect.runPromise(
+          Effect.scoped(
+            Effect.gen(function* () {
+              const router = yield* Router.make({
+                home: Route.make("/"),
+              });
+
+              return {
+                pathname: yield* router.pathname.get,
+                currentRoute: yield* router.currentRoute.get,
+                searchSize: (yield* router.searchParams.get).size,
+              };
+            }),
+          ),
+        );
+
+        expect(result.pathname).toBe("/");
+        expect(result.currentRoute).toBe("home");
+        expect(result.searchSize).toBe(0);
+      } finally {
+        // Restore window
+        globalThis.window = originalWindow;
+      }
+    });
+
+    it("should not call push/replace/back/forward in SSR mode", async () => {
+      // Temporarily remove window
+      const originalWindow = globalThis.window;
+      // @ts-expect-error - Intentionally setting window to undefined for SSR test
+      globalThis.window = undefined;
+
+      try {
+        await Effect.runPromise(
+          Effect.scoped(
+            Effect.gen(function* () {
+              const router = yield* Router.make(
+                {
+                  home: Route.make("/"),
+                  users: Route.make("/users"),
+                },
+                { initialPath: "/" },
+              );
+
+              // These should not throw in SSR mode
+              yield* router.push("/users");
+              yield* router.replace("/");
+              yield* router.back();
+              yield* router.forward();
+
+              // Pathname shouldn't change since there's no browser history
+              const pathname = yield* router.pathname.get;
+              expect(pathname).toBe("/");
+            }),
+          ),
+        );
+      } finally {
+        // Restore window
+        globalThis.window = originalWindow;
+      }
     });
   });
 });
