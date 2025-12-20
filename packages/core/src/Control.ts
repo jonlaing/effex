@@ -142,12 +142,12 @@ export const when = <N, E1 = never, R1 = never, E2 = never, R2 = never>(
         currentElementScope = yield* Scope.make();
 
         const newElement = value
-          ? yield* config.onTrue().pipe(
-              Effect.provideService(Scope.Scope, currentElementScope),
-            )
-          : yield* config.onFalse().pipe(
-              Effect.provideService(Scope.Scope, currentElementScope),
-            );
+          ? yield* config
+              .onTrue()
+              .pipe(Effect.provideService(Scope.Scope, currentElementScope))
+          : yield* config
+              .onFalse()
+              .pipe(Effect.provideService(Scope.Scope, currentElementScope));
 
         // Close the previous scope
         if (previousScope) {
@@ -253,9 +253,9 @@ export const match = <A, N, E = never, R = never, E2 = never, R2 = never>(
             .render()
             .pipe(Effect.provideService(Scope.Scope, currentElementScope));
         } else if (config.fallback) {
-          newElement = yield* config.fallback().pipe(
-            Effect.provideService(Scope.Scope, currentElementScope),
-          );
+          newElement = yield* config
+            .fallback()
+            .pipe(Effect.provideService(Scope.Scope, currentElementScope));
         } else {
           // No match and no fallback - close the scope we just created
           yield* Scope.close(currentElementScope, Exit.void);
@@ -440,9 +440,9 @@ export const each = <A, N, E = never, R = never>(
               },
             };
 
-            const element = yield* config.render(itemReadable).pipe(
-              Effect.provideService(Scope.Scope, itemScope),
-            );
+            const element = yield* config
+              .render(itemReadable)
+              .pipe(Effect.provideService(Scope.Scope, itemScope));
 
             // Insert at correct position
             const currentChildren = yield* renderer.getChildren(container);

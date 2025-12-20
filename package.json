@@ -16,7 +16,7 @@
     "build": "pnpm -r build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write .",
+    "format": "prettier --log-level=silent --write .",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "bench": "vitest bench",
@@ -26,7 +26,8 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "pnpm build && changeset publish",
-    "docs:gen": "rm -rf docs && typedoc"
+    "docs:gen": "rm -rf docs && typedoc",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
@@ -47,6 +48,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-storybook": "^10.1.8",
     "globals": "^16.5.0",
+    "husky": "^9.1.7",
     "jiti": "^2.6.1",
     "jsdom": "^27.2.0",
     "playwright": "^1.57.0",

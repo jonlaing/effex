@@ -194,12 +194,15 @@ describe("Tooltip", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* Tooltip.Root({
-            onOpenChange: (isOpen) =>
-              Effect.sync(() => {
-                changes.push(isOpen);
-              }),
-          }, [Tooltip.Trigger({}, $.button({}, "Hover me"))]);
+          const el = yield* Tooltip.Root(
+            {
+              onOpenChange: (isOpen) =>
+                Effect.sync(() => {
+                  changes.push(isOpen);
+                }),
+            },
+            [Tooltip.Trigger({}, $.button({}, "Hover me"))],
+          );
 
           // Focus the trigger to open tooltip (focus opens immediately)
           const trigger = el.querySelector(

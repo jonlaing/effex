@@ -343,17 +343,14 @@ describe("Accordion", () => {
     it("should disable all triggers when root is disabled", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Accordion.Root(
-            { type: "single", disabled: true },
-            [
-              Accordion.Item({ value: "item-1" }, [
-                Accordion.Trigger({}, "Section 1"),
-              ]),
-              Accordion.Item({ value: "item-2" }, [
-                Accordion.Trigger({}, "Section 2"),
-              ]),
-            ],
-          );
+          const el = yield* Accordion.Root({ type: "single", disabled: true }, [
+            Accordion.Item({ value: "item-1" }, [
+              Accordion.Trigger({}, "Section 1"),
+            ]),
+            Accordion.Item({ value: "item-2" }, [
+              Accordion.Trigger({}, "Section 2"),
+            ]),
+          ]);
 
           const triggers = el.querySelectorAll(
             "button",

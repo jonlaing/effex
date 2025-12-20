@@ -8,7 +8,7 @@
 
 > **makeTypedRouterLayer**\<`R`, `I`\>(`router`, `TypedContext`): `Layer`\<[`RouterContext`](../classes/RouterContext.md) \| `R`\>
 
-Defined in: [packages/router/src/router/RouterContext.ts:73](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/router/src/router/RouterContext.ts#L73)
+Defined in: [packages/router/src/router/RouterContext.ts:73](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/router/src/router/RouterContext.ts#L73)
 
 Create a router layer that provides both RouterContext (for Link components)
 and a custom typed context (for full router access with typed routes).

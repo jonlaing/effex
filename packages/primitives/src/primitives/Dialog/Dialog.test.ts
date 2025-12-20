@@ -54,7 +54,9 @@ describe("Dialog", () => {
     it("should render as button", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Dialog.Root({}, [Dialog.Trigger({}, "Open Dialog")]);
+          const el = yield* Dialog.Root({}, [
+            Dialog.Trigger({}, "Open Dialog"),
+          ]);
 
           const trigger = el.querySelector("button");
           expect(trigger).not.toBeNull();
@@ -182,9 +184,7 @@ describe("Dialog", () => {
     it("should render as h2 with title data attribute", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Dialog.Root({}, [
-            Dialog.Title({}, "Edit Profile"),
-          ]);
+          const el = yield* Dialog.Root({}, [Dialog.Title({}, "Edit Profile")]);
 
           const title = el.querySelector("[data-dialog-title]");
           expect(title).not.toBeNull();
@@ -197,9 +197,7 @@ describe("Dialog", () => {
     it("should have unique id for aria-labelledby", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Dialog.Root({}, [
-            Dialog.Title({}, "Edit Profile"),
-          ]);
+          const el = yield* Dialog.Root({}, [Dialog.Title({}, "Edit Profile")]);
 
           const title = el.querySelector("[data-dialog-title]");
           expect(title?.id).toMatch(/dialog-title-/);
@@ -273,9 +271,7 @@ describe("Dialog", () => {
         Effect.gen(function* () {
           const open = yield* Signal.make(false);
 
-          const el = yield* Dialog.Root({ open }, [
-            Dialog.Trigger({}, "Open"),
-          ]);
+          const el = yield* Dialog.Root({ open }, [Dialog.Trigger({}, "Open")]);
 
           const trigger = el.querySelector("button");
           expect(trigger?.getAttribute("data-state")).toBe("closed");
@@ -295,12 +291,15 @@ describe("Dialog", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* Dialog.Root({
-            onOpenChange: (open) =>
-              Effect.sync(() => {
-                changes.push(open);
-              }),
-          }, [Dialog.Trigger({}, "Open")]);
+          const el = yield* Dialog.Root(
+            {
+              onOpenChange: (open) =>
+                Effect.sync(() => {
+                  changes.push(open);
+                }),
+            },
+            [Dialog.Trigger({}, "Open")],
+          );
 
           const trigger = el.querySelector("button") as HTMLButtonElement;
           trigger.click();
@@ -316,13 +315,16 @@ describe("Dialog", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* Dialog.Root({
-            defaultOpen: true,
-            onOpenChange: (open) =>
-              Effect.sync(() => {
-                changes.push(open);
-              }),
-          }, [Dialog.Close({}, "Close")]);
+          const el = yield* Dialog.Root(
+            {
+              defaultOpen: true,
+              onOpenChange: (open) =>
+                Effect.sync(() => {
+                  changes.push(open);
+                }),
+            },
+            [Dialog.Close({}, "Close")],
+          );
 
           const close = el.querySelector(
             "[data-dialog-close]",

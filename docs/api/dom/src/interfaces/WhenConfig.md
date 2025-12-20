@@ -6,7 +6,7 @@
 
 # Interface: WhenConfig\<E1, R1, E2, R2\>
 
-Defined in: [packages/dom/src/Control.ts:35](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L35)
+Defined in: [packages/dom/src/Control.ts:39](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/dom/src/Control.ts#L39)
 
 Configuration for the `when` control flow (DOM-specific with animation support).
 
@@ -34,7 +34,7 @@ Configuration for the `when` control flow (DOM-specific with animation support).
 
 > `readonly` `optional` **animate**: [`AnimationOptions`](AnimationOptions.md)
 
-Defined in: [packages/dom/src/Control.ts:51](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L51)
+Defined in: [packages/dom/src/Control.ts:55](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/dom/src/Control.ts#L55)
 
 Optional animation configuration
 
@@ -44,7 +44,7 @@ Optional animation configuration
 
 > `readonly` `optional` **container**: () => [`Element`](../type-aliases/Element.md)\<`never`, `never`\>
 
-Defined in: [packages/dom/src/Control.ts:45](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L45)
+Defined in: [packages/dom/src/Control.ts:49](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/dom/src/Control.ts#L49)
 
 Optional custom container element. If not provided, defaults to a div
 with `display: contents`.
@@ -65,7 +65,7 @@ container: () => $.tbody({ class: "data-rows" })
 
 > `readonly` **onFalse**: () => [`Element`](../type-aliases/Element.md)\<`E2`, `R2`\>
 
-Defined in: [packages/dom/src/Control.ts:49](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L49)
+Defined in: [packages/dom/src/Control.ts:53](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/dom/src/Control.ts#L53)
 
 Element to render when condition is false
 
@@ -79,7 +79,7 @@ Element to render when condition is false
 
 > `readonly` **onTrue**: () => [`Element`](../type-aliases/Element.md)\<`E1`, `R1`\>
 
-Defined in: [packages/dom/src/Control.ts:47](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Control.ts#L47)
+Defined in: [packages/dom/src/Control.ts:51](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/dom/src/Control.ts#L51)
 
 Element to render when condition is true
 

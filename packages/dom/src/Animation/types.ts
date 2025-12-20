@@ -105,4 +105,3 @@ export interface ListAnimationOptions extends AnimationOptions {
    */
   stagger?: number | StaggerFunction;
 }
-

@@ -284,15 +284,18 @@ describe("Select", () => {
     it("should have data-state=checked when selected", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Select.Root({
-            defaultOpen: true,
-            defaultValue: "apple",
-          }, [
-            Select.Trigger({}, []),
-            Select.Content({}, [
-              Select.Item({ value: "apple" }, [Select.ItemText({}, "Apple")]),
-            ]),
-          ]);
+          const el = yield* Select.Root(
+            {
+              defaultOpen: true,
+              defaultValue: "apple",
+            },
+            [
+              Select.Trigger({}, []),
+              Select.Content({}, [
+                Select.Item({ value: "apple" }, [Select.ItemText({}, "Apple")]),
+              ]),
+            ],
+          );
 
           yield* Effect.sleep("50 millis");
           const item = document.querySelector("[data-select-item]");
@@ -604,18 +607,21 @@ describe("Select", () => {
         Effect.gen(function* () {
           const changes: string[] = [];
 
-          const el = yield* Select.Root({
-            defaultOpen: true,
-            onValueChange: (val) =>
-              Effect.sync(() => {
-                changes.push(val);
-              }),
-          }, [
-            Select.Trigger({}, []),
-            Select.Content({}, [
-              Select.Item({ value: "apple" }, [Select.ItemText({}, "Apple")]),
-            ]),
-          ]);
+          const el = yield* Select.Root(
+            {
+              defaultOpen: true,
+              onValueChange: (val) =>
+                Effect.sync(() => {
+                  changes.push(val);
+                }),
+            },
+            [
+              Select.Trigger({}, []),
+              Select.Content({}, [
+                Select.Item({ value: "apple" }, [Select.ItemText({}, "Apple")]),
+              ]),
+            ],
+          );
 
           yield* Effect.sleep("50 millis");
 
@@ -637,12 +643,15 @@ describe("Select", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* Select.Root({
-            onOpenChange: (isOpen) =>
-              Effect.sync(() => {
-                changes.push(isOpen);
-              }),
-          }, [Select.Trigger({}, [])]);
+          const el = yield* Select.Root(
+            {
+              onOpenChange: (isOpen) =>
+                Effect.sync(() => {
+                  changes.push(isOpen);
+                }),
+            },
+            [Select.Trigger({}, [])],
+          );
 
           const trigger = el.querySelector(
             "[data-select-trigger]",

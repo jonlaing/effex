@@ -332,12 +332,15 @@ describe("AlertDialog", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* AlertDialog.Root({
-            onOpenChange: (open) =>
-              Effect.sync(() => {
-                changes.push(open);
-              }),
-          }, [AlertDialog.Trigger({}, "Open")]);
+          const el = yield* AlertDialog.Root(
+            {
+              onOpenChange: (open) =>
+                Effect.sync(() => {
+                  changes.push(open);
+                }),
+            },
+            [AlertDialog.Trigger({}, "Open")],
+          );
 
           const trigger = el.querySelector("button") as HTMLButtonElement;
           trigger.click();

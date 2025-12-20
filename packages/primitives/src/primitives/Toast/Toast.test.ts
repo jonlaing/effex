@@ -192,9 +192,7 @@ describe("Toast", () => {
     it("should render with toast-title data attribute", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Toast.Provider({}, [
-            Toast.Title({}, "Title Text"),
-          ]);
+          const el = yield* Toast.Provider({}, [Toast.Title({}, "Title Text")]);
 
           const title = el.querySelector("[data-toast-title]");
           expect(title).not.toBeNull();

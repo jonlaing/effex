@@ -401,18 +401,21 @@ describe("Tabs", () => {
         Effect.gen(function* () {
           const changes: string[] = [];
 
-          const el = yield* Tabs.Root({
-            defaultValue: "tab1",
-            onValueChange: (value) =>
-              Effect.sync(() => {
-                changes.push(value);
-              }),
-          }, [
-            Tabs.List({}, [
-              Tabs.Trigger({ value: "tab1" }, "Tab 1"),
-              Tabs.Trigger({ value: "tab2" }, "Tab 2"),
-            ]),
-          ]);
+          const el = yield* Tabs.Root(
+            {
+              defaultValue: "tab1",
+              onValueChange: (value) =>
+                Effect.sync(() => {
+                  changes.push(value);
+                }),
+            },
+            [
+              Tabs.List({}, [
+                Tabs.Trigger({ value: "tab1" }, "Tab 1"),
+                Tabs.Trigger({ value: "tab2" }, "Tab 2"),
+              ]),
+            ],
+          );
 
           const triggers = el.querySelectorAll("button");
           triggers[1]?.click();

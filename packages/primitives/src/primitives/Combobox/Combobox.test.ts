@@ -304,17 +304,20 @@ describe("Combobox", () => {
     it("should have data-state=checked when selected", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Combobox.Root({
-            defaultOpen: true,
-            defaultValue: "apple",
-          }, [
-            Combobox.Input({}),
-            Combobox.Content({}, [
-              Combobox.Item({ value: "apple" }, [
-                Combobox.ItemText({}, "Apple"),
+          const el = yield* Combobox.Root(
+            {
+              defaultOpen: true,
+              defaultValue: "apple",
+            },
+            [
+              Combobox.Input({}),
+              Combobox.Content({}, [
+                Combobox.Item({ value: "apple" }, [
+                  Combobox.ItemText({}, "Apple"),
+                ]),
               ]),
-            ]),
-          ]);
+            ],
+          );
 
           yield* Effect.sleep("50 millis");
           const item = document.querySelector("[data-combobox-item]");
@@ -532,20 +535,23 @@ describe("Combobox", () => {
         Effect.gen(function* () {
           const changes: string[] = [];
 
-          const el = yield* Combobox.Root({
-            defaultOpen: true,
-            onValueChange: (val) =>
-              Effect.sync(() => {
-                changes.push(val);
-              }),
-          }, [
-            Combobox.Input({}),
-            Combobox.Content({}, [
-              Combobox.Item({ value: "apple" }, [
-                Combobox.ItemText({}, "Apple"),
+          const el = yield* Combobox.Root(
+            {
+              defaultOpen: true,
+              onValueChange: (val) =>
+                Effect.sync(() => {
+                  changes.push(val);
+                }),
+            },
+            [
+              Combobox.Input({}),
+              Combobox.Content({}, [
+                Combobox.Item({ value: "apple" }, [
+                  Combobox.ItemText({}, "Apple"),
+                ]),
               ]),
-            ]),
-          ]);
+            ],
+          );
 
           yield* Effect.sleep("50 millis");
 
@@ -567,12 +573,15 @@ describe("Combobox", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* Combobox.Root({
-            onOpenChange: (isOpen) =>
-              Effect.sync(() => {
-                changes.push(isOpen);
-              }),
-          }, [Combobox.Input({})]);
+          const el = yield* Combobox.Root(
+            {
+              onOpenChange: (isOpen) =>
+                Effect.sync(() => {
+                  changes.push(isOpen);
+                }),
+            },
+            [Combobox.Input({})],
+          );
 
           const input = el.querySelector(
             "[data-combobox-input]",

@@ -8,7 +8,7 @@
 
 > `const` **Slider**: `object`
 
-Defined in: [packages/primitives/src/primitives/Slider/Slider.ts:649](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Slider/Slider.ts#L649)
+Defined in: [packages/primitives/src/primitives/Slider/Slider.ts:649](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/primitives/src/primitives/Slider/Slider.ts#L649)
 
 Headless Slider primitive for building accessible range input controls.
 

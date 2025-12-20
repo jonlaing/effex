@@ -1,0 +1,3 @@
+pnpm format
+pnpm docs:gen
+git add docs/

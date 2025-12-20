@@ -83,7 +83,9 @@ describe("NavigationMenu", () => {
     it("should render as ol with navigationmenu-list data attribute", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* NavigationMenu.Root({}, [NavigationMenu.List({}, [])]);
+          const el = yield* NavigationMenu.Root({}, [
+            NavigationMenu.List({}, []),
+          ]);
 
           const list = el.querySelector("[data-navigationmenu-list]");
           expect(list).not.toBeNull();
@@ -95,7 +97,9 @@ describe("NavigationMenu", () => {
     it("should have role=menubar", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* NavigationMenu.Root({}, [NavigationMenu.List({}, [])]);
+          const el = yield* NavigationMenu.Root({}, [
+            NavigationMenu.List({}, []),
+          ]);
 
           const list = el.querySelector("[data-navigationmenu-list]");
           expect(list?.getAttribute("role")).toBe("menubar");
@@ -106,7 +110,9 @@ describe("NavigationMenu", () => {
     it("should have aria-orientation", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* NavigationMenu.Root({}, [NavigationMenu.List({}, [])]);
+          const el = yield* NavigationMenu.Root({}, [
+            NavigationMenu.List({}, []),
+          ]);
 
           const list = el.querySelector("[data-navigationmenu-list]");
           expect(list?.getAttribute("aria-orientation")).toBe("horizontal");
@@ -456,18 +462,21 @@ describe("NavigationMenu", () => {
         Effect.gen(function* () {
           const changes: (string | null)[] = [];
 
-          const el = yield* NavigationMenu.Root({
-            onValueChange: (val) =>
-              Effect.sync(() => {
-                changes.push(val);
-              }),
-          }, [
-            NavigationMenu.List({}, [
-              NavigationMenu.Item({ value: "item1" }, [
-                NavigationMenu.Trigger({}, "Products"),
+          const el = yield* NavigationMenu.Root(
+            {
+              onValueChange: (val) =>
+                Effect.sync(() => {
+                  changes.push(val);
+                }),
+            },
+            [
+              NavigationMenu.List({}, [
+                NavigationMenu.Item({ value: "item1" }, [
+                  NavigationMenu.Trigger({}, "Products"),
+                ]),
               ]),
-            ]),
-          ]);
+            ],
+          );
 
           const trigger = el.querySelector(
             "[data-navigationmenu-trigger]",

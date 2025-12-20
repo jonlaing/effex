@@ -6,7 +6,7 @@
 
 # Interface: RouteOptions\<P\>
 
-Defined in: [packages/router/src/router/types.ts:16](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/router/src/router/types.ts#L16)
+Defined in: [packages/router/src/router/types.ts:16](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/router/src/router/types.ts#L16)
 
 Options for creating a Route.
 
@@ -24,6 +24,6 @@ The params schema type
 
 > `readonly` `optional` **params**: `P`
 
-Defined in: [packages/router/src/router/types.ts:18](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/router/src/router/types.ts#L18)
+Defined in: [packages/router/src/router/types.ts:18](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/router/src/router/types.ts#L18)
 
 Schema for validating and typing path parameters

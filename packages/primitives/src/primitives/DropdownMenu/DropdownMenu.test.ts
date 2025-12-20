@@ -281,9 +281,7 @@ describe("DropdownMenu", () => {
     it("should render with menu-separator data attribute", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* DropdownMenu.Root({}, [
-            DropdownMenu.Separator({}),
-          ]);
+          const el = yield* DropdownMenu.Root({}, [DropdownMenu.Separator({})]);
 
           const separator = el.querySelector("[data-menu-separator]");
           expect(separator).not.toBeNull();
@@ -294,9 +292,7 @@ describe("DropdownMenu", () => {
     it("should have role=separator", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* DropdownMenu.Root({}, [
-            DropdownMenu.Separator({}),
-          ]);
+          const el = yield* DropdownMenu.Root({}, [DropdownMenu.Separator({})]);
 
           const separator = el.querySelector("[data-menu-separator]");
           expect(separator?.getAttribute("role")).toBe("separator");
@@ -499,12 +495,15 @@ describe("DropdownMenu", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* DropdownMenu.Root({
-            onOpenChange: (isOpen) =>
-              Effect.sync(() => {
-                changes.push(isOpen);
-              }),
-          }, [DropdownMenu.Trigger({}, "Open")]);
+          const el = yield* DropdownMenu.Root(
+            {
+              onOpenChange: (isOpen) =>
+                Effect.sync(() => {
+                  changes.push(isOpen);
+                }),
+            },
+            [DropdownMenu.Trigger({}, "Open")],
+          );
 
           const trigger = el.querySelector("button") as HTMLButtonElement;
           trigger.click();

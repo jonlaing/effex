@@ -335,10 +335,9 @@ describe("Slider", () => {
     it("should set aria-disabled on thumb", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Slider.Root(
-            { defaultValue: 50, disabled: true },
-            [Slider.Thumb({})],
-          );
+          const el = yield* Slider.Root({ defaultValue: 50, disabled: true }, [
+            Slider.Thumb({}),
+          ]);
 
           const thumb = el.querySelector("[role='slider']");
           expect(thumb?.getAttribute("aria-disabled")).toBe("true");
@@ -349,10 +348,9 @@ describe("Slider", () => {
     it("should set data-disabled on thumb", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Slider.Root(
-            { defaultValue: 50, disabled: true },
-            [Slider.Thumb({})],
-          );
+          const el = yield* Slider.Root({ defaultValue: 50, disabled: true }, [
+            Slider.Thumb({}),
+          ]);
 
           const thumb = el.querySelector("[role='slider']");
           expect(thumb?.getAttribute("data-disabled")).toBe("");
@@ -363,10 +361,9 @@ describe("Slider", () => {
     it("should not be focusable when disabled", async () => {
       await runTest(
         Effect.gen(function* () {
-          const el = yield* Slider.Root(
-            { defaultValue: 50, disabled: true },
-            [Slider.Thumb({})],
-          );
+          const el = yield* Slider.Root({ defaultValue: 50, disabled: true }, [
+            Slider.Thumb({}),
+          ]);
 
           const thumb = el.querySelector("[role='slider']");
           expect(thumb?.getAttribute("tabindex")).toBeNull();

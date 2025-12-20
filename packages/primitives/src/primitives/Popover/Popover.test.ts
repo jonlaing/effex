@@ -243,12 +243,15 @@ describe("Popover", () => {
         Effect.gen(function* () {
           const changes: boolean[] = [];
 
-          const el = yield* Popover.Root({
-            onOpenChange: (open) =>
-              Effect.sync(() => {
-                changes.push(open);
-              }),
-          }, [Popover.Trigger({}, "Open")]);
+          const el = yield* Popover.Root(
+            {
+              onOpenChange: (open) =>
+                Effect.sync(() => {
+                  changes.push(open);
+                }),
+            },
+            [Popover.Trigger({}, "Open")],
+          );
 
           const trigger = el.querySelector("button") as HTMLButtonElement;
           trigger.click();

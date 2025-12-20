@@ -346,15 +346,18 @@ describe("RadioGroup", () => {
         Effect.gen(function* () {
           const changes: string[] = [];
 
-          const el = yield* RadioGroup.Root({
-            onValueChange: (value) =>
-              Effect.sync(() => {
-                changes.push(value);
-              }),
-          }, [
-            RadioGroup.Item({ value: "option1" }),
-            RadioGroup.Item({ value: "option2" }),
-          ]);
+          const el = yield* RadioGroup.Root(
+            {
+              onValueChange: (value) =>
+                Effect.sync(() => {
+                  changes.push(value);
+                }),
+            },
+            [
+              RadioGroup.Item({ value: "option1" }),
+              RadioGroup.Item({ value: "option2" }),
+            ],
+          );
 
           const items = el.querySelectorAll("button");
 

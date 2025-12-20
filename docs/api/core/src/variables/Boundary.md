@@ -8,7 +8,7 @@
 
 > `const` **Boundary**: `object`
 
-Defined in: [packages/core/src/Boundary.ts:355](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/core/src/Boundary.ts#L355)
+Defined in: [packages/core/src/Boundary.ts:355](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/core/src/Boundary.ts#L355)
 
 Boundary namespace for error and async handling.
 

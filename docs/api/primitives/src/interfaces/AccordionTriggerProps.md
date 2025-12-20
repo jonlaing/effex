@@ -6,7 +6,7 @@
 
 # Interface: AccordionTriggerProps
 
-Defined in: [packages/primitives/src/primitives/Accordion/Accordion.ts:86](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Accordion/Accordion.ts#L86)
+Defined in: [packages/primitives/src/primitives/Accordion/Accordion.ts:86](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/primitives/src/primitives/Accordion/Accordion.ts#L86)
 
 Props for Accordion.Trigger
 
@@ -16,6 +16,6 @@ Props for Accordion.Trigger
 
 > `readonly` `optional` **class**: [`Reactive`](../../../core/src/namespaces/Readable/type-aliases/Reactive.md)\<`string`\>
 
-Defined in: [packages/primitives/src/primitives/Accordion/Accordion.ts:88](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/primitives/src/primitives/Accordion/Accordion.ts#L88)
+Defined in: [packages/primitives/src/primitives/Accordion/Accordion.ts:88](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/primitives/src/primitives/Accordion/Accordion.ts#L88)
 
 Additional class names

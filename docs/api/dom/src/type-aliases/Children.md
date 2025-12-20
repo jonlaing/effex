@@ -8,7 +8,7 @@
 
 > **Children**\<`E`, `R`\> = [`Child`](Child.md)\<`E`, `R`\> \| readonly [`Child`](Child.md)\<`E`, `R`\>[]
 
-Defined in: [packages/dom/src/Component.ts:7](https://github.com/jonlaing/effex/blob/6a1b9c8b38e226609ce7e1a1f5173769b8aad981/packages/dom/src/Component.ts#L7)
+Defined in: [packages/dom/src/Component.ts:7](https://github.com/jonlaing/effex/blob/54ecd92e6ce2cfbeee604b727471aa18d6829626/packages/dom/src/Component.ts#L7)
 
 Valid children types for a component.
 

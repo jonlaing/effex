@@ -26,8 +26,12 @@ import {
 } from "./Animation/index.js";
 
 // Re-export the MatchCase type specialized for HTMLElement
-export interface MatchCase<A, E = never, R = never>
-  extends CoreMatchCase<A, HTMLElement, E, R> {}
+export interface MatchCase<A, E = never, R = never> extends CoreMatchCase<
+  A,
+  HTMLElement,
+  E,
+  R
+> {}
 
 /**
  * Configuration for the `when` control flow (DOM-specific with animation support).
@@ -54,13 +58,7 @@ export interface WhenConfig<E1 = never, R1 = never, E2 = never, R2 = never> {
 /**
  * Configuration for the `match` control flow (DOM-specific with animation support).
  */
-export interface MatchConfig<
-  A,
-  E = never,
-  R = never,
-  E2 = never,
-  R2 = never,
-> {
+export interface MatchConfig<A, E = never, R = never, E2 = never, R2 = never> {
   /**
    * Optional custom container element. If not provided, defaults to a div
    * with `display: contents`.
@@ -189,12 +187,12 @@ export const when = <E1 = never, R1 = never, E2 = never, R2 = never>(
         currentElementScope = yield* Scope.make();
 
         const newElement = value
-          ? yield* config.onTrue().pipe(
-              Effect.provideService(Scope.Scope, currentElementScope),
-            )
-          : yield* config.onFalse().pipe(
-              Effect.provideService(Scope.Scope, currentElementScope),
-            );
+          ? yield* config
+              .onTrue()
+              .pipe(Effect.provideService(Scope.Scope, currentElementScope))
+          : yield* config
+              .onFalse()
+              .pipe(Effect.provideService(Scope.Scope, currentElementScope));
 
         // Run exit animation on previous element (skip on initial render)
         if (animate && previousElement && !isInitial) {
@@ -328,9 +326,9 @@ export const match = <A, E = never, R = never, E2 = never, R2 = never>(
             .render()
             .pipe(Effect.provideService(Scope.Scope, currentElementScope));
         } else if (config.fallback) {
-          newElement = yield* config.fallback().pipe(
-            Effect.provideService(Scope.Scope, currentElementScope),
-          );
+          newElement = yield* config
+            .fallback()
+            .pipe(Effect.provideService(Scope.Scope, currentElementScope));
         } else {
           // No match and no fallback - close the scope we just created
           yield* Scope.close(currentElementScope, Exit.void);
@@ -577,9 +575,9 @@ export const each = <A, E = never, R = never>(
               },
             };
 
-            const element = yield* config.render(itemReadable).pipe(
-              Effect.provideService(Scope.Scope, itemScope),
-            );
+            const element = yield* config
+              .render(itemReadable)
+              .pipe(Effect.provideService(Scope.Scope, itemScope));
 
             // Insert at correct position
             const currentChildren = yield* renderer.getChildren(container);
