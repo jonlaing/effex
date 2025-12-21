@@ -31,6 +31,22 @@ export interface PopoverContext {
   readonly contentId: string;
 }
 
+// ============================================================================
+// Context Tags
+// ============================================================================
+
+/**
+ * Effect Context for Popover state sharing between parts.
+ */
+export class PopoverCtx extends Context.Tag("PopoverContext")<
+  PopoverCtx,
+  PopoverContext
+>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
+
 /**
  * Props for Popover.Root
  */
@@ -42,58 +58,6 @@ export interface PopoverRootProps {
   /** Callback when open state changes */
   readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
 }
-
-/**
- * Props for Popover.Trigger
- */
-export interface PopoverTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Popover.Anchor
- */
-export interface PopoverAnchorProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Popover.Content
- */
-export interface PopoverContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Positioning side relative to trigger (default: "bottom") */
-  readonly side?: Readable.Reactive<"top" | "bottom" | "left" | "right">;
-  /** Alignment along the side axis (default: "center") */
-  readonly align?: Readable.Reactive<"start" | "center" | "end">;
-  /** Gap between trigger and content in pixels (default: 4) */
-  readonly sideOffset?: Readable.Reactive<number>;
-  /** Shift along the side axis in pixels (default: 0) */
-  readonly alignOffset?: Readable.Reactive<number>;
-  /** Called when clicking outside */
-  readonly onClickOutside?: () => Effect.Effect<void>;
-  /** Called when Escape key is pressed */
-  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
-}
-
-/**
- * Props for Popover.Close
- */
-export interface PopoverCloseProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Effect Context for Popover state sharing between parts.
- */
-export class PopoverCtx extends Context.Tag("PopoverContext")<
-  PopoverCtx,
-  PopoverContext
->() {}
 
 /**
  * Root container for a Popover. Manages open/closed state and provides
@@ -152,6 +116,14 @@ const Root = (
   });
 
 /**
+ * Props for Popover.Trigger
+ */
+export interface PopoverTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Button that toggles the Popover open/closed.
  * Also serves as the default anchor for positioning.
  *
@@ -187,6 +159,14 @@ const Trigger = component(
 );
 
 /**
+ * Props for Popover.Anchor
+ */
+export interface PopoverAnchorProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Optional anchor element for positioning.
  * Use this when the popover should be positioned relative to a different
  * element than the trigger.
@@ -214,6 +194,26 @@ const Anchor = component(
       );
     }),
 );
+
+/**
+ * Props for Popover.Content
+ */
+export interface PopoverContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Positioning side relative to trigger (default: "bottom") */
+  readonly side?: Readable.Reactive<"top" | "bottom" | "left" | "right">;
+  /** Alignment along the side axis (default: "center") */
+  readonly align?: Readable.Reactive<"start" | "center" | "end">;
+  /** Gap between trigger and content in pixels (default: 4) */
+  readonly sideOffset?: Readable.Reactive<number>;
+  /** Shift along the side axis in pixels (default: 0) */
+  readonly alignOffset?: Readable.Reactive<number>;
+  /** Called when Escape key is pressed */
+  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
+  /** Called when clicking outside the popover */
+  readonly onClickOutside?: () => Effect.Effect<void>;
+}
 
 /**
  * Content area for the Popover.
@@ -352,6 +352,14 @@ const Content = component(
       });
     }),
 );
+
+/**
+ * Props for Popover.Close
+ */
+export interface PopoverCloseProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Button that closes the Popover.

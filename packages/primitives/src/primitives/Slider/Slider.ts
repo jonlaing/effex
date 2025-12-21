@@ -65,6 +65,22 @@ export interface SliderContext {
   readonly setDragCleanup: (cleanup: (() => void) | null) => void;
 }
 
+// ============================================================================
+// Context Tag
+// ============================================================================
+
+/**
+ * Effect Context for Slider state sharing between parts.
+ */
+export class SliderCtx extends Context.Tag("SliderContext")<
+  SliderCtx,
+  SliderContext
+>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
+
 /**
  * Props for Slider.Root
  */
@@ -102,52 +118,6 @@ export interface SliderRootProps {
   /** Additional class names */
   readonly class?: Readable.Reactive<string>;
 }
-
-/**
- * Props for Slider.Track
- */
-export interface SliderTrackProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Slider.Range
- */
-export interface SliderRangeProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Slider.Thumb
- */
-export interface SliderThumbProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** ARIA label for this specific thumb */
-  readonly "aria-label"?: string;
-  /** ID of element that labels this thumb */
-  readonly "aria-labelledby"?: string;
-  /** ARIA value text (custom readable value) */
-  readonly "aria-valuetext"?: string | ((value: number) => string);
-}
-
-// ============================================================================
-// Context Tag
-// ============================================================================
-
-/**
- * Effect Context for Slider state sharing between parts.
- */
-export class SliderCtx extends Context.Tag("SliderContext")<
-  SliderCtx,
-  SliderContext
->() {}
-
-// ============================================================================
-// Root Component
-// ============================================================================
 
 /**
  * Root container for Slider. Manages value state and provides context.
@@ -326,9 +296,13 @@ const Root = (
     );
   });
 
-// ============================================================================
-// Track Component
-// ============================================================================
+/**
+ * Props for Slider.Track
+ */
+export interface SliderTrackProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * The track area of the slider. Clickable to jump thumb to position.
@@ -386,9 +360,13 @@ const Track = component("SliderTrack", (props: SliderTrackProps, children) =>
   }),
 );
 
-// ============================================================================
-// Range Component
-// ============================================================================
+/**
+ * Props for Slider.Range
+ */
+export interface SliderRangeProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Visual fill between min and value (or between thumbs in range mode).
@@ -424,9 +402,19 @@ const Range = component("SliderRange", (props: SliderRangeProps) =>
   }),
 );
 
-// ============================================================================
-// Thumb Component
-// ============================================================================
+/**
+ * Props for Slider.Thumb
+ */
+export interface SliderThumbProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** ARIA label for this specific thumb */
+  readonly "aria-label"?: string;
+  /** ID of element that labels this thumb */
+  readonly "aria-labelledby"?: string;
+  /** ARIA value text (custom readable value) */
+  readonly "aria-valuetext"?: string | ((value: number) => string);
+}
 
 /**
  * Draggable thumb handle. Has role="slider" with ARIA attributes.

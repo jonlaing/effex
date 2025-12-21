@@ -41,77 +41,13 @@ export interface DropdownMenuContext {
 }
 
 /**
- * Props for DropdownMenu.Root
+ * Context for DropdownMenu.RadioGroup
  */
-export interface DropdownMenuRootProps {
-  /** Controlled open state */
-  readonly open?: Signal<boolean>;
-  /** Default open state */
-  readonly defaultOpen?: boolean;
-  /** Callback when open state changes */
-  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
-}
-
-/**
- * Props for DropdownMenu.Trigger
- */
-export interface DropdownMenuTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether the trigger is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for DropdownMenu.Content
- */
-export interface DropdownMenuContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Positioning side relative to trigger (default: "bottom") */
-  readonly side?: Readable.Reactive<"top" | "bottom" | "left" | "right">;
-  /** Alignment along the side axis (default: "start") */
-  readonly align?: Readable.Reactive<"start" | "center" | "end">;
-  /** Gap between trigger and content in pixels (default: 4) */
-  readonly sideOffset?: Readable.Reactive<number>;
-  /** Whether keyboard navigation loops (default: true) */
-  readonly loop?: boolean;
-}
-
-/**
- * Props for DropdownMenu.Item
- */
-export interface DropdownMenuItemProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-  /** Callback when item is selected */
-  readonly onSelect?: () => Effect.Effect<void>;
-}
-
-/**
- * Props for DropdownMenu.Group
- */
-export interface DropdownMenuGroupProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for DropdownMenu.Label
- */
-export interface DropdownMenuLabelProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for DropdownMenu.Separator
- */
-export interface DropdownMenuSeparatorProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
+export interface DropdownMenuRadioGroupContext {
+  /** Current selected value */
+  readonly value: Readable.Readable<string>;
+  /** Set the selected value */
+  readonly setValue: (value: string) => Effect.Effect<void>;
 }
 
 /**
@@ -136,91 +72,9 @@ export interface DropdownMenuSubContext {
   readonly triggerId: string;
 }
 
-/**
- * Props for DropdownMenu.Sub
- */
-export interface DropdownMenuSubProps {
-  /** Controlled open state */
-  readonly open?: Signal<boolean>;
-  /** Default open state */
-  readonly defaultOpen?: boolean;
-  /** Callback when open state changes */
-  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
-}
-
-/**
- * Props for DropdownMenu.SubTrigger
- */
-export interface DropdownMenuSubTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this trigger is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for DropdownMenu.SubContent
- */
-export interface DropdownMenuSubContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Gap between trigger and content in pixels (default: 0) */
-  readonly sideOffset?: Readable.Reactive<number>;
-  /** Whether keyboard navigation loops (default: true) */
-  readonly loop?: boolean;
-}
-
-/**
- * Props for DropdownMenu.CheckboxItem
- */
-export interface DropdownMenuCheckboxItemProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-  /** Controlled checked state */
-  readonly checked?: Signal<boolean>;
-  /** Default checked state (uncontrolled) */
-  readonly defaultChecked?: boolean;
-  /** Callback when checked state changes */
-  readonly onCheckedChange?: (checked: boolean) => Effect.Effect<void>;
-}
-
-/**
- * Context for DropdownMenu.RadioGroup
- */
-export interface DropdownMenuRadioGroupContext {
-  /** Current selected value */
-  readonly value: Readable.Readable<string>;
-  /** Set the selected value */
-  readonly setValue: (value: string) => Effect.Effect<void>;
-}
-
-/**
- * Props for DropdownMenu.RadioGroup
- */
-export interface DropdownMenuRadioGroupProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Controlled value */
-  readonly value?: Signal<string>;
-  /** Default value (uncontrolled) */
-  readonly defaultValue?: string;
-  /** Callback when value changes */
-  readonly onValueChange?: (value: string) => Effect.Effect<void>;
-}
-
-/**
- * Props for DropdownMenu.RadioItem
- */
-export interface DropdownMenuRadioItemProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** The value for this radio item */
-  readonly value: string;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
+// ============================================================================
+// Context Tags
+// ============================================================================
 
 /**
  * Effect Context for DropdownMenu state sharing between parts.
@@ -244,6 +98,22 @@ export class DropdownMenuSubCtx extends Context.Tag("DropdownMenuSubContext")<
 export class DropdownMenuRadioGroupCtx extends Context.Tag(
   "DropdownMenuRadioGroupContext",
 )<DropdownMenuRadioGroupCtx, DropdownMenuRadioGroupContext>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
+
+/**
+ * Props for DropdownMenu.Root
+ */
+export interface DropdownMenuRootProps {
+  /** Controlled open state */
+  readonly open?: Signal<boolean>;
+  /** Default open state */
+  readonly defaultOpen?: boolean;
+  /** Callback when open state changes */
+  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
+}
 
 /**
  * Root container for a DropdownMenu. Manages open/closed state
@@ -300,6 +170,16 @@ const Root = (
       provide(DropdownMenuCtx, ctx, children),
     );
   });
+
+/**
+ * Props for DropdownMenu.Trigger
+ */
+export interface DropdownMenuTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether the trigger is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
 
 /**
  * Button that opens/closes the DropdownMenu.
@@ -380,6 +260,22 @@ const Trigger = component(
       );
     }),
 );
+
+/**
+ * Props for DropdownMenu.Content
+ */
+export interface DropdownMenuContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Positioning side relative to trigger (default: "bottom") */
+  readonly side?: Readable.Reactive<"top" | "bottom" | "left" | "right">;
+  /** Alignment along the side axis (default: "start") */
+  readonly align?: Readable.Reactive<"start" | "center" | "end">;
+  /** Gap between trigger and content in pixels (default: 4) */
+  readonly sideOffset?: Readable.Reactive<number>;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+}
 
 /**
  * Content area for the DropdownMenu.
@@ -534,6 +430,18 @@ const Content = component(
 );
 
 /**
+ * Props for DropdownMenu.Item
+ */
+export interface DropdownMenuItemProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+  /** Callback when item is selected */
+  readonly onSelect?: () => Effect.Effect<void>;
+}
+
+/**
  * A clickable item within the DropdownMenu.
  *
  * @example
@@ -580,6 +488,14 @@ const Item = component(
 );
 
 /**
+ * Props for DropdownMenu.Group
+ */
+export interface DropdownMenuGroupProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Groups related items together.
  *
  * @example
@@ -607,6 +523,14 @@ const Group = component(
 );
 
 /**
+ * Props for DropdownMenu.Label
+ */
+export interface DropdownMenuLabelProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Label for a group of items.
  *
  * @example
@@ -629,6 +553,14 @@ const Label = component(
 );
 
 /**
+ * Props for DropdownMenu.Separator
+ */
+export interface DropdownMenuSeparatorProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Visual separator between items or groups.
  *
  * @example
@@ -647,6 +579,22 @@ const Separator = component(
       });
     }),
 );
+
+/**
+ * Props for DropdownMenu.CheckboxItem
+ */
+export interface DropdownMenuCheckboxItemProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+  /** Controlled checked state */
+  readonly checked?: Signal<boolean>;
+  /** Default checked state (uncontrolled) */
+  readonly defaultChecked?: boolean;
+  /** Callback when checked state changes */
+  readonly onCheckedChange?: (checked: boolean) => Effect.Effect<void>;
+}
 
 /**
  * A menu item with a checkbox that can be toggled.
@@ -710,6 +658,20 @@ const CheckboxItem = component(
 );
 
 /**
+ * Props for DropdownMenu.RadioGroup
+ */
+export interface DropdownMenuRadioGroupProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Controlled value */
+  readonly value?: Signal<string>;
+  /** Default value (uncontrolled) */
+  readonly defaultValue?: string;
+  /** Callback when value changes */
+  readonly onValueChange?: (value: string) => Effect.Effect<void>;
+}
+
+/**
  * Groups radio items together. Only one item can be selected at a time.
  *
  * @example
@@ -753,6 +715,18 @@ const RadioGroup = (
       provide(DropdownMenuRadioGroupCtx, radioCtx, children),
     );
   });
+
+/**
+ * Props for DropdownMenu.RadioItem
+ */
+export interface DropdownMenuRadioItemProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** The value for this radio item */
+  readonly value: string;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
 
 /**
  * A radio item within a RadioGroup. Only one can be selected at a time.
@@ -805,6 +779,18 @@ const RadioItem = component(
       );
     }),
 );
+
+/**
+ * Props for DropdownMenu.Sub
+ */
+export interface DropdownMenuSubProps {
+  /** Controlled open state */
+  readonly open?: Signal<boolean>;
+  /** Default open state */
+  readonly defaultOpen?: boolean;
+  /** Callback when open state changes */
+  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
+}
 
 /**
  * Wrapper for a submenu. Manages open/closed state for the submenu
@@ -881,6 +867,16 @@ const Sub = (
       provide(DropdownMenuSubCtx, subCtx, children),
     );
   });
+
+/**
+ * Props for DropdownMenu.SubTrigger
+ */
+export interface DropdownMenuSubTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this trigger is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
 
 /**
  * Trigger for a submenu. Opens the submenu on hover or ArrowRight key.
@@ -979,6 +975,18 @@ const SubTrigger = component(
       );
     }),
 );
+
+/**
+ * Props for DropdownMenu.SubContent
+ */
+export interface DropdownMenuSubContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Gap between trigger and content in pixels (default: 0) */
+  readonly sideOffset?: Readable.Reactive<number>;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+}
 
 /**
  * Content area for a submenu. Positioned to the right of SubTrigger.

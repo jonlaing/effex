@@ -33,88 +33,6 @@ export interface ContextMenuContext {
 }
 
 /**
- * Props for ContextMenu.Root
- */
-export interface ContextMenuRootProps {
-  /** Controlled open state */
-  readonly open?: Signal<boolean>;
-  /** Callback when open state changes */
-  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
-}
-
-/**
- * Props for ContextMenu.Trigger
- */
-export interface ContextMenuTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether the trigger is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for ContextMenu.Content
- */
-export interface ContextMenuContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether keyboard navigation loops (default: true) */
-  readonly loop?: boolean;
-}
-
-/**
- * Props for ContextMenu.Item
- */
-export interface ContextMenuItemProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-  /** Callback when item is selected */
-  readonly onSelect?: () => Effect.Effect<void>;
-}
-
-/**
- * Props for ContextMenu.Group
- */
-export interface ContextMenuGroupProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for ContextMenu.Label
- */
-export interface ContextMenuLabelProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for ContextMenu.Separator
- */
-export interface ContextMenuSeparatorProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for ContextMenu.CheckboxItem
- */
-export interface ContextMenuCheckboxItemProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-  /** Controlled checked state */
-  readonly checked?: Signal<boolean>;
-  /** Default checked state (uncontrolled) */
-  readonly defaultChecked?: boolean;
-  /** Callback when checked state changes */
-  readonly onCheckedChange?: (checked: boolean) => Effect.Effect<void>;
-}
-
-/**
  * Context for ContextMenu.RadioGroup
  */
 export interface ContextMenuRadioGroupContext {
@@ -122,32 +40,6 @@ export interface ContextMenuRadioGroupContext {
   readonly value: Readable.Readable<string>;
   /** Set the selected value */
   readonly setValue: (value: string) => Effect.Effect<void>;
-}
-
-/**
- * Props for ContextMenu.RadioGroup
- */
-export interface ContextMenuRadioGroupProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Controlled value */
-  readonly value?: Signal<string>;
-  /** Default value (uncontrolled) */
-  readonly defaultValue?: string;
-  /** Callback when value changes */
-  readonly onValueChange?: (value: string) => Effect.Effect<void>;
-}
-
-/**
- * Props for ContextMenu.RadioItem
- */
-export interface ContextMenuRadioItemProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** The value for this radio item */
-  readonly value: string;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
 }
 
 /**
@@ -172,39 +64,9 @@ export interface ContextMenuSubContext {
   readonly triggerId: string;
 }
 
-/**
- * Props for ContextMenu.Sub
- */
-export interface ContextMenuSubProps {
-  /** Controlled open state */
-  readonly open?: Signal<boolean>;
-  /** Default open state */
-  readonly defaultOpen?: boolean;
-  /** Callback when open state changes */
-  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
-}
-
-/**
- * Props for ContextMenu.SubTrigger
- */
-export interface ContextMenuSubTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this trigger is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for ContextMenu.SubContent
- */
-export interface ContextMenuSubContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Gap between trigger and content in pixels (default: 0) */
-  readonly sideOffset?: Readable.Reactive<number>;
-  /** Whether keyboard navigation loops (default: true) */
-  readonly loop?: boolean;
-}
+// ============================================================================
+// Context Tags
+// ============================================================================
 
 /**
  * Effect Context for ContextMenu state sharing between parts.
@@ -232,6 +94,16 @@ export class ContextMenuRadioGroupCtx extends Context.Tag(
 // ============================================================================
 // Components
 // ============================================================================
+
+/**
+ * Props for ContextMenu.Root
+ */
+export interface ContextMenuRootProps {
+  /** Controlled open state */
+  readonly open?: Signal<boolean>;
+  /** Callback when open state changes */
+  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
+}
 
 /**
  * Root container for a ContextMenu. Manages open/closed state
@@ -287,6 +159,16 @@ const Root = (
   });
 
 /**
+ * Props for ContextMenu.Trigger
+ */
+export interface ContextMenuTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether the trigger is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
+
+/**
  * The area that responds to right-click to open the context menu.
  *
  * @example
@@ -324,6 +206,16 @@ const Trigger = component(
       );
     }),
 );
+
+/**
+ * Props for ContextMenu.Content
+ */
+export interface ContextMenuContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+}
 
 /**
  * Content area for the ContextMenu.
@@ -459,6 +351,18 @@ const Content = component(
 );
 
 /**
+ * Props for ContextMenu.Item
+ */
+export interface ContextMenuItemProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+  /** Callback when item is selected */
+  readonly onSelect?: () => Effect.Effect<void>;
+}
+
+/**
  * A clickable item within the ContextMenu.
  *
  * @example
@@ -505,6 +409,14 @@ const Item = component(
 );
 
 /**
+ * Props for ContextMenu.Group
+ */
+export interface ContextMenuGroupProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Groups related items together.
  *
  * @example
@@ -533,6 +445,14 @@ const Group = component(
 );
 
 /**
+ * Props for ContextMenu.Label
+ */
+export interface ContextMenuLabelProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Label for a group of items.
  *
  * @example
@@ -556,6 +476,14 @@ const Label = component(
 );
 
 /**
+ * Props for ContextMenu.Separator
+ */
+export interface ContextMenuSeparatorProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Visual separator between items or groups.
  *
  * @example
@@ -575,6 +503,22 @@ const Separator = component(
       });
     }),
 );
+
+/**
+ * Props for ContextMenu.CheckboxItem
+ */
+export interface ContextMenuCheckboxItemProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+  /** Controlled checked state */
+  readonly checked?: Signal<boolean>;
+  /** Default checked state (uncontrolled) */
+  readonly defaultChecked?: boolean;
+  /** Callback when checked state changes */
+  readonly onCheckedChange?: (checked: boolean) => Effect.Effect<void>;
+}
 
 /**
  * A menu item with a checkbox that can be toggled.
@@ -639,6 +583,20 @@ const CheckboxItem = component(
 );
 
 /**
+ * Props for ContextMenu.RadioGroup
+ */
+export interface ContextMenuRadioGroupProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Controlled value */
+  readonly value?: Signal<string>;
+  /** Default value (uncontrolled) */
+  readonly defaultValue?: string;
+  /** Callback when value changes */
+  readonly onValueChange?: (value: string) => Effect.Effect<void>;
+}
+
+/**
  * Groups radio items together. Only one item can be selected at a time.
  *
  * @example
@@ -682,6 +640,18 @@ const RadioGroup = (
       provide(ContextMenuRadioGroupCtx, radioCtx, children),
     );
   });
+
+/**
+ * Props for ContextMenu.RadioItem
+ */
+export interface ContextMenuRadioItemProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** The value for this radio item */
+  readonly value: string;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
 
 /**
  * A radio item within a RadioGroup. Only one can be selected at a time.
@@ -735,6 +705,18 @@ const RadioItem = component(
       );
     }),
 );
+
+/**
+ * Props for ContextMenu.Sub
+ */
+export interface ContextMenuSubProps {
+  /** Controlled open state */
+  readonly open?: Signal<boolean>;
+  /** Default open state */
+  readonly defaultOpen?: boolean;
+  /** Callback when open state changes */
+  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
+}
 
 /**
  * Wrapper for a submenu. Manages open/closed state for the submenu
@@ -811,6 +793,16 @@ const Sub = (
       provide(ContextMenuSubCtx, subCtx, children),
     );
   });
+
+/**
+ * Props for ContextMenu.SubTrigger
+ */
+export interface ContextMenuSubTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this trigger is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
 
 /**
  * Trigger for a submenu. Opens the submenu on hover or ArrowRight key.
@@ -914,6 +906,18 @@ const SubTrigger = component(
       return el;
     }),
 );
+
+/**
+ * Props for ContextMenu.SubContent
+ */
+export interface ContextMenuSubContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Gap between trigger and content in pixels (default: 0) */
+  readonly sideOffset?: Readable.Reactive<number>;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+}
 
 /**
  * Content area for a submenu. Positioned to the right of SubTrigger.

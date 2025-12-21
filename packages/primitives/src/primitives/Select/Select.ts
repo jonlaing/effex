@@ -61,6 +61,30 @@ export interface SelectItemContext {
   readonly setTextValue: (text: string) => Effect.Effect<void>;
 }
 
+// ============================================================================
+// Context Tags
+// ============================================================================
+
+/**
+ * Effect Context for Select state sharing between parts.
+ */
+export class SelectCtx extends Context.Tag("SelectContext")<
+  SelectCtx,
+  SelectContext
+>() {}
+
+/**
+ * Effect Context for Select.Item
+ */
+export class SelectItemCtx extends Context.Tag("SelectItemContext")<
+  SelectItemCtx,
+  SelectItemContext
+>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
+
 /**
  * Props for Select.Root
  */
@@ -82,103 +106,6 @@ export interface SelectRootProps {
   /** Placeholder text */
   readonly placeholder?: Readable.Reactive<string>;
 }
-
-/**
- * Props for Select.Trigger
- */
-export interface SelectTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Select.Value
- */
-export interface SelectValueProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Placeholder when no value selected */
-  readonly placeholder?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Select.Content
- */
-export interface SelectContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Positioning side relative to trigger (default: "bottom") */
-  readonly side?: Readable.Reactive<"top" | "bottom">;
-  /** Alignment along the side axis (default: "start") */
-  readonly align?: Readable.Reactive<"start" | "center" | "end">;
-  /** Gap between trigger and content in pixels (default: 4) */
-  readonly sideOffset?: Readable.Reactive<number>;
-}
-
-/**
- * Props for Select.Item
- */
-export interface SelectItemProps {
-  /** The value for this item */
-  readonly value: string;
-  /**
-   * Optional display text for this item. Only needed when ItemText has complex children.
-   * For simple string children in ItemText, the label is registered automatically.
-   */
-  readonly textValue?: string;
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for Select.ItemText
- */
-export interface SelectItemTextProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Select.Group
- */
-export interface SelectGroupProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Select.Label
- */
-export interface SelectLabelProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Select.Separator
- */
-export interface SelectSeparatorProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Effect Context for Select state sharing between parts.
- */
-export class SelectCtx extends Context.Tag("SelectContext")<
-  SelectCtx,
-  SelectContext
->() {}
-
-/**
- * Effect Context for Select.Item
- */
-export class SelectItemCtx extends Context.Tag("SelectItemContext")<
-  SelectItemCtx,
-  SelectItemContext
->() {}
 
 /**
  * Root container for a Select. Manages open/closed state, selected value,
@@ -268,6 +195,14 @@ const Root = (
   });
 
 /**
+ * Props for Select.Trigger
+ */
+export interface SelectTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Button that opens/closes the Select dropdown.
  *
  * @example
@@ -325,6 +260,16 @@ const Trigger = component(
 );
 
 /**
+ * Props for Select.Value
+ */
+export interface SelectValueProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Placeholder when no value selected */
+  readonly placeholder?: Readable.Reactive<string>;
+}
+
+/**
  * Displays the selected value's label or placeholder.
  *
  * @example
@@ -361,6 +306,20 @@ const Value = component("SelectValue", (props: SelectValueProps) =>
     );
   }),
 );
+
+/**
+ * Props for Select.Content
+ */
+export interface SelectContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Positioning side relative to trigger (default: "bottom") */
+  readonly side?: Readable.Reactive<"top" | "bottom">;
+  /** Alignment along the side axis (default: "start") */
+  readonly align?: Readable.Reactive<"start" | "center" | "end">;
+  /** Gap between trigger and content in pixels (default: 4) */
+  readonly sideOffset?: Readable.Reactive<number>;
+}
 
 /**
  * Content area for the Select dropdown.
@@ -485,6 +444,23 @@ const Content = component(
 );
 
 /**
+ * Props for Select.Item
+ */
+export interface SelectItemProps {
+  /** The value for this item */
+  readonly value: string;
+  /**
+   * Optional display text for this item. Only needed when ItemText has complex children.
+   * For simple string children in ItemText, the label is registered automatically.
+   */
+  readonly textValue?: string;
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
+
+/**
  * A selectable item within the Select.
  * ItemText with string children will automatically register the display label.
  *
@@ -568,6 +544,14 @@ const Item = (
   });
 
 /**
+ * Props for Select.ItemText
+ */
+export interface SelectItemTextProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * The text content of a Select.Item.
  * When children is a string, it automatically registers it as the display label.
  *
@@ -599,6 +583,14 @@ const ItemText = component(
 );
 
 /**
+ * Props for Select.Group
+ */
+export interface SelectGroupProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Groups related items together.
  *
  * @example
@@ -623,6 +615,14 @@ const Group = component("SelectGroup", (props: SelectGroupProps, children) =>
 );
 
 /**
+ * Props for Select.Label
+ */
+export interface SelectLabelProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Label for a group of items.
  *
  * @example
@@ -641,6 +641,14 @@ const Label = component("SelectLabel", (props: SelectLabelProps, children) =>
     );
   }),
 );
+
+/**
+ * Props for Select.Separator
+ */
+export interface SelectSeparatorProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Visual separator between items or groups.

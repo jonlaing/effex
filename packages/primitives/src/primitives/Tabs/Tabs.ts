@@ -21,6 +21,22 @@ export interface TabsContext {
   readonly activationMode: "automatic" | "manual";
 }
 
+// ============================================================================
+// Context Tags
+// ============================================================================
+
+/**
+ * Effect Context for Tabs state sharing between parts.
+ */
+export class TabsCtx extends Context.Tag("TabsContext")<
+  TabsCtx,
+  TabsContext
+>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
+
 /**
  * Props for Tabs.Root
  */
@@ -36,48 +52,6 @@ export interface TabsRootProps {
   /** Activation mode (default: "automatic") */
   readonly activationMode?: "automatic" | "manual";
 }
-
-/**
- * Props for Tabs.List
- */
-export interface TabsListProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether keyboard navigation loops (default: true) */
-  readonly loop?: boolean;
-}
-
-/**
- * Props for Tabs.Trigger
- */
-export interface TabsTriggerProps {
-  /** Unique value for this tab */
-  readonly value: string;
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this tab is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for Tabs.Content
- */
-export interface TabsContentProps {
-  /** Value matching the corresponding Trigger */
-  readonly value: string;
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Force mount even when inactive (default: false) */
-  readonly forceMount?: boolean;
-}
-
-/**
- * Effect Context for Tabs state sharing between parts.
- */
-export class TabsCtx extends Context.Tag("TabsContext")<
-  TabsCtx,
-  TabsContext
->() {}
 
 /**
  * Root container for Tabs. Manages active tab state and provides
@@ -128,6 +102,16 @@ const Root = (
       provide(TabsCtx, ctx, children),
     );
   });
+
+/**
+ * Props for Tabs.List
+ */
+export interface TabsListProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+}
 
 /**
  * Container for tab triggers. Handles keyboard navigation.
@@ -208,6 +192,18 @@ const List = component("TabsList", (props: TabsListProps, children) =>
 );
 
 /**
+ * Props for Tabs.Trigger
+ */
+export interface TabsTriggerProps {
+  /** Unique value for this tab */
+  readonly value: string;
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this tab is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
+
+/**
  * Tab trigger button. Activates its corresponding content panel.
  *
  * @example
@@ -259,6 +255,18 @@ const Trigger = component("TabsTrigger", (props: TabsTriggerProps, children) =>
     );
   }),
 );
+
+/**
+ * Props for Tabs.Content
+ */
+export interface TabsContentProps {
+  /** Value matching the corresponding Trigger */
+  readonly value: string;
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Force mount even when inactive (default: false) */
+  readonly forceMount?: boolean;
+}
 
 /**
  * Content panel associated with a tab trigger.

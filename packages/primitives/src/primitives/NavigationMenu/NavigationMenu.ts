@@ -71,9 +71,12 @@ export class NavigationMenuItemCtx extends Context.Tag(
 )<NavigationMenuItemCtx, NavigationMenuItemContext>() {}
 
 // ============================================================================
-// Props Interfaces
+// Components
 // ============================================================================
 
+/**
+ * Props for NavigationMenu.Root
+ */
 export interface NavigationMenuRootProps {
   /** Default active item value */
   readonly defaultValue?: string;
@@ -92,44 +95,6 @@ export interface NavigationMenuRootProps {
   /** ARIA label for the navigation */
   readonly "aria-label"?: string;
 }
-
-export interface NavigationMenuListProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-export interface NavigationMenuItemProps {
-  /** Unique value identifying this item */
-  readonly value: string;
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-export interface NavigationMenuTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-export interface NavigationMenuContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Called when Escape key is pressed */
-  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
-}
-
-export interface NavigationMenuViewportProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-export interface NavigationMenuIndicatorProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-// ============================================================================
-// Root Component
-// ============================================================================
 
 /**
  * Root container for NavigationMenu. Manages active state and provides context.
@@ -238,9 +203,13 @@ const Root = (
     );
   });
 
-// ============================================================================
-// List Component
-// ============================================================================
+/**
+ * Props for NavigationMenu.List
+ */
+export interface NavigationMenuListProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Container for navigation menu items.
@@ -292,9 +261,15 @@ const List = component(
     }),
 );
 
-// ============================================================================
-// Item Component
-// ============================================================================
+/**
+ * Props for NavigationMenu.Item
+ */
+export interface NavigationMenuItemProps {
+  /** Unique value identifying this item */
+  readonly value: string;
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Wrapper for a navigation menu item (trigger + content).
@@ -326,9 +301,13 @@ const Item = (
     );
   });
 
-// ============================================================================
-// Trigger Component
-// ============================================================================
+/**
+ * Props for NavigationMenu.Trigger
+ */
+export interface NavigationMenuTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Button that opens the navigation menu content.
@@ -415,9 +394,15 @@ const Trigger = component(
     }),
 );
 
-// ============================================================================
-// Content Component
-// ============================================================================
+/**
+ * Props for NavigationMenu.Content
+ */
+export interface NavigationMenuContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Called when Escape key is pressed */
+  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
+}
 
 /**
  * Content panel that appears when the trigger is activated.
@@ -473,9 +458,13 @@ const Content = component(
     }),
 );
 
-// ============================================================================
-// Viewport Component
-// ============================================================================
+/**
+ * Props for NavigationMenu.Viewport
+ */
+export interface NavigationMenuViewportProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Viewport is a positioning reference for Content elements.
@@ -502,9 +491,13 @@ const Viewport = component(
     }),
 );
 
-// ============================================================================
-// Indicator Component
-// ============================================================================
+/**
+ * Props for NavigationMenu.Indicator
+ */
+export interface NavigationMenuIndicatorProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Visual indicator that follows the active trigger.

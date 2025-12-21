@@ -114,128 +114,9 @@ export interface ComboboxItemContext {
   readonly setTextValue: (text: string) => Effect.Effect<void>;
 }
 
-/**
- * Props for Combobox.Root
- */
-export interface ComboboxRootProps {
-  /** Controlled selected value */
-  readonly value?: Signal<string>;
-  /** Default selected value (uncontrolled) */
-  readonly defaultValue?: string;
-  /** Callback when selected value changes */
-  readonly onValueChange?: (value: string) => Effect.Effect<void>;
-
-  /** Controlled input value */
-  readonly inputValue?: Signal<string>;
-  /** Default input value (uncontrolled) */
-  readonly defaultInputValue?: string;
-  /** Callback when input value changes */
-  readonly onInputValueChange?: (value: string) => Effect.Effect<void>;
-
-  /** Controlled open state */
-  readonly open?: Signal<boolean>;
-  /** Default open state (uncontrolled) */
-  readonly defaultOpen?: boolean;
-  /** Callback when open state changes */
-  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
-
-  /** Whether the combobox is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-  /** Whether keyboard navigation loops (default: true) */
-  readonly loop?: boolean;
-
-  /** Loading state for async operations */
-  readonly isLoading?: Readable.Readable<boolean>;
-
-  /**
-   * Filter function to determine which items to show.
-   * Defaults to case-insensitive substring matching.
-   * Set to `null` to disable filtering (for external/async filtering).
-   */
-  readonly filterFn?: ComboboxFilterFn | null;
-}
-
-/**
- * Props for Combobox.Input
- */
-export interface ComboboxInputProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Placeholder text */
-  readonly placeholder?: Readable.Reactive<string>;
-  /** Whether the input is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-  /** Whether to open on focus (default: true) */
-  readonly openOnFocus?: boolean;
-}
-
-/**
- * Props for Combobox.Content
- */
-export interface ComboboxContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Which side to position on (default: "bottom") */
-  readonly side?: Readable.Reactive<"top" | "bottom">;
-  /** Alignment relative to input (default: "start") */
-  readonly align?: Readable.Reactive<"start" | "center" | "end">;
-  /** Gap between input and content in pixels (default: 4) */
-  readonly sideOffset?: Readable.Reactive<number>;
-}
-
-/**
- * Props for Combobox.Item
- */
-export interface ComboboxItemProps {
-  /** The value for this item */
-  readonly value: string;
-  /** Text value for display (auto-detected from ItemText if not provided) */
-  readonly textValue?: string;
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for Combobox.ItemText
- */
-export interface ComboboxItemTextProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Combobox.Group
- */
-export interface ComboboxGroupProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Combobox.Label
- */
-export interface ComboboxLabelProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Combobox.Empty
- */
-export interface ComboboxEmptyProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Combobox.Loading
- */
-export interface ComboboxLoadingProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
+// ============================================================================
+// Context Tags
+// ============================================================================
 
 /**
  * Effect Context for Combobox state sharing between parts.
@@ -276,6 +157,47 @@ const getItemValues = (contentId: string): string[] => {
 // ============================================================================
 // Components
 // ============================================================================
+
+/**
+ * Props for Combobox.Root
+ */
+export interface ComboboxRootProps {
+  /** Controlled selected value */
+  readonly value?: Signal<string>;
+  /** Default selected value (uncontrolled) */
+  readonly defaultValue?: string;
+  /** Callback when selected value changes */
+  readonly onValueChange?: (value: string) => Effect.Effect<void>;
+
+  /** Controlled input value */
+  readonly inputValue?: Signal<string>;
+  /** Default input value (uncontrolled) */
+  readonly defaultInputValue?: string;
+  /** Callback when input value changes */
+  readonly onInputValueChange?: (value: string) => Effect.Effect<void>;
+
+  /** Controlled open state */
+  readonly open?: Signal<boolean>;
+  /** Default open state (uncontrolled) */
+  readonly defaultOpen?: boolean;
+  /** Callback when open state changes */
+  readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
+
+  /** Whether the combobox is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+  /** Whether keyboard navigation loops (default: true) */
+  readonly loop?: boolean;
+
+  /** Loading state for async operations */
+  readonly isLoading?: Readable.Readable<boolean>;
+
+  /**
+   * Filter function to determine which items to show.
+   * Defaults to case-insensitive substring matching.
+   * Set to `null` to disable filtering (for external/async filtering).
+   */
+  readonly filterFn?: ComboboxFilterFn | null;
+}
 
 /**
  * Root container for a Combobox. Manages state and provides context.
@@ -470,6 +392,20 @@ const Root = (
   });
 
 /**
+ * Props for Combobox.Input
+ */
+export interface ComboboxInputProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Placeholder text */
+  readonly placeholder?: Readable.Reactive<string>;
+  /** Whether the input is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+  /** Whether to open on focus (default: true) */
+  readonly openOnFocus?: boolean;
+}
+
+/**
  * The input field for the Combobox.
  *
  * @example
@@ -635,6 +571,20 @@ const Input = component(
 );
 
 /**
+ * Props for Combobox.Content
+ */
+export interface ComboboxContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Which side to position on (default: "bottom") */
+  readonly side?: Readable.Reactive<"top" | "bottom">;
+  /** Alignment relative to input (default: "start") */
+  readonly align?: Readable.Reactive<"start" | "center" | "end">;
+  /** Gap between input and content in pixels (default: 4) */
+  readonly sideOffset?: Readable.Reactive<number>;
+}
+
+/**
  * Content area for the Combobox listbox.
  * Renders in a Portal and is positioned relative to the input.
  *
@@ -744,6 +694,20 @@ const Content = component(
 );
 
 /**
+ * Props for Combobox.Item
+ */
+export interface ComboboxItemProps {
+  /** The value for this item */
+  readonly value: string;
+  /** Text value for display (auto-detected from ItemText if not provided) */
+  readonly textValue?: string;
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
+
+/**
  * An item in the Combobox listbox.
  * Automatically filtered based on the filter function.
  *
@@ -845,6 +809,14 @@ const Item = (
   });
 
 /**
+ * Props for Combobox.ItemText
+ */
+export interface ComboboxItemTextProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Text content for a Combobox item.
  * Automatically registers the text as the item's display value.
  *
@@ -875,6 +847,14 @@ const ItemText = component(
 );
 
 /**
+ * Props for Combobox.Group
+ */
+export interface ComboboxGroupProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Groups related items together.
  *
  * @example
@@ -901,6 +881,14 @@ const Group = component(
 );
 
 /**
+ * Props for Combobox.Label
+ */
+export interface ComboboxLabelProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Label for a group of items.
  *
  * @example
@@ -921,6 +909,14 @@ const Label = component(
       );
     }),
 );
+
+/**
+ * Props for Combobox.Empty
+ */
+export interface ComboboxEmptyProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Shown when no items match the search.
@@ -970,6 +966,14 @@ const Empty = component(
       });
     }),
 );
+
+/**
+ * Props for Combobox.Loading
+ */
+export interface ComboboxLoadingProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Shown during async loading.

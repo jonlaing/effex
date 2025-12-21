@@ -6,15 +6,7 @@ import { provide } from "@effex/dom";
 import { component } from "@effex/dom";
 import type { Element, Child } from "@effex/dom";
 
-// ============================================================================
-// Types
-// ============================================================================
-
 export type ProgressState = "loading" | "complete" | "indeterminate";
-
-// ============================================================================
-// Context Interface
-// ============================================================================
 
 export interface ProgressContext {
   /** Current value (null = indeterminate) */
@@ -25,18 +17,10 @@ export interface ProgressContext {
   readonly percentage: Readable.Readable<number>;
 }
 
-// ============================================================================
-// Context Tag
-// ============================================================================
-
 export class ProgressCtx extends Context.Tag("ProgressContext")<
   ProgressCtx,
   ProgressContext
 >() {}
-
-// ============================================================================
-// Props Interfaces
-// ============================================================================
 
 export interface ProgressRootProps {
   /** Current progress value (null = indeterminate) */
@@ -48,15 +32,6 @@ export interface ProgressRootProps {
   /** Additional class names */
   readonly class?: Readable.Reactive<string>;
 }
-
-export interface ProgressIndicatorProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-// ============================================================================
-// Root Component
-// ============================================================================
 
 const Root = (
   props: ProgressRootProps,
@@ -125,9 +100,10 @@ const Root = (
     );
   });
 
-// ============================================================================
-// Indicator Component
-// ============================================================================
+export interface ProgressIndicatorProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 const Indicator = component(
   "ProgressIndicator",
@@ -147,10 +123,6 @@ const Indicator = component(
       });
     }),
 );
-
-// ============================================================================
-// Export
-// ============================================================================
 
 /**
  * Headless Progress primitive for building progress bars.

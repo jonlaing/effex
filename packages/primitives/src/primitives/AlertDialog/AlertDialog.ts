@@ -33,6 +33,14 @@ export interface AlertDialogContext {
 }
 
 /**
+ * Effect Context for AlertDialog state sharing between parts.
+ */
+export class AlertDialogCtx extends Context.Tag("AlertDialogContext")<
+  AlertDialogCtx,
+  AlertDialogContext
+>() {}
+
+/**
  * Props for AlertDialog.Root
  */
 export interface AlertDialogRootProps {
@@ -43,84 +51,6 @@ export interface AlertDialogRootProps {
   /** Callback when open state changes */
   readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
 }
-
-/**
- * Props for AlertDialog.Trigger
- */
-export interface AlertDialogTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for AlertDialog.Portal
- */
-export interface AlertDialogPortalProps {
-  /** Target element or selector to render into (default: document.body) */
-  readonly target?: HTMLElement | string;
-}
-
-/**
- * Props for AlertDialog.Overlay
- */
-export interface AlertDialogOverlayProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for AlertDialog.Content
- */
-export interface AlertDialogContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Called when Escape key is pressed (before close) */
-  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
-  /** Whether to close on Escape key (default: true) */
-  readonly closeOnEscape?: boolean;
-}
-
-/**
- * Props for AlertDialog.Cancel
- */
-export interface AlertDialogCancelProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for AlertDialog.Action
- */
-export interface AlertDialogActionProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Called when action button is clicked (before close) */
-  readonly onClick?: () => Effect.Effect<void>;
-}
-
-/**
- * Props for AlertDialog.Title
- */
-export interface AlertDialogTitleProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for AlertDialog.Description
- */
-export interface AlertDialogDescriptionProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Effect Context for AlertDialog state sharing between parts.
- */
-export class AlertDialogCtx extends Context.Tag("AlertDialogContext")<
-  AlertDialogCtx,
-  AlertDialogContext
->() {}
 
 /**
  * Root container for an AlertDialog. Manages open/closed state and provides
@@ -167,6 +97,14 @@ const Root = (
   });
 
 /**
+ * Props for AlertDialog.Trigger
+ */
+export interface AlertDialogTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Button that opens the AlertDialog.
  */
 const Trigger = component(
@@ -194,6 +132,14 @@ const Trigger = component(
 );
 
 /**
+ * Props for AlertDialog.Portal
+ */
+export interface AlertDialogPortalProps {
+  /** Target element or selector to render into (default: document.body) */
+  readonly target?: HTMLElement | string;
+}
+
+/**
  * Renders alert dialog content in a portal outside the normal DOM hierarchy.
  * Only renders when the dialog is open.
  */
@@ -217,6 +163,14 @@ const AlertDialogPortal = (
   });
 
 /**
+ * Props for AlertDialog.Overlay
+ */
+export interface AlertDialogOverlayProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Backdrop overlay for the AlertDialog.
  * Unlike Dialog, clicking the overlay does NOT close the alert dialog.
  */
@@ -236,6 +190,18 @@ const Overlay = component(
       });
     }),
 );
+
+/**
+ * Props for AlertDialog.Content
+ */
+export interface AlertDialogContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Called when Escape key is pressed (before close) */
+  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
+  /** Whether to close on Escape key (default: true) */
+  readonly closeOnEscape?: boolean;
+}
 
 /**
  * Content area for the AlertDialog.
@@ -308,6 +274,14 @@ const Content = component(
 );
 
 /**
+ * Props for AlertDialog.Cancel
+ */
+export interface AlertDialogCancelProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Cancel button for the AlertDialog.
  * Closes the dialog without taking action.
  * Receives initial focus when the dialog opens.
@@ -334,6 +308,16 @@ const Cancel = component(
       return buttonElement;
     }),
 );
+
+/**
+ * Props for AlertDialog.Action
+ */
+export interface AlertDialogActionProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Called when action button is clicked (before close) */
+  readonly onClick?: () => Effect.Effect<void>;
+}
 
 /**
  * Action button for the AlertDialog.
@@ -366,6 +350,14 @@ const Action = component(
 );
 
 /**
+ * Props for AlertDialog.Title
+ */
+export interface AlertDialogTitleProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Accessible title for the AlertDialog.
  * Connected to the content via aria-labelledby.
  */
@@ -385,6 +377,14 @@ const Title = component(
       );
     }),
 );
+
+/**
+ * Props for AlertDialog.Description
+ */
+export interface AlertDialogDescriptionProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Accessible description for the AlertDialog.

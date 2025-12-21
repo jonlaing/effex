@@ -28,6 +28,22 @@ export interface TooltipContext {
   readonly delayDuration: number;
 }
 
+// ============================================================================
+// Context Tags
+// ============================================================================
+
+/**
+ * Effect Context for Tooltip state sharing between parts.
+ */
+export class TooltipCtx extends Context.Tag("TooltipContext")<
+  TooltipCtx,
+  TooltipContext
+>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
+
 /**
  * Props for Tooltip.Root
  */
@@ -41,40 +57,6 @@ export interface TooltipRootProps {
   /** Callback when open state changes */
   readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
 }
-
-/**
- * Props for Tooltip.Trigger
- */
-export interface TooltipTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Whether the trigger should be a span wrapper (default: true) */
-  readonly asChild?: boolean;
-}
-
-/**
- * Props for Tooltip.Content
- */
-export interface TooltipContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Positioning side relative to trigger (default: "top") */
-  readonly side?: Readable.Reactive<"top" | "bottom" | "left" | "right">;
-  /** Alignment along the side axis (default: "center") */
-  readonly align?: Readable.Reactive<"start" | "center" | "end">;
-  /** Gap between trigger and content in pixels (default: 4) */
-  readonly sideOffset?: Readable.Reactive<number>;
-  /** Shift along the side axis in pixels (default: 0) */
-  readonly alignOffset?: Readable.Reactive<number>;
-}
-
-/**
- * Effect Context for Tooltip state sharing between parts.
- */
-export class TooltipCtx extends Context.Tag("TooltipContext")<
-  TooltipCtx,
-  TooltipContext
->() {}
 
 /**
  * Root container for a Tooltip. Manages open/closed state and provides
@@ -124,6 +106,16 @@ const Root = (
       provide(TooltipCtx, ctx, children),
     );
   });
+
+/**
+ * Props for Tooltip.Trigger
+ */
+export interface TooltipTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Whether the trigger should be a span wrapper (default: true) */
+  readonly asChild?: boolean;
+}
 
 /**
  * Element that triggers the tooltip on hover/focus.
@@ -184,6 +176,22 @@ const Trigger = component(
       return trigger;
     }),
 );
+
+/**
+ * Props for Tooltip.Content
+ */
+export interface TooltipContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Positioning side relative to trigger (default: "top") */
+  readonly side?: Readable.Reactive<"top" | "bottom" | "left" | "right">;
+  /** Alignment along the side axis (default: "center") */
+  readonly align?: Readable.Reactive<"start" | "center" | "end">;
+  /** Gap between trigger and content in pixels (default: 4) */
+  readonly sideOffset?: Readable.Reactive<number>;
+  /** Shift along the side axis in pixels (default: 0) */
+  readonly alignOffset?: Readable.Reactive<number>;
+}
 
 /**
  * Content area for the Tooltip.

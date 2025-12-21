@@ -31,6 +31,22 @@ export interface DialogContext {
   readonly contentId: string;
 }
 
+// ============================================================================
+// Context Tags
+// ============================================================================
+
+/**
+ * Effect Context for Dialog state sharing between parts.
+ */
+export class DialogCtx extends Context.Tag("DialogContext")<
+  DialogCtx,
+  DialogContext
+>() {}
+
+// ============================================================================
+// Components
+// ============================================================================
+
 /**
  * Props for Dialog.Root
  */
@@ -42,72 +58,6 @@ export interface DialogRootProps {
   /** Callback when open state changes */
   readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
 }
-
-/**
- * Props for Dialog.Trigger
- */
-export interface DialogTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Dialog.Portal
- */
-export interface DialogPortalProps {
-  /** Target element or selector to render into (default: document.body) */
-  readonly target?: HTMLElement | string;
-}
-
-/**
- * Props for Dialog.Overlay
- */
-export interface DialogOverlayProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Dialog.Content
- */
-export interface DialogContentProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Called when Escape key is pressed (before close) */
-  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
-}
-
-/**
- * Props for Dialog.Close
- */
-export interface DialogCloseProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Dialog.Title
- */
-export interface DialogTitleProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Dialog.Description
- */
-export interface DialogDescriptionProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Effect Context for Dialog state sharing between parts.
- */
-export class DialogCtx extends Context.Tag("DialogContext")<
-  DialogCtx,
-  DialogContext
->() {}
 
 /**
  * Root container for a Dialog. Manages open/closed state and provides
@@ -173,6 +123,14 @@ const Root = (
   });
 
 /**
+ * Props for Dialog.Trigger
+ */
+export interface DialogTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Button that opens the Dialog.
  * Includes proper ARIA attributes.
  *
@@ -206,6 +164,14 @@ const Trigger = component(
 );
 
 /**
+ * Props for Dialog.Portal
+ */
+export interface DialogPortalProps {
+  /** Target element or selector to render into (default: document.body) */
+  readonly target?: HTMLElement | string;
+}
+
+/**
  * Renders dialog content in a portal outside the normal DOM hierarchy.
  * Only renders when the dialog is open.
  *
@@ -237,6 +203,14 @@ const DialogPortal = (
   });
 
 /**
+ * Props for Dialog.Overlay
+ */
+export interface DialogOverlayProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Backdrop overlay for the Dialog.
  * Clicking the overlay closes the dialog.
  *
@@ -260,6 +234,16 @@ const Overlay = component("DialogOverlay", (props: DialogOverlayProps) =>
     });
   }),
 );
+
+/**
+ * Props for Dialog.Content
+ */
+export interface DialogContentProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Called when Escape key is pressed (before close) */
+  readonly onEscapeKeyDown?: (event: KeyboardEvent) => Effect.Effect<void>;
+}
 
 /**
  * Content area for the Dialog.
@@ -328,6 +312,14 @@ const Content = component(
 );
 
 /**
+ * Props for Dialog.Close
+ */
+export interface DialogCloseProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Button that closes the Dialog.
  *
  * @example
@@ -352,6 +344,14 @@ const Close = component("DialogClose", (props: DialogCloseProps, children) =>
 );
 
 /**
+ * Props for Dialog.Title
+ */
+export interface DialogTitleProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Accessible title for the Dialog.
  * Connected to the content via aria-labelledby.
  *
@@ -374,6 +374,14 @@ const Title = component("DialogTitle", (props: DialogTitleProps, children) =>
     );
   }),
 );
+
+/**
+ * Props for Dialog.Description
+ */
+export interface DialogDescriptionProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Accessible description for the Dialog.

@@ -28,6 +28,14 @@ export interface RadioGroupContext {
 }
 
 /**
+ * Effect Context for RadioGroup state sharing between parts.
+ */
+export class RadioGroupCtx extends Context.Tag("RadioGroupContext")<
+  RadioGroupCtx,
+  RadioGroupContext
+>() {}
+
+/**
  * Props for RadioGroup.Root
  */
 export interface RadioGroupRootProps {
@@ -50,28 +58,6 @@ export interface RadioGroupRootProps {
   /** Additional class names */
   readonly class?: Readable.Reactive<string>;
 }
-
-/**
- * Props for RadioGroup.Item
- */
-export interface RadioGroupItemProps {
-  /** Unique value for this radio item */
-  readonly value: string;
-  /** ID for the item (for label association) */
-  readonly id?: string;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Effect Context for RadioGroup state sharing between parts.
- */
-export class RadioGroupCtx extends Context.Tag("RadioGroupContext")<
-  RadioGroupCtx,
-  RadioGroupContext
->() {}
 
 /**
  * Root container for RadioGroup. Manages selected value state and provides
@@ -187,6 +173,20 @@ const Root = (
       provide(RadioGroupCtx, ctx, children),
     );
   });
+
+/**
+ * Props for RadioGroup.Item
+ */
+export interface RadioGroupItemProps {
+  /** Unique value for this radio item */
+  readonly value: string;
+  /** ID for the item (for label association) */
+  readonly id?: string;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Individual radio item button. Renders as a button with role="radio".

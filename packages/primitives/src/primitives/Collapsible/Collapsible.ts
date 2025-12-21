@@ -26,6 +26,14 @@ export interface CollapsibleContext {
 }
 
 /**
+ * Effect Context for Collapsible state sharing between parts.
+ */
+export class CollapsibleCtx extends Context.Tag("CollapsibleContext")<
+  CollapsibleCtx,
+  CollapsibleContext
+>() {}
+
+/**
  * Props for Collapsible.Root
  */
 export interface CollapsibleRootProps {
@@ -38,32 +46,6 @@ export interface CollapsibleRootProps {
   /** Callback when open state changes */
   readonly onOpenChange?: (open: boolean) => Effect.Effect<void>;
 }
-
-/**
- * Props for Collapsible.Trigger
- */
-export interface CollapsibleTriggerProps {
-  /** Element to render as trigger (default: button) */
-  readonly as?: "button" | "div";
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Collapsible.Content
- */
-export interface CollapsibleContentProps {
-  /** Additional class names for the outer container */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Effect Context for Collapsible state sharing between parts.
- */
-export class CollapsibleCtx extends Context.Tag("CollapsibleContext")<
-  CollapsibleCtx,
-  CollapsibleContext
->() {}
 
 /**
  * Root container for a Collapsible. Manages open/closed state and provides
@@ -139,6 +121,16 @@ const Root = (
   });
 
 /**
+ * Props for Collapsible.Trigger
+ */
+export interface CollapsibleTriggerProps {
+  /** Element to render as trigger (default: button) */
+  readonly as?: "button" | "div";
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
+
+/**
  * Button that toggles the Collapsible open/closed state.
  * Includes proper ARIA attributes and keyboard support.
  *
@@ -200,6 +192,14 @@ const Trigger = component(
       );
     }),
 );
+
+/**
+ * Props for Collapsible.Content
+ */
+export interface CollapsibleContentProps {
+  /** Additional class names for the outer container */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Content area that shows/hides based on the Collapsible state.

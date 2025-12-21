@@ -100,9 +100,12 @@ export class ToastItemCtx extends Context.Tag("ToastItemContext")<
 >() {}
 
 // ============================================================================
-// Props Interfaces
+// Components
 // ============================================================================
 
+/**
+ * Props for Toast.Provider
+ */
 export interface ToastProviderProps {
   /** Position of toast viewport (default: "bottom-right") */
   readonly position?: ToastPosition;
@@ -115,50 +118,6 @@ export interface ToastProviderProps {
   /** Swipe threshold in pixels (default: 50) */
   readonly swipeThreshold?: number;
 }
-
-export interface ToastViewportProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Hotkey to focus viewport (default: Alt+T) */
-  readonly hotkey?: readonly string[];
-  /** ARIA label (default: "Notifications") */
-  readonly label?: string;
-}
-
-export interface ToastRootProps {
-  /** The toast data to render */
-  readonly toast: ToastData;
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-export interface ToastTitleProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-export interface ToastDescriptionProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-export interface ToastActionProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** Alt text for screen readers */
-  readonly altText?: string;
-}
-
-export interface ToastCloseProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-  /** ARIA label (default: "Close") */
-  readonly "aria-label"?: string;
-}
-
-// ============================================================================
-// Provider Component
-// ============================================================================
 
 /**
  * Toast provider that manages toast state and provides context.
@@ -234,9 +193,17 @@ const Provider = (
     );
   });
 
-// ============================================================================
-// Viewport Component
-// ============================================================================
+/**
+ * Props for Toast.Viewport
+ */
+export interface ToastViewportProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Hotkey to focus viewport (default: Alt+T) */
+  readonly hotkey?: readonly string[];
+  /** ARIA label (default: "Notifications") */
+  readonly label?: string;
+}
 
 /**
  * Toast viewport that renders all visible toasts via Portal.
@@ -337,9 +304,15 @@ const Viewport = component(
     }),
 );
 
-// ============================================================================
-// Root Component (Individual Toast)
-// ============================================================================
+/**
+ * Props for Toast.Root
+ */
+export interface ToastRootProps {
+  /** The toast data to render */
+  readonly toast: ToastData;
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Individual toast container with auto-dismiss and swipe support.
@@ -526,9 +499,13 @@ const Root = component("ToastRoot", (props: ToastRootProps, children) =>
   }),
 );
 
-// ============================================================================
-// Title Component
-// ============================================================================
+/**
+ * Props for Toast.Title
+ */
+export interface ToastTitleProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Toast title text.
@@ -545,9 +522,13 @@ const Title = component("ToastTitle", (props: ToastTitleProps, children) =>
   }),
 );
 
-// ============================================================================
-// Description Component
-// ============================================================================
+/**
+ * Props for Toast.Description
+ */
+export interface ToastDescriptionProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Toast description text.
@@ -566,9 +547,15 @@ const Description = component(
     }),
 );
 
-// ============================================================================
-// Action Component
-// ============================================================================
+/**
+ * Props for Toast.Action
+ */
+export interface ToastActionProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** Alt text for screen readers */
+  readonly altText?: string;
+}
 
 /**
  * Toast action button.
@@ -604,9 +591,15 @@ const Action = component("ToastAction", (props: ToastActionProps, children) =>
   }),
 );
 
-// ============================================================================
-// Close Component
-// ============================================================================
+/**
+ * Props for Toast.Close
+ */
+export interface ToastCloseProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+  /** ARIA label (default: "Close") */
+  readonly "aria-label"?: string;
+}
 
 /**
  * Toast close/dismiss button.

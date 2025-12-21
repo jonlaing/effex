@@ -39,6 +39,22 @@ export interface AccordionItemContext {
 }
 
 /**
+ * Effect Context for Accordion state sharing between parts.
+ */
+export class AccordionCtx extends Context.Tag("AccordionContext")<
+  AccordionCtx,
+  AccordionContext
+>() {}
+
+/**
+ * Effect Context for individual Accordion.Item
+ */
+export class AccordionItemCtx extends Context.Tag("AccordionItemContext")<
+  AccordionItemCtx,
+  AccordionItemContext
+>() {}
+
+/**
  * Props for Accordion.Root
  */
 export interface AccordionRootProps {
@@ -69,48 +85,6 @@ export interface AccordionRootProps {
     value: string | string[] | null,
   ) => Effect.Effect<void>;
 }
-
-/**
- * Props for Accordion.Item
- */
-export interface AccordionItemProps {
-  /** Unique value for this item */
-  readonly value: string;
-  /** Whether this item is disabled */
-  readonly disabled?: Readable.Reactive<boolean>;
-}
-
-/**
- * Props for Accordion.Trigger
- */
-export interface AccordionTriggerProps {
-  /** Additional class names */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Props for Accordion.Content
- */
-export interface AccordionContentProps {
-  /** Additional class names for the outer container */
-  readonly class?: Readable.Reactive<string>;
-}
-
-/**
- * Effect Context for Accordion state sharing between parts.
- */
-export class AccordionCtx extends Context.Tag("AccordionContext")<
-  AccordionCtx,
-  AccordionContext
->() {}
-
-/**
- * Effect Context for individual Accordion.Item
- */
-export class AccordionItemCtx extends Context.Tag("AccordionItemContext")<
-  AccordionItemCtx,
-  AccordionItemContext
->() {}
 
 /**
  * Root container for an Accordion. Manages open/closed state for all items.
@@ -211,6 +185,16 @@ const Root = (
   });
 
 /**
+ * Props for Accordion.Item
+ */
+export interface AccordionItemProps {
+  /** Unique value for this item */
+  readonly value: string;
+  /** Whether this item is disabled */
+  readonly disabled?: Readable.Reactive<boolean>;
+}
+
+/**
  * Individual accordion item container.
  *
  * @example
@@ -265,6 +249,14 @@ const Item = (
       provide(AccordionItemCtx, itemCtx, children),
     );
   });
+
+/**
+ * Props for Accordion.Trigger
+ */
+export interface AccordionTriggerProps {
+  /** Additional class names */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Button that toggles the Accordion item open/closed.
@@ -341,6 +333,14 @@ const Trigger = component(
       );
     }),
 );
+
+/**
+ * Props for Accordion.Content
+ */
+export interface AccordionContentProps {
+  /** Additional class names for the outer container */
+  readonly class?: Readable.Reactive<string>;
+}
 
 /**
  * Content area that shows/hides based on the Accordion item state.
