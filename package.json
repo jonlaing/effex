@@ -26,7 +26,11 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "pnpm build && changeset publish",
-    "docs:gen": "rm -rf docs && typedoc"
+    "docs:gen": "rm -rf docs && typedoc",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md,css,html}": "prettier --write"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
@@ -47,8 +51,10 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-storybook": "^10.1.8",
     "globals": "^16.5.0",
+    "husky": "^9.1.7",
     "jiti": "^2.6.1",
     "jsdom": "^27.2.0",
+    "lint-staged": "^16.2.7",
     "playwright": "^1.57.0",
     "prettier": "^3.7.4",
     "storybook": "^10.1.8",
