@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { Effect, Fiber, Stream } from "effect";
+import { Effect, Fiber, Scope, Stream } from "effect";
 import { Signal } from "./Signal";
 
-const runTest = <A>(effect: Effect.Effect<A, never, never>): Promise<A> =>
+const runTest = <A>(effect: Effect.Effect<A, never, Scope.Scope>): Promise<A> =>
   Effect.runPromise(Effect.scoped(effect));
 
 describe("Signal.Array", () => {

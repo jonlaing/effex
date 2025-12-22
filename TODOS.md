@@ -243,6 +243,8 @@
     - [x] Collapsible
     - [x] Scroll Area
     - [x] Progress
+    - [x] Image
+    - [x] Separator
   - Design principles:
     - Composable parts (e.g., `Dialog.Root`, `Dialog.Trigger`, `Dialog.Content`)
     - Render props or slot pattern for full control

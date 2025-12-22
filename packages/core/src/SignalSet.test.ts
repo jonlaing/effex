@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { Effect, Fiber, Stream } from "effect";
+import { Effect, Fiber, Scope, Stream } from "effect";
 import { Signal } from "./Signal";
 import { combine } from "./Readable";
 
-const runTest = <A>(effect: Effect.Effect<A, never, never>): Promise<A> =>
+const runTest = <A>(effect: Effect.Effect<A, never, Scope.Scope>): Promise<A> =>
   Effect.runPromise(Effect.scoped(effect));
 
 describe("Signal.Set", () => {
@@ -200,7 +200,7 @@ describe("Signal.Set", () => {
           yield* set.update((s) => new Set([...s].filter((n) => n > 2)));
 
           const values = yield* set.values.get;
-          expect(values.sort()).toEqual([3, 4, 5]);
+          expect([...values].sort()).toEqual([3, 4, 5]);
         }),
       ));
   });
@@ -231,7 +231,7 @@ describe("Signal.Set", () => {
         Effect.gen(function* () {
           const set = yield* Signal.Set.make(["a", "b", "c"]);
           const values = yield* set.values.get;
-          expect(values.sort()).toEqual(["a", "b", "c"]);
+          expect([...values].sort()).toEqual(["a", "b", "c"]);
         }),
       ));
 
@@ -241,7 +241,7 @@ describe("Signal.Set", () => {
           const set = yield* Signal.Set.make(["a"]);
           yield* set.add("b");
           const values = yield* set.values.get;
-          expect(values.sort()).toEqual(["a", "b"]);
+          expect([...values].sort()).toEqual(["a", "b"]);
         }),
       ));
   });
@@ -253,7 +253,7 @@ describe("Signal.Set", () => {
           const set = yield* Signal.Set.make(["tag1", "tag2"]);
           const count = yield* Signal.make(10);
 
-          const combined = combine([set.readable, count]);
+          const combined = combine([set.readable, count] as const);
 
           const [s, c] = yield* combined.get;
           expect(s.has("tag1")).toBe(true);
