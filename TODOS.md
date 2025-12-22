@@ -81,7 +81,46 @@
     - Static content could skip hydration entirely
     - Would need way to mark components as static vs interactive
 
-- [ ] **DevTools** - Browser extension or integration for debugging reactive state
+- [ ] **DevTools** - In-app panel for debugging reactive state (`@effex/devtools`)
+  - Ship as separate package, add to devDependencies so it doesn't go to production
+  - Mount a floating panel in development mode
+  - **Priority 1: Signal Inspector**
+    - View all Signals, Derived values, Signal.Array/Map/Set and their current values
+    - Edit values directly (like React DevTools)
+    - Expand collections to see contents
+    - Highlight when values update (flash briefly)
+    - Group by component or service
+  - **Priority 2: Update Highlighting**
+    - Flash DOM elements when they update (like React's "Highlight updates")
+    - Helps visualize what's re-rendering and why
+  - **Priority 3: Component Tree**
+    - Show component hierarchy similar to React DevTools
+    - Display which Signals each component owns/subscribes to
+    - Show error types `[E: ApiError]` on components that can fail
+    - Show Boundary.suspense loading states
+    - Show where errors are caught
+  - **Priority 4: Subscription Count**
+    - Badge showing how many things subscribe to each signal
+    - Helps identify over-subscribed signals or potential memory leaks
+  - **Priority 5: Scope Tree**
+    - Visualize Effect scope hierarchy
+    - Show resources attached to each scope (Signals, Fibers)
+    - Show running fibers and their status
+    - Display pending finalizers
+  - **Nice-to-have: Dependency Graph**
+    - Visualize which Signals feed which Derived values
+    - Identify complex dependency chains, diamond dependencies
+    - Find orphaned signals (created but never read)
+  - **Nice-to-have: Timeline / Time Travel**
+    - Record state changes over time
+    - Step back/forward through state history
+    - Show what triggered each update
+  - **Implementation Notes**
+    - Framework needs to expose hooks when Signals are created/updated
+    - May need `window.__EFFEX_DEVTOOLS__` bridge
+    - No VDOM means tracking subscription notifications and DOM mutations directly
+    - Effect.gen tracing needed to track which Effects created which Signals
+    - Scope boundaries are invisible - DevTools makes lifecycle visible
 
 - [x] **Animation primitives** - Built-in support for transitions and animations (see Design Decisions below)
   - [x] CSS-first enter/exit animations
@@ -122,7 +161,37 @@
 
 - [x] **Rename project directory** - Rename /Users/jon/projects/effect-ui to /Users/jon/projects/effex
 
-- [ ] **Full-fledged demo application** - Comprehensive showcase app demonstrating all Effex features together (may be a separate project). Should include: headless primitives, forms, routing, animations, streaming data, etc.
+- [ ] **Full-fledged demo application ("Effex PM")** - Jira-lite project management tool showcasing all Effex features
+  - **Backend:** Effect HTTP server with in-memory state (no RDS - it's just a demo)
+  - **Core Pages:**
+    - **Dashboard** - Project list, recent activity, quick actions. Shows SSR, reactive lists
+    - **Issues Table** - Sortable, filterable, searchable, paginated. Demonstrates Table helpers, virtualEach for large lists
+    - **Kanban Board** - Drag-and-drop columns. Shows animations (stagger, reorder), Signal.Array
+    - **Issue Detail** - Rich form with validation, comments, history. Demonstrates forms, nested data, real-time updates
+    - **AI Assistant** - Streaming chat interface with mock LLM. Shows `Readable.fromStream`, `innerHTML` for markdown
+    - **Settings** - Theme toggle, notification preferences. Shows Signal persistence patterns
+  - **Additional Features:**
+    - Auth flow (login/register) with route guards
+    - Real-time notifications (toast system, live updates)
+    - Command palette (Cmd+K) using Combobox primitive
+    - Optimistic updates (create issue, then sync)
+    - Error boundaries at route level
+    - Keyboard navigation throughout
+    - Responsive layout with mobile support
+  - **Route Structure:**
+    - `/` - Dashboard
+    - `/login`, `/register` - Auth pages
+    - `/projects/:id` - Project overview (redirects to board or table based on preference)
+    - `/projects/:id/board` - Kanban view
+    - `/projects/:id/table` - Table view
+    - `/projects/:id/issues/:issueId` - Issue detail (could be modal or page)
+    - `/projects/:id/settings` - Project settings
+    - `/ai` - AI assistant panel (global, persists across routes)
+  - **Tech Stack:**
+    - `@effex/dom` + `@effex/router` + `@effex/form` + `@effex/primitives`
+    - Effect HTTP server for backend
+    - Tailwind CSS for styling
+    - Mock LLM that echoes/transforms input with delays
 
 - [x] **Migration guides** - Help developers coming from other frameworks
   - [x] React migration guide (REACT-MIGRATION.md)
